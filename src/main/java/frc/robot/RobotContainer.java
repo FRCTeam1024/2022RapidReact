@@ -111,8 +111,10 @@ public class RobotContainer {
        .withSize(2,1)
        .withPosition(0,2);
 
-  
-  }
+    tab.add("AutoCompareAngles", new AutoCompareAngles(drivetrain, 90))
+        .withSize(1,1)
+        .withPosition(0,3);
+}
 
 
 
@@ -211,6 +213,6 @@ public class RobotContainer {
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, then stop at the end.
     return ramseteCommand.beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(() -> drivetrain.compareAngles());
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(() -> new AutoCompareAngles(drivetrain, 90));
   }
 }

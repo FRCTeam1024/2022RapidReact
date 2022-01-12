@@ -27,6 +27,9 @@ public final class Constants {
         public static final int controllerID = 0; // ID for Xbox/Logitech controller
         public static final int leftJoystickID = 1; // ID for left joystick 
         public static final int rightJoystickID = 2; // ID for right joystick
+
+        public static final int leftTriggerID = 7;
+        public static final int rightTriggerID = 8;
     }
 
     // Drivetrain
@@ -57,5 +60,10 @@ public final class Constants {
         public static final double kMetersPerRotation = 0.48878;
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
         
+    }
+
+    // Shooter
+    public static final class ShooterConstants {
+        public static final int PCMID = 3;
     }
 }

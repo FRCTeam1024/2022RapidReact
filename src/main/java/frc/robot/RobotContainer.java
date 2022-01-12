@@ -8,6 +8,7 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -28,6 +29,7 @@ import frc.robot.commands.*;
 import frc.robot.oi.Logitech;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 /**
@@ -40,11 +42,14 @@ public class RobotContainer {
 
   // Subsystems
   private final Drivetrain drivetrain = new Drivetrain();
+  private final Shooter shooter = new Shooter();
 
   // Operator Inputs
   private final Logitech controller = new Logitech(Constants.Inputs.controllerID);
   private final Joystick leftJoystick = new Joystick(Constants.Inputs.leftJoystickID);
   private final Joystick rightJoystick = new Joystick(Constants.Inputs.rightJoystickID);
+
+  private final JoystickButton shooterTrigger = new JoystickButton(controller, Constants.Inputs.rightTriggerID);
 
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, controller);
@@ -76,7 +81,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    shooterTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
   }
 
   /**

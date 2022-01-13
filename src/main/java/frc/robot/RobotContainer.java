@@ -43,6 +43,7 @@ public class RobotContainer {
   // Subsystems
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shooter shooter = new Shooter();
+  private final Limelight limelight = new Limelight();
 
   // Operator Inputs
   private final Logitech controller = new Logitech(Constants.Inputs.controllerID);
@@ -104,16 +105,16 @@ public class RobotContainer {
     //Put the auto chooser on the dashboard
     tab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
-       .withPosition(0,1);
+       .withPosition(1,0);
 
     //Add command status to dashboard
     tab.add("DrivetrainCommand",drivetrain)
        .withSize(2,1)
-       .withPosition(0,2);
+       .withPosition(3,0);
 
     tab.add("AutoCompareAngles", new AutoCompareAngles(drivetrain, 90))
-        .withSize(1,1)
-        .withPosition(0,3);
+        .withSize(3,1)
+        .withPosition(5,0);
 }
 
 

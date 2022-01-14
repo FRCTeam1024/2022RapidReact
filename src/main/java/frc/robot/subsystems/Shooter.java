@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter extends SubsystemBase {
   
-  public Solenoid launcherLeft = new Solenoid(Constants.ShooterConstants.PCMID, PneumaticsModuleType.CTREPCM, 1);
-  public Solenoid launcherRight = new Solenoid(Constants.ShooterConstants.PCMID, PneumaticsModuleType.CTREPCM, 2);
+  public Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
+  public Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -32,9 +32,17 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    launchShooter();
-    Timer.delay(0.010);
-    retractShooter();
+    double onTime = .1;  //Seconds
+    double offTime = .1;  //Seconds
+    int cycles = 10; //# of on off cycles
+    int i = 1;
+    while(i <= cycles) {
+      launchShooter();
+      Timer.delay(onTime);
+      retractShooter();
+      Timer.delay(offTime);
+      i = i+1;
+    }
   }
 
   @Override

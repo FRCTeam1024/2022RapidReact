@@ -21,6 +21,8 @@ public final class Constants {
     public static final double PI = 3.14159;
     public static final boolean CompBot = Robot.isCompBot();
 
+    public static final int PCMID = 3;  // CAN ID for PCM
+
     // IDs for physical input devices
     // Make sure order matches that of DriverStation
     public static final class Inputs {
@@ -62,8 +64,17 @@ public final class Constants {
         
     }
 
-    // Shooter
+    // Shooter related constants
     public static final class ShooterConstants {
-        public static final int PCMID = 3;
+        public static final int launchValveA = 1;
+        public static final int launchValveB = 2;
+    }
+
+    // Intake related constants
+    public static final class IntakeConstants {
+        public static final int intakeValve = 3;
+        
+        public static final double kCollectSpeed = 0.5;  //No idea if this is what we want
+        public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
     }
 }

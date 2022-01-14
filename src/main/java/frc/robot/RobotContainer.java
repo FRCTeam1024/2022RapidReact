@@ -54,7 +54,6 @@ public class RobotContainer {
 
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, controller);
-  private final DriveWithJoysticks driveWithJoysticks = new DriveWithJoysticks(drivetrain, leftJoystick, rightJoystick);
 
   //Auto Commands
   private final Command m_TrajectoryGenAuto = createTrajectoryCommand();

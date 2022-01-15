@@ -9,6 +9,7 @@ import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -54,7 +55,6 @@ public class RobotContainer {
 
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, controller);
-  private final DriveWithJoysticks driveWithJoysticks = new DriveWithJoysticks(drivetrain, leftJoystick, rightJoystick);
 
   //Auto Commands
   private final Command m_TrajectoryGenAuto = createTrajectoryCommand();
@@ -105,16 +105,20 @@ public class RobotContainer {
     //Put the auto chooser on the dashboard
     tab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
-       .withPosition(3,0);
+       .withPosition(6,0);
 
     //Add command status to dashboard
     tab.add("DrivetrainCommand",drivetrain)
        .withSize(2,1)
-       .withPosition(5,0);
+       .withPosition(8,0);
 
     tab.add("AutoCompareAngles", new AutoCompareAngles(drivetrain, 90))
         .withSize(3,1)
-        .withPosition(7,0);
+        .withPosition(3,0);
+
+    tab.add("Limelight", limelight.getFeed())
+        .withSize(6,3)
+        .withPosition(0, 1);
 }
 
 

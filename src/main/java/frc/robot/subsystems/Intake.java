@@ -4,24 +4,73 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants.IntakeConstants;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {}
-/**spin intake forward and reverse*/
-  public void intakeForward() {
 
-  }
-
-  public void intakeBack() {
-    
-  }
-  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  /**
+   * Run intake to speed and direction sepecified
+   * 
+   * @param speed %power for intake motor (+ collect)
+   */
+  public void runIntake(double speed) {
+
+  }
+
+  /**
+  * Run intake forward to collect Cargo
+  * */
+  public void intakeCollect() {
+
+  }
+
+  /**
+   * Run intake in reverse to eject/unjam Cargo
+   */
+  public void intakeEject() {
+    
+  }
+
+  /**
+   * Extend the intake
+   */
+  public void extendIntake() {
+
+  }
+
+  /**
+   * Retract the intake
+   */
+  public void retractIntake() {
+
+  }
+
+  /**
+   * Retract the intake and stop rotation
+   */
+  public void stowIntake() {
+    runIntake(0);
+    retractIntake();
+  }
+
+  /**
+   * Extend the intake and run in collect mode
+   */
+  public void deployIntake() {
+    extendIntake();
+    runIntake(IntakeConstants.kCollectSpeed);
+  }
+
 
 
 }

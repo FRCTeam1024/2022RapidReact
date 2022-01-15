@@ -105,16 +105,16 @@ public class RobotContainer {
     //Put the auto chooser on the dashboard
     tab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
-       .withPosition(1,0);
+       .withPosition(3,0);
 
     //Add command status to dashboard
     tab.add("DrivetrainCommand",drivetrain)
        .withSize(2,1)
-       .withPosition(3,0);
+       .withPosition(5,0);
 
     tab.add("AutoCompareAngles", new AutoCompareAngles(drivetrain, 90))
         .withSize(3,1)
-        .withPosition(5,0);
+        .withPosition(7,0);
 }
 
 

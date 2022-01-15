@@ -19,7 +19,7 @@ public class Limelight extends SubsystemBase {
   NetworkTableEntry ty = limelightTable.getEntry("ty");
   NetworkTableEntry ta = limelightTable.getEntry("ta");
 
-  AxisCamera limelightVideo = CameraServer.addAxisCamera("limelight", "10.10.24.11:5800");
+  //AxisCamera limelightVideo = CameraServer.addAxisCamera("limelight", "10.10.24.11:5800");
 
   double hasTarget = tv.getDouble(0.0);
   double x = tx.getDouble(0.0);
@@ -28,7 +28,7 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
-    CameraServer.startAutomaticCapture(limelightVideo);
+    //CameraServer.startAutomaticCapture(limelightVideo);
 
     System.out.println("X:" + x);
     System.out.println("Y:" + y);

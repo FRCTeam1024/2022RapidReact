@@ -38,9 +38,14 @@ public class Limelight extends SubsystemBase {
     new HttpCamera("limelightCamera", "http://10.10.24.11:5800/")
   );*/
 
-  private MjpegServer limelightVideo;
+  //private MjpegServer limelightVideo;
+  //private UsbCamera limelightVideo;
   private final HttpCamera camera = new HttpCamera(
-      "limelightCamera", "http://10.10.24.11:5800", HttpCamera.HttpCameraKind.kMJPGStreamer
+      "limelightCamera", "http://10.10.24.11:5800/stream.mjpg", HttpCamera.HttpCameraKind.kMJPGStreamer
+  );
+
+  SendableCameraWrapper limelightVideo = SendableCameraWrapper.wrap(
+    new HttpCamera("limelightCamera", "http://10.10.24.11:5800/")
   );
 
   private double hasTarget = tv.getDouble(0.0);
@@ -53,7 +58,8 @@ public class Limelight extends SubsystemBase {
     disableLeds();
 
     //camera = CameraServer.startAutomaticCapture(); // Working implementation for UsbCamera (but not working for limelight)
-    limelightVideo = CameraServer.startAutomaticCapture(camera);
+    //limelightVideo = CameraServer.startAutomaticCapture(camera);
+    //limelightVideo = CameraServer.startAutomaticCapture();
 
     System.out.println("X:" + x);
     System.out.println("Y:" + y);
@@ -97,8 +103,9 @@ public class Limelight extends SubsystemBase {
   }
 
   // Feeding a UsbCamera seems to work if it is via the CameraServer.startAutomaticCapture()
-  public VideoSource getFeed() {
-    return limelightVideo.getSource();
+  public SendableCameraWrapper getFeed() {
+    //return camera;
+    return limelightVideo;
   }
 
   @Override

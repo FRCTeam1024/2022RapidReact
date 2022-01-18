@@ -32,6 +32,8 @@ public final class Constants {
 
         public static final int leftTriggerID = 7;
         public static final int rightTriggerID = 8;
+
+        public static final int xButtonID = 1;
     }
 
     // Drivetrain

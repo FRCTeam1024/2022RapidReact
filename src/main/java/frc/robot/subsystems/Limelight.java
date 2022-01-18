@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.Console;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.MjpegServer;
@@ -22,6 +24,7 @@ public class Limelight extends SubsystemBase {
   private final NetworkTableEntry tx = limelightTable.getEntry("tx");
   private final NetworkTableEntry ty = limelightTable.getEntry("ty");
   private final NetworkTableEntry ta = limelightTable.getEntry("ta");
+  private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
 
   //AxisCamera limelightVideo = CameraServer.addAxisCamera("limelight", "10.10.24.11:5800");
   //DP: Try this:  (may need to add .getInstanct(), may need to reference a .mjpg file)
@@ -47,6 +50,8 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
+    disableLeds();
+
     //camera = CameraServer.startAutomaticCapture(); // Working implementation for UsbCamera (but not working for limelight)
     limelightVideo = CameraServer.startAutomaticCapture(camera);
 
@@ -65,6 +70,30 @@ public class Limelight extends SubsystemBase {
 
   double getArea() {
     return ta.getDouble(0.0);
+  }
+
+  void enableLeds() {
+    ledMode.setDouble(3.0);
+  }
+
+  void disableLeds() {
+    ledMode.setDouble(0.0);
+  }
+
+  boolean areLedsOn() {
+    if(ledMode.getDouble(0.0) > 1.0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public void toggleLeds() {
+    if(areLedsOn()) {
+      disableLeds();
+    } else {
+      enableLeds();
+    }
   }
 
   // Feeding a UsbCamera seems to work if it is via the CameraServer.startAutomaticCapture()

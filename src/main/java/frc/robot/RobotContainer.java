@@ -53,6 +53,8 @@ public class RobotContainer {
 
   private final JoystickButton shooterTrigger = new JoystickButton(controller, Constants.Inputs.rightTriggerID);
 
+  private final JoystickButton xButton = new JoystickButton(controller, Constants.Inputs.xButtonID);
+
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, controller);
 
@@ -83,6 +85,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     shooterTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
+    xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
   /**

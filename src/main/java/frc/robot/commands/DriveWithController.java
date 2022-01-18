@@ -39,6 +39,8 @@ public class DriveWithController extends CommandBase {
     drivetrain.drive(x/3,y/3);
     SmartDashboard.putNumber("X Speed", x);
     SmartDashboard.putNumber("Y Speed", y);
+
+    System.out.println("driving...");
   }
 
   // Called once the command ends or is interrupted.

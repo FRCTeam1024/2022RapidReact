@@ -96,7 +96,7 @@ public class RobotContainer {
   private void configureDashboard() {
     //Create a ShuffleBoard Tab
     ShuffleboardTab tab = Shuffleboard.getTab("1024Dashboard");
-
+    
     //Display the name and version number of the code.
     tab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
        .withSize(3,1)
@@ -122,7 +122,7 @@ public class RobotContainer {
 
     tab.add("Limelight", limelight.getFeed())
         .withSize(6,3)
-        .withWidget(BuiltInWidgets.kCameraStream)
+        //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 1);
 }
 

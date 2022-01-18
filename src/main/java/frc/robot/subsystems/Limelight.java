@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.SendableCameraWrapper;
 
 public class Limelight extends SubsystemBase {
   private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -19,26 +18,8 @@ public class Limelight extends SubsystemBase {
   private final NetworkTableEntry ta = limelightTable.getEntry("ta");
   private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
 
-  //AxisCamera limelightVideo = CameraServer.addAxisCamera("limelight", "10.10.24.11:5800");
-  //DP: Try this:  (may need to add .getInstanct(), may need to reference a .mjpg file)
-  //QT: Does not work, shuffleboard will not accept MjpegServers... using SendableCameraWrapper instead
-  //MjpegServer limelightVideo = CameraServer.startAutomaticCapture(new HttpCamera("limelightCamera",
-  //                                                                        "http://10.10.24.11:5800"));
-
-  //HttpCamera limelightVideo = new HttpCamera("LimelightCam", "http://10.10.24.11:5800/stream.mjpg");
-  // or try this (and add tab.add(Limelight.getFeed() in RobotContianer))
-  /*SendableCameraWrapper limelightVideo = SendableCameraWrapper.wrap(
-    new HttpCamera("limelightCamera", "http://10.10.24.11:5800/")
-  );*/
-
-  //private MjpegServer limelightVideo;
-  //private UsbCamera limelightVideo;
   private final HttpCamera camera = new HttpCamera(
       "limelight", "http://10.10.24.11:5800/stream.mjpg", HttpCamera.HttpCameraKind.kMJPGStreamer
-  );
-
-  SendableCameraWrapper limelightVideo = SendableCameraWrapper.wrap(
-    new HttpCamera("limelight", "http://10.10.24.11:5800/")
   );
 
   private double hasTarget = tv.getDouble(0.0);
@@ -49,10 +30,6 @@ public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
   public Limelight() {
     disableLeds();
-
-    //camera = CameraServer.startAutomaticCapture(); // Working implementation for UsbCamera (but not working for limelight)
-    //limelightVideo = CameraServer.startAutomaticCapture(camera);
-    //limelightVideo = CameraServer.startAutomaticCapture();
 
     System.out.println("X:" + x);
     System.out.println("Y:" + y);
@@ -95,10 +72,8 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  // Feeding a UsbCamera seems to work if it is via the CameraServer.startAutomaticCapture()
   public HttpCamera getFeed() {
     return camera;
-    //return limelightVideo;
   }
 
   @Override

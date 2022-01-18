@@ -7,17 +7,18 @@ package frc.robot.commands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.oi.Logitech;
+import frc.robot.oi.OIController;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveWithController extends CommandBase {
   private final Drivetrain drivetrain;
-  private final Logitech controller;
+  private final OIController controller;
 
   private final SlewRateLimiter leftFilter = new SlewRateLimiter(2);
   private final SlewRateLimiter rightFilter = new SlewRateLimiter(2);
 
   /** Creates a new DriveWithController. */
-  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam) {
+  public DriveWithController(Drivetrain driveSubsystem, OIController controllerParam) {
     // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = driveSubsystem;
     addRequirements(driveSubsystem);

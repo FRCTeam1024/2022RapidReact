@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.*;
 import frc.robot.oi.Logitech;
+import frc.robot.oi.OIController;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,16 +45,24 @@ public class RobotContainer {
   private final Limelight limelight = new Limelight();
 
   // Operator Inputs
-  private final Logitech controller = new Logitech(Constants.Inputs.controllerID);
-  private final Joystick leftJoystick = new Joystick(Constants.Inputs.leftJoystickID);
-  private final Joystick rightJoystick = new Joystick(Constants.Inputs.rightJoystickID);
 
-  private final JoystickButton shooterTrigger = new JoystickButton(controller, Constants.Inputs.rightTriggerID);
+  private final OIController driverController = new OIController(Constants.Inputs.driverControllerID);
+  private final OIController operatorController = new OIController(Constants.Inputs.operatorControllerID);
 
-  private final JoystickButton xButton = new JoystickButton(controller, Constants.Inputs.xButtonID);
+  // QT: No longer necessary if we transition towards our own Controller class
+  //private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
+  //private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
+  
+  // QT: Will we still need the joysticks if we intend on using just two controllers?
+  //private final Joystick leftJoystick = new Joystick(Constants.Inputs.leftJoystickID);
+  //private final Joystick rightJoystick = new Joystick(Constants.Inputs.rightJoystickID);
+
+  // QT: No longer necessary if we transition towards our own Controller class
+  //private final JoystickButton shooterTrigger = new JoystickButton(driverController, Constants.Inputs.rightTriggerID);
+  //private final JoystickButton xButton = new JoystickButton(driverController, Constants.Inputs.xButtonID);
 
   // Other 
-  private final DriveWithController driveWithController = new DriveWithController(drivetrain, controller);
+  private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
 
   //Auto Commands
   private final Command m_TrajectoryGenAuto = createTrajectoryCommand();
@@ -81,8 +90,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    shooterTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
-    xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
+    driverController.rightTrigger().whileHeld(new InstantCommand(shooter::shoot, shooter));
+    driverController.xButton().whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
   /**

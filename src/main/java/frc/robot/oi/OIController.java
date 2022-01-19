@@ -8,21 +8,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 
+//DP: I don't think this needs to extend SubsystemBase.  I also think we should try just
+//combining this with Logitech.  It seems redundant to have this too.
+
 public class OIController extends SubsystemBase {
   private final Logitech controller;
 
   // No need to create joysticks no dpad inputs, 
   // since their values can be grabbed via controller
-
+/** 
   private final JoystickButton aButton;
   private final JoystickButton bButton;
   private final JoystickButton xButton;
   private final JoystickButton yButton;
 
-  /*private final JoystickButton dPadUp;
+  private final JoystickButton dPadUp;
   private final JoystickButton dPadDown;
   private final JoystickButton dPadLeft;
-  private final JoystickButton dPadRight;*/
+  private final JoystickButton dPadRight;
 
   private final JoystickButton leftTrigger;
   private final JoystickButton rightTrigger;
@@ -32,11 +35,11 @@ public class OIController extends SubsystemBase {
   
   private final JoystickButton backButton;
   private final JoystickButton startButton;
-
+  */
   /** Creates a new Controller. */
-  public OIController(int controllerID) {
+ public OIController(int controllerID) {
     controller = new Logitech(controllerID);
-
+    /*
     aButton = new JoystickButton(controller, Constants.Inputs.aButtonID);
     bButton = new JoystickButton(controller, Constants.Inputs.bButtonID);
     xButton = new JoystickButton(controller, Constants.Inputs.xButtonID);
@@ -50,6 +53,7 @@ public class OIController extends SubsystemBase {
 
     backButton = new JoystickButton(controller, Constants.Inputs.backButtonID);
     startButton = new JoystickButton(controller, Constants.Inputs.startButtonID);
+    */
   }
 
   public double getLeftStickY() {
@@ -61,7 +65,7 @@ public class OIController extends SubsystemBase {
   }
 
 
-
+/** 
   public JoystickButton aButton() {
     return aButton;
   }
@@ -95,9 +99,11 @@ public class OIController extends SubsystemBase {
   public JoystickButton startButton() {
     return startButton;
   }
+*/
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  
 }

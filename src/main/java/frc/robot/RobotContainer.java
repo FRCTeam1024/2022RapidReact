@@ -46,8 +46,8 @@ public class RobotContainer {
 
   // Operator Inputs
 
-  private final OIController driverController = new OIController(Constants.Inputs.driverControllerID);
-  private final OIController operatorController = new OIController(Constants.Inputs.operatorControllerID);
+  private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
+  private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
 
   // QT: No longer necessary if we transition towards our own Controller class
   //private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
@@ -90,8 +90,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driverController.rightTrigger().whileHeld(new InstantCommand(shooter::shoot, shooter));
-    driverController.xButton().whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
+    driverController.rightTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
+    driverController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
   /**

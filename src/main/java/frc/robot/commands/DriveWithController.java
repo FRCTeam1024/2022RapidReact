@@ -12,13 +12,13 @@ import frc.robot.subsystems.Drivetrain;
 
 public class DriveWithController extends CommandBase {
   private final Drivetrain drivetrain;
-  private final OIController controller;
+  private final Logitech controller;
 
   private final SlewRateLimiter leftFilter = new SlewRateLimiter(2);
   private final SlewRateLimiter rightFilter = new SlewRateLimiter(2);
 
   /** Creates a new DriveWithController. */
-  public DriveWithController(Drivetrain driveSubsystem, OIController controllerParam) {
+  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam) {
     // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = driveSubsystem;
     addRequirements(driveSubsystem);
@@ -37,10 +37,6 @@ public class DriveWithController extends CommandBase {
     double x = -controller.getLeftStickY();
     double y = -controller.getRightStickY();
     drivetrain.drive(x/3,y/3);
-    //SmartDashboard.putNumber("X Speed", x);
-    //SmartDashboard.putNumber("Y Speed", y);
-
-    //System.out.println("driving...");
   }
 
   // Called once the command ends or is interrupted.

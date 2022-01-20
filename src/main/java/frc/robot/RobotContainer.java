@@ -109,10 +109,14 @@ public class RobotContainer {
         .withSize(3,1)
         .withPosition(3,0);
 
+    tab.add("GyroAngle",drivetrain.getHeading())
+        .withSize(2,1)
+        .withPosition(0,1);
+
     tab.add("Limelight", limelight.getFeed())
         .withSize(6,3)
         //.withWidget(BuiltInWidgets.kCameraStream)
-        .withPosition(0, 1);
+        .withPosition(0, 2);
   }
 
 

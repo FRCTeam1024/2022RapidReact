@@ -7,20 +7,88 @@
 
 package frc.robot.oi;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController; //DP: I wonder if we really need to extend XboxController 
+                                             //or if we could just extend GenericHID
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
- * Add your docs here.
+ * This class defines everything that is specific to the Logitech controller.
+ * This should allow adding as many controllers as we want without repeating
+ * any of this setup which is independent of command binding which will be handled
+ * elsewhere.
  */
 public class Logitech extends XboxController {
     private final double deadband = 0.1;
 
-    public enum DPadState {
-        NEUTRAl, UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT;
-    }
+    //Moved these here since they are specific to the Logitech controller and will
+    //not vary from robot to robot.
+    private static final int X_BUTTON_ID = 1;
+    private static final int A_BUTTON_ID = 2;
+    private static final int B_BUTTON_ID = 3;        
+    private static final int Y_BUTTON_ID = 4;
+    // Bumpers
+    private static final int LEFT_BUMPER_ID = 5;
+    private static final int RIGHT_BUMPER_ID = 6;
+    // Triggers
+    private static final int LEFT_TRIGGER_ID = 7;
+    private static final int RIGHT_TRIGGER_ID = 8;
+    // Start and back button
+    private static final int BACK_BUTTON_ID = 9;
+    private static final int START_BUTTON_ID = 10;
+    // Joystick buttons (press down on joystick)
+    private static final int LEFT_STICK_BUTTON_ID = 11;
+    private static final int RIGHT_STICK_BUTTON_ID = 12;
+
+    public final  JoystickButton aButton;
+    public final JoystickButton bButton;
+    public final JoystickButton xButton;
+    public final JoystickButton yButton;
+  
+    //I think we can use POVButton rather that getPOV()
+    // and checking the angle.  This way these can work
+    // just like all other buttons.
+    public final POVButton dPadUp;
+    public final POVButton dPadDown;
+    public final POVButton dPadLeft;
+    public final POVButton dPadRight;
+  
+    public final JoystickButton leftTrigger;
+    public final JoystickButton rightTrigger;
+  
+    public final JoystickButton leftBumper;
+    public final JoystickButton rightBumper;
+    
+    public final JoystickButton backButton;
+    public final JoystickButton startButton;
+
+    public final JoystickButton leftStickButton;
+    public final JoystickButton rightStickButton;
 
     public Logitech(int port) {
         super(port);
+
+        aButton = new JoystickButton(this, A_BUTTON_ID);
+        bButton = new JoystickButton(this, B_BUTTON_ID);
+        xButton = new JoystickButton(this, X_BUTTON_ID);
+        yButton = new JoystickButton(this, Y_BUTTON_ID);
+
+        dPadUp = new POVButton(this,0);
+        dPadDown = new POVButton(this,180);
+        dPadRight = new POVButton(this,90);
+        dPadLeft = new POVButton(this,270);
+    
+        leftTrigger = new JoystickButton(this, LEFT_TRIGGER_ID);
+        rightTrigger = new JoystickButton(this, RIGHT_TRIGGER_ID);
+    
+        leftBumper = new JoystickButton(this, LEFT_BUMPER_ID);
+        rightBumper = new JoystickButton(this, RIGHT_BUMPER_ID);
+    
+        backButton = new JoystickButton(this, BACK_BUTTON_ID);
+        startButton = new JoystickButton(this, START_BUTTON_ID);
+
+        leftStickButton = new JoystickButton(this, LEFT_STICK_BUTTON_ID);
+        rightStickButton = new JoystickButton(this, RIGHT_STICK_BUTTON_ID);
     }
 
     public double getLeftStickY() {
@@ -39,41 +107,5 @@ public class Logitech extends XboxController {
         } else {
             return 0;
         }
-    }
-
-    // gets angle of the DPad on the XBox controller pressed with increments of 45 degree angle. 
-    // returns neutal or -1 when nothing is pressed
-    public DPadState getDPadState() {
-        
-        int angle = getPOV();
-
-        if(angle == 0) {
-            return DPadState.UP;
-        } 
-        else if(angle == 45){
-            return DPadState.UP_RIGHT;
-        }
-        else if(angle == 90) {
-            return DPadState.RIGHT;
-        }
-        else if(angle == 135){
-            return DPadState.DOWN_RIGHT;
-        }
-        else if(angle == 180) {
-            return DPadState.DOWN;
-        }
-        else if(angle == 225){
-            return DPadState.DOWN_LEFT;
-        }
-        else if(angle == 270) {
-            return DPadState.LEFT;
-        }
-        else if(angle == 315){
-            return DPadState.UP_LEFT;
-        } 
-        else {
-            return DPadState.NEUTRAl;
-        }
-        
     }
 }

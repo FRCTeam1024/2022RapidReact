@@ -26,14 +26,8 @@ public final class Constants {
     // IDs for physical input devices
     // Make sure order matches that of DriverStation
     public static final class Inputs {
-        public static final int controllerID = 0; // ID for Xbox/Logitech controller
-        public static final int leftJoystickID = 1; // ID for left joystick 
-        public static final int rightJoystickID = 2; // ID for right joystick
-
-        public static final int leftTriggerID = 7;
-        public static final int rightTriggerID = 8;
-
-        public static final int xButtonID = 1;
+        public static final int driverControllerID = 0; // ID for Xbox/Logitech controller
+        public static final int operatorControllerID = 1;
     }
 
     // Drivetrain

@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.oi.Logitech;
-import frc.robot.oi.OIController;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveWithController extends CommandBase {

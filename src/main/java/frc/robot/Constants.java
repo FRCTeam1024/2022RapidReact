@@ -28,8 +28,6 @@ public final class Constants {
     public static final class Inputs {
         public static final int driverControllerID = 0; // ID for Xbox/Logitech controller
         public static final int operatorControllerID = 1;
-        
-       
     }
 
     // Drivetrain

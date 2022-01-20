@@ -13,7 +13,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -81,10 +80,10 @@ public class Drivetrain extends SubsystemBase {
         (driveLeftLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation),
         (driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation));
       
-        SmartDashboard.putNumber("Raw Left Encoder", driveLeftLeader.getSelectedSensorPosition());
+        /*SmartDashboard.putNumber("Raw Left Encoder", driveLeftLeader.getSelectedSensorPosition());
         SmartDashboard.putNumber("Raw Right Encoder", driveRightLeader.getSelectedSensorPosition());
         SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());
-        SmartDashboard.putNumber("Gyro Angle", getHeading()); 
+        SmartDashboard.putNumber("Gyro Angle", getHeading());*/
 
   }
 

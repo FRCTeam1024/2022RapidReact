@@ -7,8 +7,6 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -25,7 +23,6 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.*;
 import frc.robot.oi.Logitech;
-import frc.robot.oi.OIController;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,21 +42,8 @@ public class RobotContainer {
   private final Limelight limelight = new Limelight();
 
   // Operator Inputs
-
   private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
   private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
-
-  // QT: No longer necessary if we transition towards our own Controller class
-  //private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
-  //private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
-  
-  // QT: Will we still need the joysticks if we intend on using just two controllers?
-  //private final Joystick leftJoystick = new Joystick(Constants.Inputs.leftJoystickID);
-  //private final Joystick rightJoystick = new Joystick(Constants.Inputs.rightJoystickID);
-
-  // QT: No longer necessary if we transition towards our own Controller class
-  //private final JoystickButton shooterTrigger = new JoystickButton(driverController, Constants.Inputs.rightTriggerID);
-  //private final JoystickButton xButton = new JoystickButton(driverController, Constants.Inputs.xButtonID);
 
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
@@ -91,7 +75,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driverController.rightTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
-    driverController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
+    operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
   /**
@@ -129,7 +113,7 @@ public class RobotContainer {
         .withSize(6,3)
         //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 1);
-}
+  }
 
 
 
@@ -229,5 +213,9 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory, then Run path following command, then stop at the end.
     return ramseteCommand.beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
                           .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(() -> new AutoCompareAngles(drivetrain, 90));
+  }
+
+  public void disabledInit() {
+    limelight.disableLeds();
   }
 }

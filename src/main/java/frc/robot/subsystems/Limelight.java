@@ -30,10 +30,6 @@ public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
   public Limelight() {
     disableLeds();
-
-    System.out.println("X:" + x);
-    System.out.println("Y:" + y);
-    System.out.println("A:" + a);
   }
 
   double getX() {
@@ -52,7 +48,7 @@ public class Limelight extends SubsystemBase {
     ledMode.setDouble(3.0);
   }
 
-  void disableLeds() {
+  public void disableLeds() {
     ledMode.setDouble(0.0);
   }
 

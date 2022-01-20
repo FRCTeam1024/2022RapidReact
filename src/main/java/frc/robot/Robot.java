@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private String trajectoryJSON = "paths/BlueSecondCargo.wpilib.json"; //for filename = "TestPath"
+  private String trajectoryJSON = "paths/LongBlueTest.wpilib.json"; //for filename = "TestPath"
   static Trajectory testPath = new Trajectory();
   
 

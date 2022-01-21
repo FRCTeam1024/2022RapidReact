@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Drivetrain extends SubsystemBase {
@@ -82,8 +83,8 @@ public class Drivetrain extends SubsystemBase {
       
         /*SmartDashboard.putNumber("Raw Left Encoder", driveLeftLeader.getSelectedSensorPosition());
         SmartDashboard.putNumber("Raw Right Encoder", driveRightLeader.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());
-        SmartDashboard.putNumber("Gyro Angle", getHeading());*/
+        SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());*/
+        SmartDashboard.putNumber("Gyro Angle", getHeading());
 
   }
 

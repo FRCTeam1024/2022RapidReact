@@ -218,8 +218,4 @@ public class RobotContainer {
     return ramseteCommand.beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
                           .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(() -> new AutoCompareAngles(drivetrain, 90));
   }
-
-  public void disabledInit() {
-    limelight.disableLeds();
-  }
 }

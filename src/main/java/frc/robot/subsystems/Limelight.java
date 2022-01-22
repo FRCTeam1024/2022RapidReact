@@ -19,7 +19,7 @@ public class Limelight extends SubsystemBase {
   private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
 
   private final HttpCamera camera = new HttpCamera(
-      "limelight", "http://10.10.24.11:5800/stream.mjpg", HttpCamera.HttpCameraKind.kMJPGStreamer
+      "limelight", "http://10.10.24.11:5800", HttpCamera.HttpCameraKind.kMJPGStreamer
   );
 
   private double hasTarget = tv.getDouble(0.0);

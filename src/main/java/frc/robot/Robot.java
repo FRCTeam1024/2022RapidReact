@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.io.IOException;
+import java.io.File;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,9 +26,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private String trajectoryJSON = "paths/LongBlueTest.wpilib.json"; //for filename = "TestPath"
-  static Trajectory testPath = new Trajectory();
-  
+  //Create a list of trajectory JSONs and corresponding list of Trajectories
+  private static File pathfile = new File("paths/");
+  static String[] fileList = pathfile.list();
+  static Trajectory[] pathList = new Trajectory[fileList.length];
 
   private RobotContainer m_robotContainer;
 
@@ -52,12 +54,15 @@ public class Robot extends TimedRobot {
     }
     
     // Load any path(s) needed for autonomous command from filesystem
-    try {
-        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        testPath = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-        DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    for(int i = 0; i < fileList.length; i++) {
+      try {
+        Path thePath = Filesystem.getDeployDirectory().toPath().resolve("paths/"+fileList[i]);
+        pathList[i] = TrajectoryUtil.fromPathweaverJson(thePath);
+      } catch (IOException ex) {
+        DriverStation.reportError("Unable to open trajectory: " + fileList[i], ex.getStackTrace());
+      }
     }
+
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

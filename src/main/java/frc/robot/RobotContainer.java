@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.List;
+import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.controller.PIDController;
@@ -198,9 +199,16 @@ public class RobotContainer {
    */
   private Command createPathweaverCommand() {
 
-    // Reset odometry to the starting pose of the trajectory, then Run path following command, then stop at the end.
-    return new PathweaverCommand(Robot.testPath,drivetrain).beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(new AutoCompareAngles(drivetrain, 90));
+    //Choose paths and combine multiple as necessary
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueFirstCargo.wpilib.json")]
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueSecondCargo.wpilib.json")]);
+
+    // Reset odometry to the starting pose of the trajectory, then Run path following command, 
+    // then stop at the end.
+    return new PathweaverCommand(pathA,drivetrain)
+                          .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
+                          .andThen(new AutoCompareAngles(drivetrain, 90));
   }
 
   public void disabledInit() {

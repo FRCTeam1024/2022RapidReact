@@ -198,25 +198,9 @@ public class RobotContainer {
    */
   private Command createPathweaverCommand() {
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
-        Robot.testPath,
-        drivetrain::getPose,
-        new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                   DriveConstants.kvVoltSecondsPerMeter,
-                                   DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        drivetrain::tankDriveVolts,
-        drivetrain
-    );
-
     // Reset odometry to the starting pose of the trajectory, then Run path following command, then stop at the end.
-    return ramseteCommand.beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(() -> new AutoCompareAngles(drivetrain, 90));
+    return new PathweaverCommand(Robot.testPath,drivetrain).beforeStarting(() -> drivetrain.resetOdometry(Robot.testPath.getInitialPose()))
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0)).andThen(new AutoCompareAngles(drivetrain, 90));
   }
 
   public void disabledInit() {

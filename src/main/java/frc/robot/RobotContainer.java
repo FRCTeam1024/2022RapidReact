@@ -46,7 +46,7 @@ public class RobotContainer {
   private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
   private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
 
-  // Other 
+  // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
 
   //Create a chooser for auto
@@ -56,10 +56,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the dashboard
     configureDashboard();
-    
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -107,7 +105,7 @@ public class RobotContainer {
         .withSize(3,1)
         .withPosition(3,0);
 
-    tab.add("GyroAngle",drivetrain.getHeading())
+    tab.addNumber("GyroHeading", drivetrain::getHeading)
         .withSize(2,1)
         .withPosition(0,1);
 
@@ -116,8 +114,6 @@ public class RobotContainer {
         //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 2);
   }
-
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

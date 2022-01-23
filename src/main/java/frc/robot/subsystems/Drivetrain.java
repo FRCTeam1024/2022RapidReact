@@ -9,7 +9,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -33,7 +33,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
-  private final PigeonIMU pigeon;
+  private final WPI_PigeonIMU pigeon;
 
   private final DifferentialDriveOdometry m_odometry;
 
@@ -67,7 +67,7 @@ public class Drivetrain extends SubsystemBase {
     driveLeftLeader.setSensorPhase(false);
     driveRightLeader.setSensorPhase(false);
 
-    pigeon = new PigeonIMU(4);
+    pigeon = new WPI_PigeonIMU(4);
     resetEncoders();
     zeroHeading();
 
@@ -85,7 +85,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Raw Right Encoder", driveRightLeader.getSelectedSensorPosition());
         SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());*/
         SmartDashboard.putNumber("Gyro Angle", getHeading());
-
   }
 
     /**

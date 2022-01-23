@@ -149,6 +149,10 @@ public class Drivetrain extends SubsystemBase {
     return yawPitchRoll[0]; 
   }
 
+  public void setHeading(double deg) {
+    pigeon.setYaw(deg);
+  }
+
   public void zeroHeading() {
     pigeon.setYaw(0);
   }
@@ -163,7 +167,7 @@ public class Drivetrain extends SubsystemBase {
     driveRightLeader.setSelectedSensorPosition(0);
   }
 
-  /* 
+  /** 
    * Drive command for use with joystick drive and debugging purpose
    * Do not use for auto routines as this will not be repeatable
    */

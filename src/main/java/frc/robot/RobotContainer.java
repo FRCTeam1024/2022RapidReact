@@ -49,10 +49,6 @@ public class RobotContainer {
   // Other 
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
 
-  //Auto Commands
-  private final Command m_TrajectoryGenAuto = createTrajectoryCommand();
-  private final Command m_PathweaverAuto = createPathweaverCommand();
-
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
 
@@ -94,8 +90,9 @@ public class RobotContainer {
 
     //Add commands to auto chooser, set default to null to avoid surprise operation
     m_AutoChooser.setDefaultOption("None", null);
-    m_AutoChooser.addOption("Trajectory Generator Auto", m_TrajectoryGenAuto); 
-    m_AutoChooser.addOption("Pathweaver Auto", m_PathweaverAuto);
+    m_AutoChooser.addOption("Trajectory Generator Auto", getTrajectoryAuto()); 
+    m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
+    m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     //Put the auto chooser on the dashboard
     tab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
@@ -106,7 +103,7 @@ public class RobotContainer {
        .withSize(2,1)
        .withPosition(8,0);
 
-    tab.add("AutoCompareAngles", new AutoCompareAngles(drivetrain, 90))
+    tab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
         .withSize(3,1)
         .withPosition(3,0);
 
@@ -136,7 +133,7 @@ public class RobotContainer {
    * 
    * @return the auto command
    */
-  private Command createTrajectoryCommand() {
+  private Command getTrajectoryAuto() {
     // An ExampleCommand will run in autonomous
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint =
@@ -193,21 +190,46 @@ public class RobotContainer {
   }
 
   /**
-   * Create an auto command using the path imported from Pathweaver
+   * Create an auto command using path(s) imported from pathweaver
+   * Decorate with additional functions
+   * Make copies of this method to generate alternate auto routines
    * 
    * @return the auto command
    */
-  private Command createPathweaverCommand() {
+  private Command getBlueThreeBallAuto() {
 
     //Choose paths and combine multiple as necessary
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueFirstCargo.wpilib.json")]
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueSecondCargo.wpilib.json")]);
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueSecondCargo.wpilib.json")])
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueReturnAndShoot.wpilib.json")]);
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain)
                           .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
+                          .beforeStarting(() -> drivetrain.setHeading(130))  //Define start heading (0 = Driver facing forward)
                           .andThen(() -> drivetrain.tankDriveVolts(0, 0))
-                          .andThen(new AutoCompareAngles(drivetrain, 90));
+                          .andThen(new TurnToHeading(drivetrain, 130));  // Enter desired end heading
+  }
+
+   /**
+   * Create an auto command using path(s) imported from pathweaver
+   * Decorate with additional functions
+   * Make copies of this method to generate alternate auto routines
+   * 
+   * @return the auto command
+   */
+  private Command getBasicForwardAuto() {
+
+    //Choose paths and combine multiple as necessary
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("MoveFromTarmac.wpilib.json")];
+          
+    // Reset odometry to the starting pose of the trajectory, then Run path following command, 
+    // then stop at the end.
+    return new PathweaverCommand(pathA,drivetrain)
+                          .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
+                          .beforeStarting(() -> drivetrain.setHeading(130))  //Define start heading (0 = driver facing forward)
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
+                          .andThen(new TurnToHeading(drivetrain, 130));  //Specify desired end heading
   }
 }

@@ -7,13 +7,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoCompareAngles extends CommandBase {
+public class TurnToHeading extends CommandBase {
   /** Creates a new AutoCompareAngles. */
+  int cycles;
+  int maxCycles = 100;
   double goalAngle;
   double readAngle;
   Drivetrain drive;
   boolean finished = false;
-  public AutoCompareAngles(Drivetrain drivetrain, double goalHeading) {
+  public TurnToHeading(Drivetrain drivetrain, double goalHeading) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
     drive = drivetrain;
@@ -24,18 +26,29 @@ public class AutoCompareAngles extends CommandBase {
   @Override
   public void initialize() {
     readAngle = drive.getHeading();
+    cycles = 0;
+    finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(readAngle < (goalAngle - 0.5) || readAngle < (goalAngle + 0.5)){
-      drive.drive(-0.1, 0.1);
-    }else if(readAngle > (goalAngle - 0.5) || readAngle < (goalAngle + 0.5)){
+    //Increment the number of cycles spent trying to correct
+    cycles++;
+    
+    //Check the current heading
+    readAngle = drive.getHeading();
+
+    //Check if the current angle is within range, command a turn if out of range
+    if(readAngle < (goalAngle - 0.5)) {
+      drive.drive(-0.1, 0.1); //DP is 0.1 enough power to make any movement?
+    }else if(readAngle > (goalAngle + 0.5)) {
       drive.drive(0.1, -0.1);
     }else{
       finished = true;
     }
+
+
   }
 
   // Called once the command ends or is interrupted.
@@ -45,6 +58,6 @@ public class AutoCompareAngles extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished;
+    return finished || cycles > maxCycles;
   }
 }

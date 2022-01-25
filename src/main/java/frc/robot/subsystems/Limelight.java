@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
   private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -16,35 +17,40 @@ public class Limelight extends SubsystemBase {
   private final NetworkTableEntry tx = limelightTable.getEntry("tx");
   private final NetworkTableEntry ty = limelightTable.getEntry("ty");
   private final NetworkTableEntry ta = limelightTable.getEntry("ta");
+  private final NetworkTableEntry pipeline = limelightTable.getEntry("pipeline");
   private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
 
   private final HttpCamera camera = new HttpCamera(
       "limelight", "http://10.10.24.11:5800", HttpCamera.HttpCameraKind.kMJPGStreamer
   );
 
-  private double hasTarget = tv.getDouble(0.0);
-  private double x = tx.getDouble(0.0);
-  private double y = ty.getDouble(0.0);
-  private double a = ta.getDouble(0.0);
-
   /** Creates a new Limelight. */
   public Limelight() {
     disableLeds();
+    setDriverPipe();
   }
 
-  double getX() {
+  public double getX() {
     return tx.getDouble(0.0);
   }
 
-  double getY() {
+  public double getY() {
     return ty.getDouble(0.0);
   }
 
-  double getArea() {
+  public double getArea() {
     return ta.getDouble(0.0);
   }
 
-  void enableLeds() {
+  public boolean hasTarget() {
+    if(tv.getDouble(0.0) == 1.0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public void enableLeds() {
     ledMode.setDouble(3.0);
   }
 
@@ -52,7 +58,7 @@ public class Limelight extends SubsystemBase {
     ledMode.setDouble(0.0);
   }
 
-  boolean areLedsOn() {
+  public boolean areLedsOn() {
     if(ledMode.getDouble(0.0) > 1.0) {
       return true;
     } else {
@@ -68,6 +74,18 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public void setPipeline(int id) {
+    pipeline.setDouble(id);
+  }
+
+  public void setDriverPipe() {
+    pipeline.setDouble(Constants.LimelightConstants.driverPipe);
+  }
+
+  public void setTargetPipe() {
+    pipeline.setDouble(Constants.LimelightConstants.targetPipe);
+  }
+
   public HttpCamera getFeed() {
     return camera;
   }
@@ -75,6 +93,5 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    hasTarget = tv.getDouble(0.0);
   }
 }

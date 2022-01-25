@@ -69,6 +69,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
+    driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
+    
     driverController.rightTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
     operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }

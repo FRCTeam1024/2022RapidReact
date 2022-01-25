@@ -5,17 +5,22 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.ColorSensorV3;
 
 public class Shooter extends SubsystemBase {
   
   public Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   public Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
   public Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
+
+  private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -54,6 +59,14 @@ public class Shooter extends SubsystemBase {
   // Retract launch pivot to shoot lower
   public void setLow() {
     launchPivot.set(false);
+  }
+
+  public Color getColor() {
+    return colorSensor.getColor();
+  }
+
+  public int getDistance() {
+    return colorSensor.getProximity();
   }
 
   @Override

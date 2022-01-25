@@ -124,6 +124,10 @@ public class RobotContainer {
     tab.add("RightMotors", drivetrain.getRightWheelSpeed())
         .withSize(2,1)
         .withPosition(4,1);
+
+    tab.addNumber("ColorSensorDistance", shooter::getDistance)
+        .withSize(2,1)
+        .withPosition(6,2);
   }
 
   /**

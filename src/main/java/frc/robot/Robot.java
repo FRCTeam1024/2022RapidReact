@@ -5,11 +5,13 @@
 package frc.robot;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.File;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -27,9 +29,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   //Create a list of trajectory JSONs and corresponding list of Trajectories
-  private static File pathfile = new File("paths/");
-  static String[] fileList = pathfile.list();
-  static Trajectory[] pathList = new Trajectory[fileList.length];
+  private static File deployfile = Filesystem.getDeployDirectory();
+  private static File pathfile = new File(deployfile, "paths/");
+  static String fileList[] = pathfile.list();
+  static Trajectory pathList[] = new Trajectory[fileList.length];
 
   private RobotContainer m_robotContainer;
 
@@ -52,7 +55,14 @@ public class Robot extends TimedRobot {
     } else {
       compBotState = true;
     }
-    
+
+    if(pathfile.isDirectory()){
+      System.out.println("Is a directory");
+      int index = Arrays.asList(Robot.fileList).indexOf("BlueFirstCargo.wpilib.json");
+      System.out.println("index number: " + index);
+    }
+
+
     // Load any path(s) needed for autonomous command from filesystem
     for(int i = 0; i < fileList.length; i++) {
       try {

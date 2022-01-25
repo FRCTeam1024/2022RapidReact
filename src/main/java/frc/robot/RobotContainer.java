@@ -113,6 +113,14 @@ public class RobotContainer {
         .withSize(6,3)
         //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 2);
+
+    tab.add("LeftMotors", drivetrain.getLeftWheelSpeed())
+        .withSize(2,1)
+        .withPosition(2,1);
+
+    tab.add("RightMotors", drivetrain.getRightWheelSpeed())
+        .withSize(2,1)
+        .withPosition(4,1);
   }
 
   /**

@@ -85,6 +85,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Raw Right Encoder", driveRightLeader.getSelectedSensorPosition());
         SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());*/
         SmartDashboard.putNumber("Gyro Angle", getHeading());
+
   }
 
     /**
@@ -127,6 +128,22 @@ public class Drivetrain extends SubsystemBase {
   public double getAverageEncoderDistance() {
     return ((driveLeftLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation) 
             + (driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation)) / 2.0;
+  }
+
+  /**
+   * @return Speed of left side of drivetrain
+   */
+
+  public double getLeftWheelSpeed(){
+    return driveLeftLeader.getSelectedSensorVelocity();
+  }
+
+  /**
+   * @return Speed of right side of drivetrain
+   */
+
+  public double getRightWheelSpeed(){
+    return driveRightLeader.getSelectedSensorVelocity();
   }
 
   /**

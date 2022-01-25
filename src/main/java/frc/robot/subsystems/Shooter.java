@@ -15,6 +15,7 @@ public class Shooter extends SubsystemBase {
   
   public Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   public Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
+  public Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -43,6 +44,16 @@ public class Shooter extends SubsystemBase {
       Timer.delay(offTime);
       i = i+1;
     }
+  }
+
+  // Extend launch pivot to shoot higher
+  public void setHigh() {
+    launchPivot.set(true);
+  }
+
+  // Retract launch pivot to shoot lower
+  public void setLow() {
+    launchPivot.set(false);
   }
 
   @Override

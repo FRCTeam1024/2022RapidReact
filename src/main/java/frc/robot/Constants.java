@@ -64,6 +64,7 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
+        public static final int launchValveC = 3;
     }
 
     // Intake related constants

@@ -64,6 +64,9 @@ public class Drivetrain extends SubsystemBase {
     driveLeftFollower.follow(driveLeftLeader);
     driveRightFollower.follow(driveRightLeader);
 
+    driveLeftFollower.set(ControlMode.Follower, Constants.DriveConstants.driveLeftLeaderID);
+    driveRightFollower.set(ControlMode.Follower, Constants.DriveConstants.driveRightLeaderID);
+
     driveLeftLeader.setSensorPhase(false);
     driveRightLeader.setSensorPhase(false);
 
@@ -104,8 +107,8 @@ public class Drivetrain extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    driveLeftLeader.setVoltage(leftVolts);
-    driveRightLeader.setVoltage(rightVolts);
+    m_leftMotors.setVoltage(leftVolts);
+    m_rightMotors.setVoltage(rightVolts);
     m_drive.feed();
   }
 
@@ -175,6 +178,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
+    tankDriveVolts(0, 0);
+    setHeading(pose.getRotation().getDegrees());
     m_odometry.resetPosition(pose, getRotation2d());
   }
 
@@ -188,8 +193,8 @@ public class Drivetrain extends SubsystemBase {
    * Do not use for auto routines as this will not be repeatable
    */
   public void drive(double leftPower, double rightPower) {
-    driveLeftLeader.set(ControlMode.PercentOutput, leftPower);
-    driveRightLeader.set(ControlMode.PercentOutput, rightPower);
+    m_leftMotors.set(leftPower);
+    m_rightMotors.set(rightPower);
     m_drive.feed();
   }
 }

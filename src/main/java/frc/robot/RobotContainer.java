@@ -114,11 +114,11 @@ public class RobotContainer {
         //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 2);
 
-    tab.add("LeftMotors", drivetrain.getLeftWheelSpeed())
+    tab.addNumber("LeftMotors", drivetrain::getLeftWheelSpeed)
         .withSize(2,1)
         .withPosition(2,1);
 
-    tab.add("RightMotors", drivetrain.getRightWheelSpeed())
+    tab.addNumber("RightMotors", drivetrain::getRightWheelSpeed)
         .withSize(2,1)
         .withPosition(4,1);
   }
@@ -207,13 +207,14 @@ public class RobotContainer {
                       .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueSecondCargo.wpilib.json")])
                       .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueReturnAndShoot.wpilib.json")]);
 
+
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain)
                           .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
-                          .beforeStarting(() -> drivetrain.setHeading(130))  //Define start heading (0 = Driver facing forward)
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
-                          .andThen(new TurnToHeading(drivetrain, 130));  // Enter desired end heading
+                          //.beforeStarting(() -> drivetrain.setHeading(pathA.getInitialPose().getRotation().getDegrees()))  //Define start heading (0 = Driver facing forward)
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0));
+                         // .andThen(new TurnToHeading(drivetrain, 130));  // Enter desired end heading
   }
 
    /**

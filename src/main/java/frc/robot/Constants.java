@@ -64,6 +64,7 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
+        public static final int launchValveC = 3;
     }
 
     // Intake related constants
@@ -72,5 +73,11 @@ public final class Constants {
         
         public static final double kCollectSpeed = 0.5;  //No idea if this is what we want
         public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
+    }
+
+    // Limelight related constants
+    public static final class LimelightConstants {
+        public static final int driverPipe = 1;
+        public static final int targetPipe = 0;
     }
 }

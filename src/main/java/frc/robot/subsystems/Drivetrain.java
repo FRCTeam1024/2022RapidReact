@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Drivetrain extends SubsystemBase {
@@ -75,21 +73,15 @@ public class Drivetrain extends SubsystemBase {
     resetEncoders();
     zeroHeading();
 
-    m_odometry = new DifferentialDriveOdometry(getRotation2d()); 
+    m_odometry = new DifferentialDriveOdometry(getGyroRotation2d()); 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_odometry.update(getRotation2d(), 
+    m_odometry.update(getGyroRotation2d(), 
         (driveLeftLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation),
         (driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation));
-      
-        /*SmartDashboard.putNumber("Raw Left Encoder", driveLeftLeader.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Raw Right Encoder", driveRightLeader.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Average Encoder Distance", getAverageEncoderDistance());*/
-        SmartDashboard.putNumber("Gyro Angle", getHeading());
-
   }
 
     /**
@@ -134,6 +126,37 @@ public class Drivetrain extends SubsystemBase {
             + (driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation)) / 2.0;
   }
 
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    //tankDriveVolts(0, 0);
+    //setHeading(pose.getRotation().getDegrees());
+    m_odometry.resetPosition(pose, getGyroRotation2d());
+  }
+
+  public void resetEncoders() {
+    driveLeftLeader.setSelectedSensorPosition(0);
+    driveRightLeader.setSelectedSensorPosition(0);
+  }
+
+  /** 
+   * Drive command for use with joystick drive and debugging purpose
+   * Do not use for auto routines as this will not be repeatable
+   */
+  public void drive(double leftPower, double rightPower) {
+    m_leftMotors.set(leftPower);
+    m_rightMotors.set(rightPower);
+    m_drive.feed();
+  }
+
+  /**
+   * Returns the robot heading in degrees
+   * 
+   * @return the robot heading in degrees
+   */
+  public double getHeading() {
+    return getPose().getRotation().getDegrees();
+  }
+
   /**
    * @return Speed of left side of drivetrain
    */
@@ -150,53 +173,30 @@ public class Drivetrain extends SubsystemBase {
     return driveRightLeader.getSelectedSensorVelocity();
   }
 
-  /**
+    /**
    * Returns a current Rotation2d object
    * 
    * @return the current Rotation2d based on gyro yaw 
    */
-  public Rotation2d getRotation2d() {
-    return new Rotation2d(Constants.PI * getHeading()/180);
+  private Rotation2d getGyroRotation2d() {
+    return new Rotation2d(Constants.PI * getGyroAngle()/180);
   }
 
   /**
-   * Returns the heading of the robot.
+   * Returns the gyro angle
    *
    * @return the robot's heading in degrees
    */
-  public double getHeading() {
+  private double getGyroAngle() {
     pigeon.getYawPitchRoll(yawPitchRoll);
     return yawPitchRoll[0]; 
   }
 
-  public void setHeading(double deg) {
-    pigeon.setYaw(deg);
-  }
-
-  public void zeroHeading() {
-    pigeon.setYaw(0);
-  }
-
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    tankDriveVolts(0, 0);
-    System.out.println(pigeon.getState().toString());
-    //setHeading(pose.getRotation().getDegrees());
-    m_odometry.resetPosition(pose, pose.getRotation());
-  }
-
-  public void resetEncoders() {
-    driveLeftLeader.setSelectedSensorPosition(0);
-    driveRightLeader.setSelectedSensorPosition(0);
-  }
-
-  /** 
-   * Drive command for use with joystick drive and debugging purpose
-   * Do not use for auto routines as this will not be repeatable
+  /**
+   * Resets the gyro to a heading of 0 degrees
+   * USE WITH CAUTION - WILL UPSET ODOMETRY
    */
-  public void drive(double leftPower, double rightPower) {
-    m_leftMotors.set(leftPower);
-    m_rightMotors.set(rightPower);
-    m_drive.feed();
+  private void zeroHeading() {
+    pigeon.setYaw(0);
   }
 }

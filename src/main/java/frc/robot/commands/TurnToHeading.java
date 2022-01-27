@@ -58,6 +58,6 @@ public class TurnToHeading extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished || cycles > maxCycles;
+    return finished;
   }
 }

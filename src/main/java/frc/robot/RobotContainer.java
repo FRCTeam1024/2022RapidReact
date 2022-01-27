@@ -27,7 +27,9 @@ import frc.robot.oi.Logitech;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -108,7 +110,7 @@ public class RobotContainer {
         .withSize(3,1)
         .withPosition(3,0);
 
-    tab.addNumber("GyroHeading", drivetrain::getHeading)
+    tab.addNumber("RobotHeading", drivetrain::getHeading)
         .withSize(2,1)
         .withPosition(0,1);
 
@@ -219,9 +221,13 @@ public class RobotContainer {
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain)
                           .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
-                          //.beforeStarting(() -> drivetrain.setHeading(pathA.getInitialPose().getRotation().getDegrees()))  //Define start heading (0 = Driver facing forward)
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0));
-                         // .andThen(new TurnToHeading(drivetrain, 130));  // Enter desired end heading
+                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
+                          //Now all this just to adjust heading as necessary to match
+                          //the final pose of the path but quit if not done in 4 seconds.
+                          .andThen(new ParallelRaceGroup(
+                                      new TurnToHeading(drivetrain, pathA.sample(pathA.getTotalTimeSeconds())
+                                        .poseMeters.getRotation().getDegrees())),
+                                      new WaitCommand(4));  
   }
 
    /**
@@ -240,8 +246,10 @@ public class RobotContainer {
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain)
                           .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
-                          .beforeStarting(() -> drivetrain.setHeading(130))  //Define start heading (0 = driver facing forward)
                           .andThen(() -> drivetrain.tankDriveVolts(0, 0))
-                          .andThen(new TurnToHeading(drivetrain, 130));  //Specify desired end heading
+                          .andThen(new ParallelRaceGroup(
+                                      new TurnToHeading(drivetrain, pathA.sample(pathA.getTotalTimeSeconds())
+                                        .poseMeters.getRotation().getDegrees())),
+                                      new WaitCommand(4)); 
   }
 }

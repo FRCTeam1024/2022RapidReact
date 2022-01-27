@@ -75,6 +75,12 @@ public final class Constants {
         public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
     }
 
+    // Hanger related constants
+    public static final class HangerConstants {
+        public static final int hookLiftLeaderID = 21;
+        public static final int hookLiftFollowerID = 22;
+    }
+
     // Limelight related constants
     public static final class LimelightConstants {
         public static final int driverPipe = 1;

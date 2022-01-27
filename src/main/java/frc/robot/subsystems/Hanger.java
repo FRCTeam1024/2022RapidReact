@@ -4,13 +4,24 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Hanger extends SubsystemBase {
-  /** Creates a new Climber. */
-  /** Motors */
-  public Hanger() {
+  private final WPI_TalonFX hookLiftLeader = new WPI_TalonFX(Constants.HangerConstants.hookLiftLeaderID);
+  private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
 
+  /** Creates a new Climber. */
+  public Hanger() {
+    hookLiftLeader.configFactoryDefault();
+    hookLiftFollower.configFactoryDefault();
+
+    hookLiftLeader.setNeutralMode(NeutralMode.Brake);
+    hookLiftFollower.setNeutralMode(NeutralMode.Brake);
+
+    hookLiftFollower.follow(hookLiftLeader);
   }
 
   /**
@@ -24,6 +35,27 @@ public class Hanger extends SubsystemBase {
    * Runs motors opposite direction to lift the robot up
    */
   private void robotClimb(){
+
+  }
+
+  /**
+   * Runs the the horizontal hook motors up to the next bar
+   */
+  private void extendHook() {
+
+  }
+
+  /**
+   * Runs the horizontal hook motors to pull the robot to the next bar
+   */
+  private void climbNextBar() {
+
+  }
+
+  /**
+   * Resets motors to original state before initiating climb
+   */
+  private void resetClimb() {
 
   }
   

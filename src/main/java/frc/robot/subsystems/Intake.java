@@ -5,13 +5,18 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants.IntakeConstants;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Intake extends SubsystemBase {
+  private final UsbCamera intakeCamera;
+
   /** Creates a new Intake. */
-  public Intake() {}
+  public Intake() {
+    intakeCamera = CameraServer.startAutomaticCapture();
+  }
 
   @Override
   public void periodic() {
@@ -72,5 +77,7 @@ public class Intake extends SubsystemBase {
   }
 
 
-
+  public UsbCamera getFeed() {
+    return intakeCamera;
+  }
 }

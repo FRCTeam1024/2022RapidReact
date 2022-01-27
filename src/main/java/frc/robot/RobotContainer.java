@@ -43,6 +43,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   private final ByteAPult shooter = new ByteAPult();
   private final Limelight limelight = new Limelight();
+  private final Intake intake = new Intake();
 
   // Operator Inputs
   private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
@@ -119,6 +120,10 @@ public class RobotContainer {
         //.withWidget(BuiltInWidgets.kCameraStream)
         .withPosition(0, 2);
 
+    tab.add("Intake", intake.getFeed())
+        .withSize(6,3)
+        .withPosition(6, 2);
+
     tab.addNumber("LeftMotors", drivetrain::getLeftWheelSpeed)
         .withSize(2,1)
         .withPosition(2,1);
@@ -129,7 +134,7 @@ public class RobotContainer {
 
     tab.addNumber("ColorSensorDistance", shooter::getDistance)
         .withSize(2,1)
-        .withPosition(6,2);
+        .withPosition(4,1);
   }
 
   /**

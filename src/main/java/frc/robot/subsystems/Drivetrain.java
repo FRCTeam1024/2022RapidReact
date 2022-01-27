@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -179,8 +180,9 @@ public class Drivetrain extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     tankDriveVolts(0, 0);
-    setHeading(pose.getRotation().getDegrees());
-    m_odometry.resetPosition(pose, getRotation2d());
+    System.out.println(pigeon.getState().toString());
+    //setHeading(pose.getRotation().getDegrees());
+    m_odometry.resetPosition(pose, pose.getRotation());
   }
 
   public void resetEncoders() {

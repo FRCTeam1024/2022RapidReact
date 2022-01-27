@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorSensorV3;
 
-public class Shooter extends SubsystemBase {
+public class ByteAPult extends SubsystemBase {
   
   public Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   public Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
   private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   /** Creates a new Shooter. */
-  public Shooter() {
+  public ByteAPult() {
 
   }
 

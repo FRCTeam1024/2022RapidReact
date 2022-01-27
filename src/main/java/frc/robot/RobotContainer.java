@@ -39,7 +39,7 @@ public class RobotContainer {
 
   // Subsystems
   private final Drivetrain drivetrain = new Drivetrain();
-  private final Shooter shooter = new Shooter();
+  private final ByteAPult shooter = new ByteAPult();
   private final Limelight limelight = new Limelight();
 
   // Operator Inputs

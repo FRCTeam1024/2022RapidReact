@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Hanger extends SubsystemBase {
+
+  private double carriagePosition;  //Keeps track of where the carriage is along the track
+
   private final WPI_TalonFX hookLiftLeader = new WPI_TalonFX(Constants.HangerConstants.hookLiftLeaderID);
   private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
 
@@ -24,7 +27,29 @@ public class Hanger extends SubsystemBase {
     hookLiftFollower.follow(hookLiftLeader);
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
   /**
+   * 
+   * DP:  We should control these motors using a PID controller so that they 
+   * move at set speed.  We should also keep track of the position using the encoder
+   * and reduce speed when nearing the limits of travel up until the limit switch
+   * is detected the motors are stopped
+   * 
+   * Do the actual motor running work here, and then call this from other methods
+   * 
+   * @param speed the speed to run the carriage
+   */
+  private void moveCarriage(double speed) {
+
+  }
+
+
+
+  /** 
    * Runs motors to lift the hook up
    */
   private void liftHook() {
@@ -32,6 +57,8 @@ public class Hanger extends SubsystemBase {
   }
 
   /**
+   * 
+   * 
    * Runs motors opposite direction to lift the robot up
    */
   private void robotClimb(){
@@ -59,8 +86,5 @@ public class Hanger extends SubsystemBase {
 
   }
   
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+
 }

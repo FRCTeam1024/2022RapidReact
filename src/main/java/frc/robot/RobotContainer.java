@@ -4,32 +4,21 @@
 
 package frc.robot;
 
-import java.util.List;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.*;
 import frc.robot.oi.Logitech;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -93,10 +82,10 @@ public class RobotContainer {
        .withPosition(0,0);
 
     //Add commands to auto chooser, set default to null to avoid surprise operation
-    m_AutoChooser.setDefaultOption("None", null);
-    m_AutoChooser.addOption("Trajectory Generator Auto", getTrajectoryAuto()); 
+    m_AutoChooser.setDefaultOption("None", null); 
     m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
     m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
+    m_AutoChooser.addOption("Test", getTestAuto());
     //Put the auto chooser on the dashboard
     tab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
@@ -147,67 +136,6 @@ public class RobotContainer {
   }
 
   /**
-   * Create an auto command using the TrajectoryGenerator class
-   * 
-   * @return the auto command
-   */
-  private Command getTrajectoryAuto() {
-    // An ExampleCommand will run in autonomous
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                       DriveConstants.kvVoltSecondsPerMeter,
-                                       DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            10);
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(DriveConstants.kMaxSpeedMetersPerSecond,
-                             DriveConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-            //new Translation2d(1, 0)
-           
-            //new Translation2d(2, 0)
-        ),
-        new Pose2d(1, 0, new Rotation2d(90)),
-        // Pass config
-        config
-    );
-
-    // The actual command to follow the path
-    RamseteCommand ramseteCommand = new RamseteCommand(
-        exampleTrajectory,
-        drivetrain::getPose,
-        new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                   DriveConstants.kvVoltSecondsPerMeter,
-                                   DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        drivetrain::tankDriveVolts,
-        drivetrain
-    );
-
-    // Reset odometry to the starting pose of the trajectory, then Run path following command, then stop at the end.
-    return ramseteCommand.beforeStarting(() -> drivetrain.resetOdometry(exampleTrajectory.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0));
-  }
-
-  /**
    * Create an auto command using path(s) imported from pathweaver
    * Decorate with additional functions
    * Make copies of this method to generate alternate auto routines
@@ -224,15 +152,7 @@ public class RobotContainer {
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
-    return new PathweaverCommand(pathA,drivetrain)
-                          .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
-                          //Now all this just to adjust heading as necessary to match
-                          //the final pose of the path but quit if not done in 4 seconds.
-                          .andThen(new ParallelRaceGroup(
-                                      new TurnToHeading(drivetrain, pathA.sample(pathA.getTotalTimeSeconds())
-                                        .poseMeters.getRotation().getDegrees())),
-                                      new WaitCommand(4));  
+    return new PathweaverCommand(pathA,drivetrain).configure();
   }
 
    /**
@@ -249,12 +169,23 @@ public class RobotContainer {
           
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
-    return new PathweaverCommand(pathA,drivetrain)
-                          .beforeStarting(() -> drivetrain.resetOdometry(pathA.getInitialPose()))
-                          .andThen(() -> drivetrain.tankDriveVolts(0, 0))
-                          .andThen(new ParallelRaceGroup(
-                                      new TurnToHeading(drivetrain, pathA.sample(pathA.getTotalTimeSeconds())
-                                        .poseMeters.getRotation().getDegrees())),
-                                      new WaitCommand(4)); 
+    return new PathweaverCommand(pathA,drivetrain).configure();
+  }
+
+     /**
+   * Create an auto command using path(s) imported from pathweaver
+   * Decorate with additional functions
+   * Make copies of this method to generate alternate auto routines
+   * 
+   * @return the auto command
+   */
+  private Command getTestAuto() {
+
+    //Choose paths and combine multiple as necessary
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Testing.wpilib.json")];
+          
+    // Reset odometry to the starting pose of the trajectory, then Run path following command, 
+    // then stop at the end.
+    return new PathweaverCommand(pathA,drivetrain).configure();
   }
 }

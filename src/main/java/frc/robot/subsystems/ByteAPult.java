@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorSensorV3;
 
 public class ByteAPult extends SubsystemBase {
-  
-  public Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
-  public Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
-  public Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
 
-  private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+  private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
+  private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
+  private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
+
+  private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
+  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
 
   private final DigitalInput limitSwitch = new DigitalInput(1);
 
@@ -30,25 +30,30 @@ public class ByteAPult extends SubsystemBase {
 
   }
 
-  public void launchShooter() {
+  public void launch() {
+
+    //DP: Lets think about using the setpulseduration and startpulse methods
+    //for this.
     launcherLeft.set(true);
     launcherRight.set(true);
   }
 
-  public void retractShooter() {
+  public void retract() {
     launcherLeft.set(false);
     launcherRight.set(false);
   }
 
+  //DP: Probably we will get rid of this.  I think startpulse will
+  //do a similar thing in a better way in the launch() method
   public void shoot() {
     double onTime = .1;  //Seconds
     double offTime = .1;  //Seconds
     int cycles = 10; //# of on off cycles
     int i = 1;
     while(i <= cycles) {
-      launchShooter();
+      launch();
       Timer.delay(onTime);
-      retractShooter();
+      retract();
       Timer.delay(offTime);
       i = i+1;
     }
@@ -64,12 +69,33 @@ public class ByteAPult extends SubsystemBase {
     launchPivot.set(false);
   }
 
+  /**
+   * WIP - This method should use the cargosensor to 
+   * determine if a ball is loaded or not
+   * 
+   * @return TRUE if a ball is in the ByteAPult
+   */
+  public boolean loaded() {
+    return true;
+  }
+
+  /**
+   * WIP - this method should use armSensor to determine
+   * that the ByteAPult is retracted.  Then if it is also empty
+   * it is ready to load
+   * 
+   * @return
+   */
+  public boolean readyToLoad() {
+    return true;
+  }
+
   public Color getColor() {
-    return colorSensor.getColor();
+    return cargoSensor.getColor();
   }
 
   public int getDistance() {
-    return colorSensor.getProximity();
+    return cargoSensor.getProximity();
   }
 
   @Override

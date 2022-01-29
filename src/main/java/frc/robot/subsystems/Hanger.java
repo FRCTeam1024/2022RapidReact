@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hanger extends SubsystemBase {
   /** Creates a new Climber. */
   /** Motors */
+  private final DigitalInput limitSwitch = new DigitalInput(0);
+
   public Hanger() {
 
   }
@@ -17,18 +20,22 @@ public class Hanger extends SubsystemBase {
    * Runs motors to lift the hook up
    */
   private void liftHook() {
-
+    
   }
 
   /**
    * Runs motors opposite direction to lift the robot up
    */
   private void robotClimb(){
-
+    
   }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public boolean getLimitSwitch(){
+    return limitSwitch.get();
   }
 }

@@ -130,6 +130,10 @@ public class RobotContainer {
     tab.addNumber("ColorSensorDistance", shooter::getDistance)
         .withSize(2,1)
         .withPosition(6,2);
+
+    tab.addBoolean("LimitSwitch", shooter::getLimitSwitch)
+        .withSize(1,1)
+        .withPosition(6,3);
   }
 
   /**

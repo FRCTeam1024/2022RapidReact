@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorSensorV3;
 
@@ -21,6 +22,8 @@ public class ByteAPult extends SubsystemBase {
   public Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
 
   private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+
+  private final DigitalInput limitSwitch = new DigitalInput(1);
 
   /** Creates a new Shooter. */
   public ByteAPult() {
@@ -73,4 +76,9 @@ public class ByteAPult extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public boolean getLimitSwitch(){
+    return limitSwitch.get();
+  }
+
 }

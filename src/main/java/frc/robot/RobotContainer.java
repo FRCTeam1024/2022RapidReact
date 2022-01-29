@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.*;
-import frc.robot.oi.Logitech;
 import frc.robot.subsystems.*;
+import frc.robot.oi.Logitech;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -30,7 +30,7 @@ public class RobotContainer {
 
   // Subsystems
   private final Drivetrain drivetrain = new Drivetrain();
-  private final ByteAPult shooter = new ByteAPult();
+  private final ByteAPult byteAPult = new ByteAPult();
   private final Limelight limelight = new Limelight();
   private final Intake intake = new Intake();
 
@@ -64,7 +64,7 @@ public class RobotContainer {
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
     
-    driverController.rightTrigger.whileHeld(new InstantCommand(shooter::shoot, shooter));
+    driverController.rightTrigger.whileHeld(new InstantCommand(byteAPult::shoot, byteAPult));
     operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
@@ -73,11 +73,16 @@ public class RobotContainer {
    * 
    */
   private void configureDashboard() {
-    //Create a ShuffleBoard Tab
-    ShuffleboardTab tab = Shuffleboard.getTab("1024Dashboard");
+    //Create ShuffleBoard Tabs
+    ShuffleboardTab diagnosticsTab = Shuffleboard.getTab("1024Diagnostics");
+    ShuffleboardTab driverTab = Shuffleboard.getTab("1024Driver");
     
-    //Display the name and version number of the code.
-    tab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
+    /**
+     * Diagnostics for programmers
+     */
+    
+     //Display the name and version number of the code.
+    diagnosticsTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
        .withSize(3,1)
        .withPosition(0,0);
 
@@ -86,48 +91,64 @@ public class RobotContainer {
     m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
     m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     m_AutoChooser.addOption("Test", getTestAuto());
+   
     //Put the auto chooser on the dashboard
-    tab.add("Auto Mode",m_AutoChooser)
+    diagnosticsTab.add("Auto Mode",m_AutoChooser)
        .withSize(2,1)
        .withPosition(6,0);
 
     //Add command status to dashboard
-    tab.add("DrivetrainCommand",drivetrain)
+    diagnosticsTab.add("DrivetrainCommand",drivetrain)
        .withSize(2,1)
        .withPosition(8,0);
 
-    tab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
+    diagnosticsTab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
         .withSize(3,1)
         .withPosition(3,0);
 
-    tab.addNumber("RobotHeading", drivetrain::getHeading)
+    diagnosticsTab.addNumber("RobotHeading", drivetrain::getHeading)
         .withSize(2,1)
         .withPosition(0,1);
 
-    tab.add("Limelight", limelight.getFeed())
-        .withSize(6,3)
-        //.withWidget(BuiltInWidgets.kCameraStream)
-        .withPosition(0, 2);
-
-    tab.add("Intake", intake.getFeed())
-        .withSize(6,3)
-        .withPosition(6, 2);
-
-    tab.addNumber("LeftMotors", drivetrain::getLeftWheelSpeed)
+    diagnosticsTab.addNumber("LeftMotors", drivetrain::getLeftWheelSpeed)
         .withSize(2,1)
         .withPosition(2,1);
 
-    tab.addNumber("RightMotors", drivetrain::getRightWheelSpeed)
+    diagnosticsTab.addNumber("RightMotors", drivetrain::getRightWheelSpeed)
         .withSize(2,1)
         .withPosition(4,1);
 
-    tab.addNumber("ColorSensorDistance", shooter::getDistance)
+    diagnosticsTab.addNumber("ColorSensorDistance", byteAPult::getDistance)
         .withSize(2,1)
         .withPosition(4,1);
 
-    tab.addBoolean("LimitSwitch", shooter::getLimitSwitch)
+    diagnosticsTab.addBoolean("LimitSwitch", byteAPult::getLimitSwitch)
         .withSize(1,1)
         .withPosition(6,3);
+    /**
+     * Driver's operator interface
+     */
+
+    //Display the name and version number of the code.
+    driverTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
+        .withSize(4,1)
+        .withPosition(0,0);
+
+    //Put the auto chooser on the dashboard
+    driverTab.add("Auto Mode",m_AutoChooser)
+       .withSize(3,1)
+       .withPosition(4,0);
+
+    // Display the limelight's stream feed for the driver.
+    driverTab.add("Limelight", limelight.getFeed())
+        .withSize(7,6)
+        //.withWidget(BuiltInWidgets.kCameraStream)
+        .withPosition(0, 1);
+
+    // Display the intake's webcam feed for the driver.
+    driverTab.add("Intake", intake.getFeed())
+        .withSize(6,6)
+        .withPosition(7, 1);
   }
 
   /**

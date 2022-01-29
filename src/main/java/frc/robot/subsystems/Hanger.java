@@ -97,6 +97,16 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
   private void resetClimb() {
 
   }
-  
 
+  @Override
+  public void useOutput(double output, TrapezoidProfile.State setpoint) { 
+    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+
+    hookLiftLeader.setVoltage(output + feedforward);
+  }
+
+  @Override
+  public double getMeasurement() {
+    return hookLiftLeader.getSelectedSensorPosition();
+  }
 }

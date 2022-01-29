@@ -27,13 +27,23 @@ public class ByteAPult extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public ByteAPult() {
+    // Set pulse duration for a quarter of a second
+  }
 
+  /**
+   * Sets the time in between opening and closing the solenoid (a pulse)
+   * @param delay the time between opening and closing, in seconds
+   */
+  private void setLaunchDuration(double delay) {
+    launcherLeft.setPulseDuration(delay);
+    launcherRight.setPulseDuration(delay);
   }
 
   public void launch() {
-
     //DP: Lets think about using the setpulseduration and startpulse methods
     //for this.
+    setLaunchDuration(0.25);
+
     launcherLeft.set(true);
     launcherRight.set(true);
   }

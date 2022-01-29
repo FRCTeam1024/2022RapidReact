@@ -33,6 +33,7 @@ public class RobotContainer {
   private final ByteAPult byteAPult = new ByteAPult();
   private final Limelight limelight = new Limelight();
   private final Intake intake = new Intake();
+  private final Hanger hanger = new Hanger();
 
   // Operator Inputs
   private final Logitech driverController = new Logitech(Constants.Inputs.driverControllerID);
@@ -61,10 +62,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    /**
+     * Driver controls
+     */
+
+    // Limelight Pipelines
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
+    // Launch Byte-A-Pult
+    driverController.rightTrigger.whileHeld(new InstantCommand(byteAPult::launch, byteAPult));
     
-    driverController.rightTrigger.whileHeld(new InstantCommand(byteAPult::shoot, byteAPult));
+    /**
+     * Operator controls
+     */
+    // Toggle Limelight LEDs
     operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
   }
 
@@ -125,6 +136,7 @@ public class RobotContainer {
     diagnosticsTab.addBoolean("LimitSwitch", byteAPult::getLimitSwitch)
         .withSize(1,1)
         .withPosition(6,3);
+
     /**
      * Driver's operator interface
      */

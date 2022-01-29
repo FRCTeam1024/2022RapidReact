@@ -80,11 +80,15 @@ public final class Constants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
 
+        public static final double kMaxSpeedMetersPerSecond = 0.5; 
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
+
         //All these copied from drivetrain, need to characterize hanger
         public static final double ksVolts = 0.59;
+        public static final double kgVolts = .5;  //yet another total guess
         public static final double kvVoltSecondsPerMeter = 1.71;
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
-        public static final double kPDriveVel = 2.23;
+        public static final double kP = 2.23;
 
         public static final double kGearing = 7.56; //Need to confirm this
         public static final double kMetersPerRotation = .05; //complete guess probably wrong

@@ -6,18 +6,39 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants;
+import frc.robot.Constants.HangerConstants;
 
-public class Hanger extends SubsystemBase {
-
-  private double carriagePosition;  //Keeps track of where the carriage is along the track
+public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I think we want to use this
 
   private final WPI_TalonFX hookLiftLeader = new WPI_TalonFX(Constants.HangerConstants.hookLiftLeaderID);
   private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
 
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
+                                                      HangerConstants.ksVolts,
+                                                      HangerConstants.kgVolts,
+                                                      HangerConstants.kvVoltSecondsPerMeter,
+                                                      HangerConstants.kaVoltSecondsSquaredPerMeter);
+
   /** Creates a new Climber. */
   public Hanger() {
+
+    super(
+          new ProfiledPIDController(
+              HangerConstants.kP,0,0,
+              new TrapezoidProfile.Constraints(
+                HangerConstants.kMaxSpeedMetersPerSecond,
+                HangerConstants.kMaxAccelerationMetersPerSecondSquared)),
+
+              0);
+
+  //DP: work on implementing the rest of constructor
+  // and overriding the needed methods as shown in the examples.
+
     hookLiftLeader.configFactoryDefault();
     hookLiftFollower.configFactoryDefault();
 
@@ -31,23 +52,6 @@ public class Hanger extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-  /**
-   * 
-   * DP:  We should control these motors using a PID controller so that they 
-   * move at set speed.  We should also keep track of the position using the encoder
-   * and reduce speed when nearing the limits of travel up until the limit switch
-   * is detected the motors are stopped
-   * 
-   * Do the actual motor running work here, and then call this from other methods
-   * 
-   * @param speed the speed to run the carriage
-   */
-  private void moveCarriage(double speed) {
-
-  }
-
-
 
   /** 
    * Runs motors to lift the hook up

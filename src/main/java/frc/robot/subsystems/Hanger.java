@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
@@ -18,6 +20,11 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   private final WPI_TalonFX hookLiftLeader = new WPI_TalonFX(Constants.HangerConstants.hookLiftLeaderID);
   private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
+
+  //Creating a motor group so as not to rely on the follower remaining configured to follow
+  //as we have seen the follower suddenly drop out of follow mode in the drivetrain.
+  private final MotorControllerGroup hookLiftMotors = new MotorControllerGroup(hookLiftLeader,
+                                                                              hookLiftFollower);                         
 
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
                                                       HangerConstants.ksVolts,
@@ -65,7 +72,7 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
     //DP:  Add a check here of the limit switch and only apply voltage if limit switch
     // is not detected in the direction that is being commanded.  If limit is detected 
     // then don't apply voltage and call disable().
-    hookLiftLeader.setVoltage(output + feedforward);
+    hookLiftMotors.setVoltage(output + feedforward);
   }
 
   @Override
@@ -93,7 +100,7 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
     disable();
 
     //DP:  added a check of the limit switch here first
-    hookLiftLeader.set(power);
+    hookLiftMotors.set(power);
   }
 
   /**

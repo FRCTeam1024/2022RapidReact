@@ -8,7 +8,6 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
@@ -40,33 +39,14 @@ public class ByteAPult extends SubsystemBase {
   }
 
   public void launch() {
-    //DP: Lets think about using the setpulseduration and startpulse methods
-    //for this.
     setLaunchDuration(0.25);
-
-    launcherLeft.set(true);
-    launcherRight.set(true);
+    launcherLeft.startPulse();
+    launcherRight.startPulse();
   }
 
   public void retract() {
     launcherLeft.set(false);
     launcherRight.set(false);
-  }
-
-  //DP: Probably we will get rid of this.  I think startpulse will
-  //do a similar thing in a better way in the launch() method
-  public void shoot() {
-    double onTime = .1;  //Seconds
-    double offTime = .1;  //Seconds
-    int cycles = 10; //# of on off cycles
-    int i = 1;
-    while(i <= cycles) {
-      launch();
-      Timer.delay(onTime);
-      retract();
-      Timer.delay(offTime);
-      i = i+1;
-    }
   }
 
   // Extend launch pivot to shoot higher

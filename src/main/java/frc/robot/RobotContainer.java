@@ -6,9 +6,6 @@ package frc.robot;
 
 import java.util.Arrays;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -58,8 +55,8 @@ public class RobotContainer {
   }
 
   /**
-   * List any PID subsystems here so that they get disable when the robot
-   * is disable and integral error doesn't accumulate.  Usually doesn't matter
+   * List any PID subsystems here so that they get disabled when the robot
+   * is disabled and integral error doesn't accumulate.  Usually doesn't matter
    * since we often don't use integral gain but just in case.
    */
   public void disablePIDSubsystems() {
@@ -81,7 +78,7 @@ public class RobotContainer {
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
     // Launch Byte-A-Pult
-    driverController.rightTrigger.whileHeld(new InstantCommand(byteAPult::launch, byteAPult));
+    driverController.rightTrigger.whenPressed(new InstantCommand(byteAPult::launch, byteAPult));
     
     /**
      * Operator controls
@@ -107,17 +104,6 @@ public class RobotContainer {
     diagnosticsTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
        .withSize(3,1)
        .withPosition(0,0);
-
-    //Add commands to auto chooser, set default to null to avoid surprise operation
-    m_AutoChooser.setDefaultOption("None", null); 
-    m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
-    m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
-    m_AutoChooser.addOption("Test", getTestAuto());
-   
-    //Put the auto chooser on the dashboard
-    diagnosticsTab.add("Auto Mode",m_AutoChooser)
-       .withSize(2,1)
-       .withPosition(6,0);
 
     //Add command status to dashboard
     diagnosticsTab.add("DrivetrainCommand",drivetrain)
@@ -156,6 +142,12 @@ public class RobotContainer {
     driverTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
         .withSize(4,1)
         .withPosition(0,0);
+
+    //Add commands to auto chooser, set default to null to avoid surprise operation
+    m_AutoChooser.setDefaultOption("None", null); 
+    m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
+    m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
+    m_AutoChooser.addOption("Test", getTestAuto());
 
     //Put the auto chooser on the dashboard
     driverTab.add("Auto Mode",m_AutoChooser)

@@ -41,6 +41,7 @@ public class RobotContainer {
 
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
+  private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -51,8 +52,18 @@ public class RobotContainer {
     configureDashboard();
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
+    hanger.setDefaultCommand(liftWithController);
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  /**
+   * List any PID subsystems here so that they get disable when the robot
+   * is disable and integral error doesn't accumulate.  Usually doesn't matter
+   * since we often don't use integral gain but just in case.
+   */
+  public void disablePIDSubsystems() {
+    hanger.disable();
   }
 
   /**

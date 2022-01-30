@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
@@ -41,9 +40,6 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
               0);
 
-  //DP: work on implementing the rest of constructor
-  // and overriding the needed methods as shown in the examples.
-
     hookLiftLeader.configFactoryDefault();
     hookLiftFollower.configFactoryDefault();
 
@@ -51,6 +47,10 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
     hookLiftFollower.setNeutralMode(NeutralMode.Brake);
 
     hookLiftFollower.follow(hookLiftLeader);
+
+    hookLiftLeader.setSelectedSensorPosition(0);
+
+    setGoal(0);
   }
 
   @Override
@@ -58,20 +58,42 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
     // This method will be called once per scheduler run
   }
 
-  /** 
-   * Runs motors to lift the hook up
-   */
-  private void liftHook() {
-    
+  @Override
+  public void useOutput(double output, TrapezoidProfile.State setpoint) { 
+    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+
+    //DP:  Add a check here of the limit switch and only apply voltage if limit switch
+    // is not detected in the direction that is being commanded.  If limit is detected 
+    // then don't apply voltage and call disable().
+    hookLiftLeader.setVoltage(output + feedforward);
+  }
+
+  @Override
+  public double getMeasurement() {
+    return hookLiftLeader.getSelectedSensorPosition()*HangerConstants.kSensorUnitsPerRotation
+                                                    *HangerConstants.kMetersPerRotation;
   }
 
   /**
+   * Moves the carriage to the requested position (meters from bottom)
    * 
-   * 
-   * Runs motors opposite direction to lift the robot up
+   * @param pos the desired position in meters
    */
-  private void robotClimb(){
-    
+  public void moveCarriage(double pos) {
+    setGoal(pos);
+    enable();
+  }
+
+  /** 
+   * Runs motors to move carriage (and hook)
+   */
+  public void driveCarriage(double power) {
+    //disable the PID controller so we aren't fighting it while trying to 
+    //directly control the motors
+    disable();
+
+    //DP:  added a check of the limit switch here first
+    hookLiftLeader.set(power);
   }
 
   /**
@@ -81,7 +103,26 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   }
 
-  public boolean getLimitSwitch(){
+  // DP: If we only usse a single switch we need to create a way
+  // within these two methods to determine wheather the carriage is at the top or bottom
+  // of its travel so that motion is only restricted in one direction depending on
+  // which limit is hit.
+  // Need to determine if there will be 1 or 2 limit switches.
+  private boolean atTopLimit(){
+    return false;
+  }
+
+  private boolean atBottomLimit(){
+    return false;
+  }
+
+  /**
+   * Returns the limit switch state, don't call directly, use atTopLimit and atBottomLimit 
+   * In order to know which extreme is hit.
+   * 
+   * @return the state of the limit switch
+   */
+  private boolean getLimitSwitch(){
     return limitSwitch.get();
   }
   /**
@@ -98,15 +139,5 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   }
 
-  @Override
-  public void useOutput(double output, TrapezoidProfile.State setpoint) { 
-    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
 
-    hookLiftLeader.setVoltage(output + feedforward);
-  }
-
-  @Override
-  public double getMeasurement() {
-    return hookLiftLeader.getSelectedSensorPosition();
-  }
 }

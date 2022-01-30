@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.AnalogInput;
+
 import com.revrobotics.ColorSensorV3;
 
 public class ByteAPult extends SubsystemBase {
@@ -22,6 +24,9 @@ public class ByteAPult extends SubsystemBase {
   private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
 
+  private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
+
+  //DP: I can't remember why we need a limit switch for the byteapult?
   private final DigitalInput limitSwitch = new DigitalInput(1);
 
   /** Creates a new Shooter. */

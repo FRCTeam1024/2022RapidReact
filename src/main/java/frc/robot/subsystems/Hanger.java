@@ -34,7 +34,8 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   /** Creates a new Climber. */
   /** Motors */
-  private final DigitalInput limitSwitch = new DigitalInput(0);
+  private final DigitalInput topLimit = new DigitalInput(HangerConstants.topLimitDigID);
+  private final DigitalInput bottomLimit = new DigitalInput(HangerConstants.bottomLimitDigID);
 
   public Hanger() {
 
@@ -69,7 +70,7 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
   public void useOutput(double output, TrapezoidProfile.State setpoint) { 
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
 
-    //DP:  Add a check here of the limit switch and only apply voltage if limit switch
+    //DP:  Add a check here of the limit switches and only apply voltage if limit switch
     // is not detected in the direction that is being commanded.  If limit is detected 
     // then don't apply voltage and call disable().
     hookLiftMotors.setVoltage(output + feedforward);
@@ -99,7 +100,7 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
     //directly control the motors
     disable();
 
-    //DP:  added a check of the limit switch here first
+    //DP:  added a check of the limit switches here first
     hookLiftMotors.set(power);
   }
 
@@ -110,28 +111,14 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   }
 
-  // DP: If we only usse a single switch we need to create a way
-  // within these two methods to determine wheather the carriage is at the top or bottom
-  // of its travel so that motion is only restricted in one direction depending on
-  // which limit is hit.
-  // Need to determine if there will be 1 or 2 limit switches.
   private boolean atTopLimit(){
-    return false;
+    return topLimit.get();
   }
 
   private boolean atBottomLimit(){
-    return false;
+    return bottomLimit.get();
   }
 
-  /**
-   * Returns the limit switch state, don't call directly, use atTopLimit and atBottomLimit 
-   * In order to know which extreme is hit.
-   * 
-   * @return the state of the limit switch
-   */
-  private boolean getLimitSwitch(){
-    return limitSwitch.get();
-  }
   /**
    * Runs the horizontal hook motors to pull the robot to the next bar
    */

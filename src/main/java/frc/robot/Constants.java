@@ -65,11 +65,13 @@ public final class Constants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
         public static final int launchValveC = 3;
+
+        public static final int kPressureAnalogID = 0;
     }
 
     // Intake related constants
     public static final class IntakeConstants {
-        public static final int intakeValve = 3;
+        public static final int intakeValve = 4;
         
         public static final double kCollectSpeed = 0.5;  //No idea if this is what we want
         public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
@@ -79,6 +81,9 @@ public final class Constants {
     public static final class HangerConstants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
+
+        public static final int topLimitDigID = 0;
+        public static final int bottomLimitDigID = 1;
 
         public static final double kMaxSpeedMetersPerSecond = 0.5; 
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;

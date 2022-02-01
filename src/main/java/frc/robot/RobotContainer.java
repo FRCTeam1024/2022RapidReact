@@ -128,11 +128,11 @@ public class RobotContainer {
 
     diagnosticsTab.addNumber("ColorSensorDistance", byteAPult::getDistance)
         .withSize(2,1)
-        .withPosition(4,1);
+        .withPosition(6,1);
 
-    diagnosticsTab.addBoolean("LimitSwitch", byteAPult::getLimitSwitch)
+    diagnosticsTab.addBoolean("ColorSensorColor", byteAPult::loaded)
         .withSize(1,1)
-        .withPosition(6,3);
+        .withPosition(6,2);
 
     /**
      * Driver's operator interface
@@ -161,9 +161,10 @@ public class RobotContainer {
         .withPosition(0, 1);
 
     // Display the intake's webcam feed for the driver.
-    driverTab.add("Intake", intake.getFeed())
+    // Alex: commented out for now as RoboRio was having issues with "too many simultaneous client streams"
+    /**driverTab.add("Intake", intake.getFeed())
         .withSize(6,6)
-        .withPosition(7, 1);
+        .withPosition(7, 1);**/
   }
 
   /**

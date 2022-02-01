@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 public class ByteAPult extends SubsystemBase {
@@ -24,14 +26,19 @@ public class ByteAPult extends SubsystemBase {
   private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
 
-  private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
+  private final ColorMatch cargoColorMatcher = new ColorMatch();
 
-  //DP: I can't remember why we need a limit switch for the byteapult?
-  private final DigitalInput limitSwitch = new DigitalInput(1);
+  //Basic setup values for red and blue - obviously will need to be finetuned a bit
+  private final Color red = new Color(0.808, 0.215, 0.160);
+  private final Color blue = new Color(0, 0, 1);
+
+  private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
   /** Creates a new Shooter. */
   public ByteAPult() {
     // Set pulse duration for a quarter of a second
+    cargoColorMatcher.addColorMatch(red);
+    cargoColorMatcher.addColorMatch(blue);
   }
 
   /**
@@ -70,8 +77,14 @@ public class ByteAPult extends SubsystemBase {
    * 
    * @return TRUE if a ball is in the ByteAPult
    */
+  // Alex: Program keeps having trouble finding the color sensor, even if it is plugged into the correct port, etc.
+  //       It also keeps mentioning that there are known issues with the onboard I2C port, and that it might be better to use the MXP board.
   public boolean loaded() {
-    return true;
+    if(cargoColorMatcher.matchColor(cargoSensor.getColor()).equals(new ColorMatchResult(red, 0.95))){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   /**
@@ -97,9 +110,4 @@ public class ByteAPult extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-  public boolean getLimitSwitch(){
-    return limitSwitch.get();
-  }
-
 }

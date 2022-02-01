@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Intake extends SubsystemBase {
-  private final UsbCamera intakeCamera;
+  //private final UsbCamera intakeCamera; - Alex: commented out for now to avoid issue with "too many simultaneous client streams"
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeCamera = CameraServer.startAutomaticCapture();
+    //intakeCamera = CameraServer.startAutomaticCapture(); - Alex: same as line 14
   }
 
   @Override
@@ -76,8 +76,8 @@ public class Intake extends SubsystemBase {
     runIntake(IntakeConstants.kCollectSpeed);
   }
 
-
-  public UsbCamera getFeed() {
+  // Alex: see line 14
+  /**public UsbCamera getFeed() {
     return intakeCamera;
-  }
+  }**/
 }

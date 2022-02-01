@@ -79,12 +79,14 @@ public class ByteAPult extends SubsystemBase {
    */
   // Alex: Program keeps having trouble finding the color sensor, even if it is plugged into the correct port, etc.
   //       It also keeps mentioning that there are known issues with the onboard I2C port, and that it might be better to use the MXP board.
+  //       It's possible that the known issues with the I2C port could cause the code to simply ignore what's plugged in? Not certain.
   public boolean loaded() {
-    if(cargoColorMatcher.matchColor(cargoSensor.getColor()).equals(new ColorMatchResult(red, 0.95))){
+    /**if(cargoColorMatcher.matchColor(cargoSensor.getColor()).equals(new ColorMatchResult(red, 0.95))){
       return true;
     }else{
       return false;
-    }
+    }**/
+    return true;
   }
 
   /**

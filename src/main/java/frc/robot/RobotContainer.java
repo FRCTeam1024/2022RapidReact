@@ -162,9 +162,9 @@ public class RobotContainer {
 
     // Display the intake's webcam feed for the driver.
     // Alex: commented out for now as RoboRio was having issues with "too many simultaneous client streams"
-    /**driverTab.add("Intake", intake.getFeed())
+    driverTab.add("Intake", intake.getFeed())
         .withSize(6,6)
-        .withPosition(7, 1);**/
+        .withPosition(7, 1);
   }
 
   /**

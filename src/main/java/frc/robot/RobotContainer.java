@@ -14,6 +14,8 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.oi.Logitech;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 
@@ -39,6 +41,10 @@ public class RobotContainer {
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
   private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
+  //DP: We need to create a default command for the ByteAPult that operates the load gate. 
+  //The default command for the ByteAPult will simply call readyToLoad() every cycle and if TRUE
+  //open the load gate and then check cargoPresent() every cycle until it is TRUE at which point it
+  //closes the gate and goes back to looking for readyToLoad.
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -78,7 +84,12 @@ public class RobotContainer {
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
     // Launch Byte-A-Pult
-    driverController.rightTrigger.whenPressed(new InstantCommand(byteAPult::launch, byteAPult));
+    driverController.rightTrigger.whenPressed(
+            new SequentialCommandGroup(
+              new InstantCommand(byteAPult::setHigh,byteAPult),
+              new WaitCommand(0.5),
+              new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
+            false);
     
     /**
      * Operator controls
@@ -130,7 +141,7 @@ public class RobotContainer {
         .withSize(2,1)
         .withPosition(6,1);
 
-    diagnosticsTab.addBoolean("ColorSensorColor", byteAPult::loaded)
+    diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(80.0)) //I'm hoping this lambda thing works like this
         .withSize(1,1)
         .withPosition(6,2);
 

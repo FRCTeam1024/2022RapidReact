@@ -73,7 +73,8 @@ public final class Constants {
     // Intake related constants
     public static final class IntakeConstants {
         public static final int intakeValve = 5;
-
+        public static final int intakeMotorID = 15;
+        public static final int shifterMotorID = 16;
         
         public static final double kCollectSpeed = 0.5;  //No idea if this is what we want
         public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want

@@ -4,9 +4,17 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -20,6 +28,10 @@ public class Intake extends SubsystemBase {
   //Intake rollers:  1 falcon 
   //cargo shifter is a NEO550
   //extend/retract cylinder (intakeValve)
+
+  private final WPI_TalonFX intake = new WPI_TalonFX(Constants.IntakeConstants.intakeMotorID);
+  private final CANSparkMax shifter = new CANSparkMax(Constants.IntakeConstants.shifterMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private final Solenoid intakeValve = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.intakeValve);
 
   /** Creates a new Intake. */
   public Intake() {

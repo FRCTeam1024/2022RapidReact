@@ -15,13 +15,16 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
 
   private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
   private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
-  //Need to add a loadGate solenoid
+
+  private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadValve, MotorType.kBrushless);
 
   private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
@@ -94,12 +97,12 @@ public class ByteAPult extends SubsystemBase {
 
   // WIP - Close the load gate. use the loadValve
   public void closeGate() {
-
+    loadGate.set(-0.5);   //Runs motor backwards to close gate, may need to be reversed depending on how the motor is setup
   }
 
   //WIP - Open the load gate. use the loadValve
   public void openGate() {
-
+    loadGate.set(0.5);    //Runs motor forwards to open gate, may need to be reversed depending on how the motor is setup
   }
 
   /**

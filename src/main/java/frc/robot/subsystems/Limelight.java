@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LimelightConstants;
 
 public class Limelight extends SubsystemBase {
   private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -24,17 +26,19 @@ public class Limelight extends SubsystemBase {
       "limelight", "http://10.10.24.11:5800", HttpCamera.HttpCameraKind.kMJPGStreamer
   );
 
+  private final PIDController limelightPID = new PIDController(LimelightConstants.kP, LimelightConstants.kI, LimelightConstants.kD);
+
   /** Creates a new Limelight. */
   public Limelight() {
     disableLeds();
     setDriverPipe();
   }
 
-  public double getX() {
+  public double getXOffset() {
     return tx.getDouble(0.0);
   }
 
-  public double getY() {
+  public double getYOffset() {
     return ty.getDouble(0.0);
   }
 
@@ -88,6 +92,10 @@ public class Limelight extends SubsystemBase {
 
   public HttpCamera getFeed() {
     return camera;
+  }
+
+  public PIDController getPIDController(){
+    return limelightPID;
   }
 
   @Override

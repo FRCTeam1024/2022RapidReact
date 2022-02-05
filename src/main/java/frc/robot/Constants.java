@@ -109,5 +109,14 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final int driverPipe = 1;
         public static final int targetPipe = 0;
+        
+        public static final double kP = 0.03;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double minOutput = -1.0;
+        public static final double maxOutput = 1.0;
+        // 1 degree angle of error which is considered tolerable for the PID
+        public static final double threshold = 1.0;
     }
 }

@@ -41,11 +41,7 @@ public class RobotContainer {
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
   private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
-  private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
-  //DP: We need to create a default command for the ByteAPult that operates the load gate. 
-  //The default command for the ByteAPult will simply call readyToLoad() every cycle and if TRUE
-  //open the load gate and then check cargoPresent() every cycle until it is TRUE at which point it
-  //closes the gate and goes back to looking for readyToLoad.
+  private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult, intake);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();

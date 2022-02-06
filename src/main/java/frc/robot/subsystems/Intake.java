@@ -83,6 +83,16 @@ public class Intake extends SubsystemBase {
   }
 
   /**
+   * This method reports on if the shifter is running
+   * in the direction towards the launcher.
+   * 
+   * @return TRUE if shifter feeding balls towards the launcher
+   */
+  public boolean shifterRunning() {
+    return shifterMotor.get() > 0; 
+  }
+
+  /**
    * Extend the intake, use the cylinder
    */
   private void extend() {
@@ -95,7 +105,7 @@ public class Intake extends SubsystemBase {
   private void retract() {
     intakeValve.set(false); //May need to reverse boolean
   }
-  
+
   /**
    * Run intake to speed and direction sepecified.  This is the only
    * place the intake motor should be set directly.

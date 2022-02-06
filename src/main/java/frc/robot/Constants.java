@@ -65,9 +65,11 @@ public final class Constants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
         public static final int launchValveC = 3;
-        public static final int loadValve = 4;
+        public static final int loadMotorID = 17;
 
         public static final int kPressureAnalogID = 0;
+
+        public static final double kLoadSpeed = 0.5;  //No idea if this is what we want
     }
 
     // Intake related constants

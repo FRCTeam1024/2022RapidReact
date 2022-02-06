@@ -34,6 +34,11 @@ public class Limelight extends SubsystemBase {
     setDriverPipe();
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
   public double getXOffset() {
     return tx.getDouble(0.0);
   }
@@ -98,8 +103,5 @@ public class Limelight extends SubsystemBase {
     return limelightPID;
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+
 }

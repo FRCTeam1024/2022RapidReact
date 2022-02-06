@@ -16,13 +16,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants;
 import frc.robot.Constants.HangerConstants;
 
-public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I think we want to use this
+public class Hanger extends ProfiledPIDSubsystem { 
 
   private final WPI_TalonFX hookLiftLeader = new WPI_TalonFX(Constants.HangerConstants.hookLiftLeaderID);
   private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
 
-  //Creating a motor group so as not to rely on the follower remaining configured to follow
-  //as we have seen the follower suddenly drop out of follow mode in the drivetrain.
   private final MotorControllerGroup hookLiftMotors = new MotorControllerGroup(hookLiftLeader,
                                                                               hookLiftFollower);                         
 
@@ -45,7 +43,6 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
               new TrapezoidProfile.Constraints(
                 HangerConstants.kMaxSpeedMetersPerSecond,
                 HangerConstants.kMaxAccelerationMetersPerSecondSquared)),
-
               0);
 
     hookLiftLeader.configFactoryDefault();
@@ -69,11 +66,27 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) { 
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+    double volts = output + feedforward;
 
-    //DP:  Add a check here of the limit switches and only apply voltage if limit switch
+    //Check here of the limit switches and only apply voltage if limit switch
     // is not detected in the direction that is being commanded.  If limit is detected 
     // then don't apply voltage and call disable().
-    hookLiftMotors.setVoltage(output + feedforward);
+        //Check limits switches and apply power if not at limit
+    if(volts > 0) {
+      if(!atTopLimit()) 
+        hookLiftMotors.setVoltage(volts);
+      else
+        disable();
+    }
+    else if( volts < 0) {
+      if(!atBottomLimit())
+        hookLiftMotors.setVoltage(volts);
+      else
+        disable();
+    }
+    else {
+      hookLiftMotors.setVoltage(volts);
+    }
   }
 
   @Override
@@ -94,14 +107,30 @@ public class Hanger extends ProfiledPIDSubsystem {  //DP: See WPIlib examples, I
 
   /** 
    * Runs motors to move carriage (and hook)
+   * 
+   * @param power the percent power to apply (+ carrfiage up)
    */
   public void driveCarriage(double power) {
     //disable the PID controller so we aren't fighting it while trying to 
     //directly control the motors
     disable();
 
-    //DP:  added a check of the limit switches here first
-    hookLiftMotors.set(power);
+    //Check limits switches and apply power if not at limit
+    if(power > 0) {
+      if(!atTopLimit()) 
+        hookLiftMotors.set(power);
+      else
+        hookLiftMotors.set(0);
+    }
+    else if( power < 0) {
+      if(!atBottomLimit())
+        hookLiftMotors.set(power);
+      else
+        hookLiftMotors.set(0);
+    }
+    else {
+      hookLiftMotors.set(0);
+    }
   }
 
   /**

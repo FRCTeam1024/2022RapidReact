@@ -24,7 +24,7 @@ public class ByteAPult extends SubsystemBase {
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
   private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
 
-  private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadValve, MotorType.kBrushless);
+  private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
   private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
@@ -37,6 +37,11 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
+  private boolean armRetracted;
+  private boolean cargoLoaded;
+  private int lastArm;
+  private int lastCargo;
+
   /** Creates a new Shooter. */
   public ByteAPult() {
     cargoColorMatcher.addColorMatch(red);
@@ -46,11 +51,42 @@ public class ByteAPult extends SubsystemBase {
     retract();
     setLow();
     closeGate();
+
+    //Set intitial states and counters
+    armRetracted = true;
+    cargoLoaded = false;
+    lastArm = 0;
+    lastCargo = 0; 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //Sensor debouncers
+    if(armSensor.getProximity() > 700) { //700 is assumed raw sensor value, adjust as needed
+      armRetracted = false;
+      lastArm = 0;
+    }
+    else if(lastArm < 5) {  //cycles before we accept the arm really is down
+      lastArm++;
+    }
+    else {
+      armRetracted = true;
+    }
+    
+    //Sensor debouncers
+    if(cargoSensor.getProximity() < 300) { //300 is assumed raw sensor value, adjust as needed
+      cargoLoaded = true;
+      lastCargo = 0;
+    }
+    else if(lastCargo < 25) { //cycles before we accept the cargo really is gone
+      lastCargo++;
+    }
+    else {
+      cargoLoaded = false;
+    }
+    
   }
 
   /**
@@ -87,22 +123,24 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setHigh() {
-    launchPivot.set(true);
+    launchPivot.set(true);  //May need to reverse boolean
   }
 
   // Retract launch pivot to shoot lower
   public void setLow() {
-    launchPivot.set(false);
+    launchPivot.set(false);  //May need to reverse boolean
   }
 
-  // WIP - Close the load gate. use the loadValve
+  // Close the load gate. use the loadMotor
   public void closeGate() {
-    loadGate.set(-0.5);   //Runs motor backwards to close gate, may need to be reversed depending on how the motor is setup
+    //Stopping the motor closes the gate as the ball can not pass the 
+    //load wheel when it is not spinning.
+    loadGate.set(0);   
   }
 
-  //WIP - Open the load gate. use the loadValve
+  //Open the load gate. use the loadValve
   public void openGate() {
-    loadGate.set(0.5);    //Runs motor forwards to open gate, may need to be reversed depending on how the motor is setup
+    loadGate.set(Constants.ShooterConstants.kLoadSpeed);    //Runs motor forwards to open gate, may need to be reversed depending on how the motor is setup
   }
 
   /**
@@ -140,7 +178,7 @@ public class ByteAPult extends SubsystemBase {
    * @return TRUE if arm retracted
    */
   public boolean armRetracted() {
-    return armSensor.getProximity() < 300; //value may need adjusted
+    return armRetracted;
   }
 
   public Color getColor() {
@@ -150,14 +188,10 @@ public class ByteAPult extends SubsystemBase {
   /**
    * Checks if cargo is in the launcher.
    * 
-   * DP: We probably need to figure out a way to "debounce" this.  
-   * We need to make sure we don't return FALSE if the cargo happens to just jostle around for 
-   * a second.
-   * 
    * @return TRUE if cargo present
    */
   public boolean cargoPresent() {
-    return cargoSensor.getProximity() < 300;  //value may need adjusted
+    return cargoLoaded;
   }
 
   /**
@@ -172,7 +206,7 @@ public class ByteAPult extends SubsystemBase {
 
   /**
    * For color sensor testing only
-   * @return the proximity value from the color sensor
+   * @return the proximity value from the color sensor in raw units
    */
   public double getDistance() {
     return cargoSensor.getProximity();

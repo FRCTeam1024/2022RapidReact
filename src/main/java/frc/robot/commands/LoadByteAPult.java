@@ -6,14 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ByteAPult;
+import frc.robot.subsystems.Intake;
 
 public class LoadByteAPult extends CommandBase {
   /** Creates a new LoadByteAPult. */
   ByteAPult byteAPult;
-  public LoadByteAPult(ByteAPult byteAPultParam) {
+  Intake intake;
+  public LoadByteAPult(ByteAPult byteAPultParam, Intake intakeParam) {
     // Use addRequirements() here to declare subsystem dependencies.
     byteAPult = byteAPultParam;
-    addRequirements(byteAPult);
+    intake = intakeParam;
+    //We don't add intake as a requirement since we are only referencing
+    //it in order to get the shifter state. Be careful not to call any 
+    //actions methods on the intake from this command.
+    addRequirements(byteAPult);  
   }
 
   // Called when the command is initially scheduled.
@@ -23,7 +29,7 @@ public class LoadByteAPult extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(byteAPult.readyToLoad()){
+    if(byteAPult.readyToLoad() & intake.shifterRunning()){
       byteAPult.openGate();
     } else{
       byteAPult.closeGate();
@@ -32,7 +38,9 @@ public class LoadByteAPult extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    byteAPult.closeGate();
+  }
 
   // Returns true when the command should end.
   @Override

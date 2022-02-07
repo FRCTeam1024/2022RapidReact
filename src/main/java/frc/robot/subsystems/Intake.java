@@ -17,20 +17,12 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
-
 public class Intake extends SubsystemBase {
 
   private final UsbCamera intakeCamera;
 
-  //We need to create these, and use them in the methods outlined below
-
-  //Intake rollers:  1 falcon 
-  //cargo shifter is a NEO550
-  //extend/retract cylinder (intakeValve)
-
-  private final WPI_TalonFX intake = new WPI_TalonFX(Constants.IntakeConstants.intakeMotorID);
-  private final CANSparkMax shifter = new CANSparkMax(Constants.IntakeConstants.shifterMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private final WPI_TalonFX intakeMotor = new WPI_TalonFX(Constants.IntakeConstants.intakeMotorID);
+  private final CANSparkMax shifterMotor = new CANSparkMax(Constants.IntakeConstants.shifterMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
   private final Solenoid intakeValve = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.IntakeConstants.intakeValve);
 
   /** Creates a new Intake. */
@@ -41,26 +33,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  /**
-   * WIP - Run intake to speed and direction sepecified.  This is the only
-   * place the intake motor should be set.  Probaly will make this private.
-   * 
-   * @param speed %power for intake motor (+ = collect)
-   */
-  public void runIntake(double speed) {
-
-  }
-
-  /**
-   * WIP - Run the cargo shifter to speed and direction specified.  This is
-   * the only place the shifter motor should be set.  Probably will make this private.
-   * 
-   * @param speed %power for the shifter motor (+ towards launcher)
-   */
-  public void runShifter(double speed) {
-
   }
 
   /**
@@ -77,20 +49,6 @@ public class Intake extends SubsystemBase {
   public void eject() {
     runIntake(IntakeConstants.kEjectSpeed);
     runShifter(-IntakeConstants.kShifterSpeed);
-  }
-
-  /**
-   * Extend the intake, use the cylinder
-   */
-  public void extend() {
-
-  }
-
-  /**
-   * Retract the intake, use the cylinder
-   */
-  public void retract() {
-
   }
 
   /**
@@ -120,8 +78,51 @@ public class Intake extends SubsystemBase {
     collect();
   }
 
-  // Alex: see line 14
   public UsbCamera getFeed() {
     return intakeCamera;
+  }
+
+  /**
+   * This method reports on if the shifter is running
+   * in the direction towards the launcher.
+   * 
+   * @return TRUE if shifter feeding balls towards the launcher
+   */
+  public boolean shifterRunning() {
+    return shifterMotor.get() > 0; 
+  }
+
+  /**
+   * Extend the intake, use the cylinder
+   */
+  private void extend() {
+    intakeValve.set(true);  //May need to reverse boolean
+  }
+
+  /**
+   * Retract the intake, use the cylinder
+   */
+  private void retract() {
+    intakeValve.set(false); //May need to reverse boolean
+  }
+
+  /**
+   * Run intake to speed and direction sepecified.  This is the only
+   * place the intake motor should be set directly.
+   * 
+   * @param pwr %power for intake motor (+ = collect)
+   */
+  private void runIntake(double pwr) {
+      intakeMotor.set(pwr);
+  }
+
+  /**
+   * Run the cargo shifter to speed and direction specified.  This is
+   * the only place the shifter motor should be set.
+   * 
+   * @param pwr %power for the shifter motor (+ towards launcher)
+   */
+  private void runShifter(double pwr) {
+    shifterMotor.set(pwr);
   }
 }

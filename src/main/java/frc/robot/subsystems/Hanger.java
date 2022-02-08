@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -22,7 +24,9 @@ public class Hanger extends ProfiledPIDSubsystem {
   private final WPI_TalonFX hookLiftFollower = new WPI_TalonFX(Constants.HangerConstants.hookLiftFollowerID);
 
   private final MotorControllerGroup hookLiftMotors = new MotorControllerGroup(hookLiftLeader,
-                                                                              hookLiftFollower);                         
+                                                                              hookLiftFollower);        
+                                                                              
+  private final Solenoid horizontalHook = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.HangerConstants.horizontalHookValve);
 
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
                                                       HangerConstants.ksVolts,
@@ -108,7 +112,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   /** 
    * Runs motors to move carriage (and hook)
    * 
-   * @param power the percent power to apply (+ carrfiage up)
+   * @param power the percent power to apply (+ carriage up)
    */
   public void driveCarriage(double power) {
     //disable the PID controller so we aren't fighting it while trying to 
@@ -134,10 +138,10 @@ public class Hanger extends ProfiledPIDSubsystem {
   }
 
   /**
-   * Runs the the horizontal hook motors up to the next bar
+   * Extends Solenoid, allowing horizontal hook to reach the next bar
    */
   private void extendHook() {
-
+    horizontalHook.set(true); //should set solenoid to extend the pneumatics, and reach the next bar.
   }
 
   private boolean atTopLimit(){
@@ -152,14 +156,17 @@ public class Hanger extends ProfiledPIDSubsystem {
    * Runs the horizontal hook motors to pull the robot to the next bar
    */
   private void climbNextBar() {
-
+    //process for climbing to next bar should include reaching out with the horizontal hook, 
+    //then pushing the vertical hook up to release the robot from the lower bar.
+    extendHook();
+    driveCarriage(0.5);
   }
 
   /**
    * Resets motors to original state before initiating climb
    */
   private void resetClimb() {
-
+    
   }
 
 

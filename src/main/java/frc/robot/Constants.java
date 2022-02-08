@@ -91,6 +91,8 @@ public final class Constants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
 
+        public static final int horizontalHookValve = 4;
+
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
 

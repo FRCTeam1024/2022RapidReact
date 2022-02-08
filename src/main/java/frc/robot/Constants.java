@@ -69,6 +69,8 @@ public final class Constants {
 
         public static final int kPressureAnalogID = 0;
 
+        public static final double kInputVoltage = 5.0;
+
         public static final double kLoadSpeed = 0.5;  //No idea if this is what we want
     }
 

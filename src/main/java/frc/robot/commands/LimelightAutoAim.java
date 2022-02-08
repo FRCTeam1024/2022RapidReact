@@ -46,6 +46,7 @@ public class LimelightAutoAim extends PIDCommand {
   @Override
   public void end(boolean interrupted){
     limelight.disableLeds(); // Turn the lights off once command ends, since they are no longer necessary
+    limelight.setDriverPipe(); // Switch back to driving mode for driver convenience
   }
   
   // Returns true when the command should end.

@@ -59,14 +59,24 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  /**
+   * Turn the Limelight LEDs on.
+   */
   public void enableLeds() {
     ledMode.setDouble(3.0);
   }
 
+  /**
+   * Turn the Limelight LEDs off.
+   */
   public void disableLeds() {
     ledMode.setDouble(0.0);
   }
 
+  /**
+   * Determines the state of the Limelight LEDs.
+   * @return true if the lights are on, false if they are off
+   */
   public boolean areLedsOn() {
     if(ledMode.getDouble(0.0) > 1.0) {
       return true;
@@ -75,6 +85,9 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  /**
+   * Swap the state of the Limelight LEDs
+   */
   public void toggleLeds() {
     if(areLedsOn()) {
       disableLeds();
@@ -83,18 +96,33 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets the Limelight pipeline to that of the specified id
+   * @param id the id of the desired pipeline
+   * Currently, there are 2 ids that are configured: the driver pipeline (1) and the targeting pipeline (0);
+   */
   public void setPipeline(int id) {
     pipeline.setDouble(id);
   }
 
+  /**
+   * Switches Limelight pipe to the driver pipe, which is thresholded to the equivalent to a webcam
+   */
   public void setDriverPipe() {
     pipeline.setDouble(Constants.LimelightConstants.driverPipe);
   }
 
+  /**
+   * Switches Limelight pipe to the targeting pipe, which is thresholded for locating the hub
+   */
   public void setTargetPipe() {
     pipeline.setDouble(Constants.LimelightConstants.targetPipe);
   }
 
+  /**
+   * Get the feed of the Limelight stream
+   * @return the Limelight's camera stream
+   */
   public HttpCamera getFeed() {
     return camera;
   }
@@ -102,6 +130,4 @@ public class Limelight extends SubsystemBase {
   public PIDController getPIDController(){
     return limelightPID;
   }
-
-
 }

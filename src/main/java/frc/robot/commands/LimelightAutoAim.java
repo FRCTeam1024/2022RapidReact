@@ -37,14 +37,15 @@ public class LimelightAutoAim extends PIDCommand {
     drivetrain = drivetrainParam;
     addRequirements(limelight, drivetrain);
 
-    limelight.enableLeds();
+    limelight.enableLeds(); // Turn on the lights
+    limelight.setTargetPipe(); // Target the hub
     // Configure additional PID options by calling `getController` here.
     limelight.getPIDController().setTolerance(Constants.LimelightConstants.threshold); // Sets the error which is considered tolerable for use with atSetpoint().
   }
 
   @Override
   public void end(boolean interrupted){
-    limelight.disableLeds();
+    limelight.disableLeds(); // Turn the lights off once command ends, since they are no longer necessary
   }
   
   // Returns true when the command should end.

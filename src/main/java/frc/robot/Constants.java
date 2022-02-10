@@ -64,7 +64,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
-        public static final int launchValveC = 3;
+        public static final int aimValveA = 3;
+        public static final int aimValveB = 7;
         public static final int loadMotorID = 17;
 
         public static final int kPressureAnalogID = 0;
@@ -91,7 +92,8 @@ public final class Constants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
 
-        public static final int horizontalHookValve = 4;
+        public static final int monkeyArmValveA = 4;
+        public static final int monkeyArmValveB = 8;
 
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;

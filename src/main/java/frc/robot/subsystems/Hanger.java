@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -26,7 +28,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   private final MotorControllerGroup hookLiftMotors = new MotorControllerGroup(hookLiftLeader,
                                                                               hookLiftFollower);        
                                                                               
-  private final Solenoid horizontalHook = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.HangerConstants.horizontalHookValve);
+  private final DoubleSolenoid monkeyArm = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.HangerConstants.monkeyArmValveA, Constants.HangerConstants.monkeyArmValveB);
 
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
                                                       HangerConstants.ksVolts,
@@ -141,7 +143,14 @@ public class Hanger extends ProfiledPIDSubsystem {
    * Extends Solenoid, allowing horizontal hook to reach the next bar
    */
   private void extendHook() {
-    horizontalHook.set(true); //should set solenoid to extend the pneumatics, and reach the next bar.
+    monkeyArm.set(Value.kForward); //should set solenoid to extend the pneumatics, and reach the next bar.
+  }
+
+  /**
+   * Reverses Solenoid, bringing the horizontal hook backwards
+   */
+  private void retractHook(){
+    monkeyArm.set(Value.kReverse);
   }
 
   private boolean atTopLimit(){

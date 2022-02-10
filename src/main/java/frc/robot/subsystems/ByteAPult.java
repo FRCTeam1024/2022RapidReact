@@ -22,7 +22,8 @@ public class ByteAPult extends SubsystemBase {
 
   private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
-  private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveC);
+  private final Solenoid launchPivotA = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveA);
+  private final Solenoid launchPivotB = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveB);
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
@@ -123,12 +124,14 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setHigh() {
-    launchPivot.set(true);  //May need to reverse boolean
+    launchPivotA.set(true);  //May need to reverse boolean
+    launchPivotB.set(true);
   }
 
   // Retract launch pivot to shoot lower
   public void setLow() {
-    launchPivot.set(false);  //May need to reverse boolean
+    launchPivotA.set(false);  //May need to reverse boolean
+    launchPivotB.set(false);
   }
 
   // Close the load gate. use the loadMotor

@@ -124,11 +124,15 @@ public class Hanger extends ProfiledPIDSubsystem {
     //Check limits switches and apply power if not at limit
     if(power > 0) {
       if(!atTopLimit()) 
-        hookLiftMotors.set(power);
+        if(power < 0.2){
+          hookLiftMotors.set(power);
+        }else{
+          hookLiftMotors.set(0.2);
+        }
       else
         hookLiftMotors.set(0);
     }
-    else if( power < 0) {
+    else if(power < 0) {
       if(!atBottomLimit())
         hookLiftMotors.set(power);
       else
@@ -168,14 +172,14 @@ public class Hanger extends ProfiledPIDSubsystem {
     //process for climbing to next bar should include reaching out with the horizontal hook, 
     //then pushing the vertical hook up to release the robot from the lower bar.
     extendHook();
-    driveCarriage(0.5);
+    driveCarriage(0.2);
   }
 
   /**
    * Resets motors to original state before initiating climb
    */
   private void resetClimb() {
-    
+    hookLiftLeader.setSelectedSensorPosition(0);
   }
 
 

@@ -109,7 +109,7 @@ public final class Constants {
         public static final double kP = 2.23;
 
         public static final double kGearing = 16.37; //Need to confirm this
-        public static final double kMetersPerRotation = .05; //complete guess probably wrong
+        public static final double kMetersPerRotation = 0.15; //complete guess probably wrong
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
     }
 

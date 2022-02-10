@@ -54,7 +54,7 @@ public final class Constants {
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
         
-        public static final double kGearing = 7.56;
+        public static final double kGearing = 10.86;
         public static final double kMetersPerRotation = 0.48878;
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
         
@@ -108,7 +108,7 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
         public static final double kP = 2.23;
 
-        public static final double kGearing = 7.56; //Need to confirm this
+        public static final double kGearing = 16.37; //Need to confirm this
         public static final double kMetersPerRotation = .05; //complete guess probably wrong
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
     }

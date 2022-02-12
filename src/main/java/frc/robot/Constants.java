@@ -98,6 +98,9 @@ public final class Constants {
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
 
+        public static final double minTravelMeters = 0;
+        public static final double maxTravelMeters = 1; //guessing the max height of the lift.
+
         public static final double kMaxSpeedMetersPerSecond = 0.5; 
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
 

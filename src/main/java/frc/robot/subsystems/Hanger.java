@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -106,7 +108,7 @@ public class Hanger extends ProfiledPIDSubsystem {
    * @param pos the desired position in meters
    */
   public void moveCarriage(double pos) {
-    setGoal(pos);
+    setGoal(MathUtil.clamp(pos,HangerConstants.minTravelMeters,HangerConstants.maxTravelMeters));
     enable();
   }
 
@@ -122,7 +124,7 @@ public class Hanger extends ProfiledPIDSubsystem {
 
     //Check limits switches and apply power if not at limit
     if(power > 0) {
-      if(!atTopLimit()) 
+      if(!atTopLimit() && getMeasurement() < HangerConstants.maxTravelMeters - 0.025) 
         if(power < 0.2){
           hookLiftMotors.set(power);
         }else{
@@ -132,7 +134,7 @@ public class Hanger extends ProfiledPIDSubsystem {
         hookLiftMotors.set(0);
     }
     else if(power < 0) {
-      if(!atBottomLimit())
+      if(!atBottomLimit() && getMeasurement() > HangerConstants.minTravelMeters + 0.025)
         hookLiftMotors.set(power);
       else
         hookLiftMotors.set(0);
@@ -166,6 +168,9 @@ public class Hanger extends ProfiledPIDSubsystem {
 
   /**
    * Runs the horizontal hook motors to pull the robot to the next bar
+   * 
+   * DP: Not sure we actually want this level of automation.  Lets see if we can do in 
+   * under manual control first.
    */
   private void climbNextBar() {
     //process for climbing to next bar should include reaching out with the horizontal hook, 
@@ -175,10 +180,14 @@ public class Hanger extends ProfiledPIDSubsystem {
   }
 
   /**
-   * Resets motors to original state before initiating climb
+   * Resets encoders to 0 at bottom carriage position
+   * 
+   * DP: Not sure if we want to use this or not.
+   * 
    */
-  private void resetClimb() {
-    hookLiftLeader.setSelectedSensorPosition(0);
+  private void resetCarriage() {
+    if(atBottomLimit())
+      hookLiftLeader.setSelectedSensorPosition(0);
   }
 
 

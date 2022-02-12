@@ -112,6 +112,10 @@ public class Hanger extends ProfiledPIDSubsystem {
     enable();
   }
 
+  public void stopCarriage() {
+    disable();
+  }
+
   /** 
    * Runs motors to move carriage (and hook)
    * 

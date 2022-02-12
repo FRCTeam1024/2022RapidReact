@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.Constants.*;
 import frc.robot.oi.Logitech;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -40,7 +41,7 @@ public class RobotContainer {
 
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
-  private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
+  //private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult, intake);
 
   //Create a chooser for auto
@@ -52,7 +53,7 @@ public class RobotContainer {
     configureDashboard();
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
-    hanger.setDefaultCommand(liftWithController);
+    //hanger.setDefaultCommand(liftWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
     // Configure the button bindings
     configureButtonBindings();
@@ -79,8 +80,8 @@ public class RobotContainer {
      */
 
     // Limelight Pipelines
-    driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight));
-    driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight));
+    driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight),false);
+    driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
     // Launch Byte-A-Pult
     driverController.rightTrigger.whenPressed(
             new SequentialCommandGroup(
@@ -88,13 +89,26 @@ public class RobotContainer {
               new WaitCommand(0.5),
               new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
             false);
+
+      
+
+    //Move Hanger Carriage Manually, stop when buttons released
+    driverController.dPadUp.whenPressed(
+      new InstantCommand(() -> hanger.moveCarriage(HangerConstants.maxTravelMeters),hanger),false);
+    driverController.dPadUp.whenInactive(
+      new InstantCommand(() -> hanger.disable(),hanger),false);
+    driverController.dPadDown.whenPressed(
+      new InstantCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger),false);
+    driverController.dPadDown.whenInactive(
+      new InstantCommand(() -> hanger.disable(),hanger),false);
     
     /**
      * Operator controls
      */
     // Toggle Limelight LEDs
-    operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight));
-    
+    operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight),false);
+
+
   }
 
   /**

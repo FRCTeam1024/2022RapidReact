@@ -108,6 +108,11 @@ public class RobotContainer {
     // Toggle Limelight LEDs
     operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight),false);
 
+    //Deploy Intake
+    operatorController.rightTrigger.whenPressed(
+      new InstantCommand(intake::deploy,intake),false);
+    operatorController.rightTrigger.whenInactive(
+      new InstantCommand(intake::stow,intake),false);
 
   }
 

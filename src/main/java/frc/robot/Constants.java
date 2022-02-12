@@ -38,7 +38,7 @@ public final class Constants {
         public static final int driverRightFollowerID = 13;
         public static final int driveRightLeaderID = 14;   
 
-        //example values pulled from tutorial, need to characterize Falcon Drive to find appropriate values
+        //need to characterize to find appropriate values
         public static final double ksVolts = 0.59;
         public static final double kvVoltSecondsPerMeter = 1.71;
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
@@ -64,8 +64,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int launchValveA = 1;
         public static final int launchValveB = 2;
-        public static final int aimValveA = 3;
-        public static final int aimValveB = 7;
+        public static final int aimValveUp = 3;
+        public static final int aimValveDown = 4;
         public static final int loadMotorID = 17;
 
         public static final int kPressureAnalogID = 0;
@@ -92,8 +92,8 @@ public final class Constants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
 
-        public static final int monkeyArmValveA = 4;
-        public static final int monkeyArmValveB = 8;
+        public static final int monkeyArmValveOut = 6;
+        public static final int monkeyArmValveIn = 7;
 
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
@@ -108,8 +108,8 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
         public static final double kP = 2.23;
 
-        public static final double kGearing = 16.37; //Need to confirm this
-        public static final double kMetersPerRotation = 0.15; //complete guess probably wrong
+        public static final double kGearing = 16.37; 
+        public static final double kMetersPerRotation = 0.15; 
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
     }
 

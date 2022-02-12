@@ -83,37 +83,57 @@ public class RobotContainer {
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight),false);
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
     // Launch Byte-A-Pult
-    driverController.rightTrigger.whenPressed(
-            new SequentialCommandGroup(
-              new InstantCommand(byteAPult::setHigh,byteAPult),
-              new WaitCommand(0.5),
-              new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
-            false);
+
 
       
 
     //Move Hanger Carriage Manually, stop when buttons released
     driverController.dPadUp.whenPressed(
       new InstantCommand(() -> hanger.moveCarriage(HangerConstants.maxTravelMeters),hanger),false);
-    driverController.dPadUp.whenInactive(
+    driverController.dPadUp.whenReleased(
       new InstantCommand(() -> hanger.disable(),hanger),false);
     driverController.dPadDown.whenPressed(
       new InstantCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger),false);
-    driverController.dPadDown.whenInactive(
+    driverController.dPadDown.whenReleased(
       new InstantCommand(() -> hanger.disable(),hanger),false);
+
+    //Move the monkey arm
+    driverController.aButton.whenPressed(
+      new InstantCommand(hanger::retractHook, hanger)
+    );
+    driverController.yButton.whenPressed(
+      new InstantCommand(hanger::extendHook, hanger)
+    );
     
     /**
      * Operator controls
      */
-    // Toggle Limelight LEDs
-    operatorController.xButton.whenPressed(new InstantCommand(limelight::toggleLeds, limelight),false);
 
     //Deploy Intake
-    operatorController.rightTrigger.whenPressed(
+    operatorController.rightBumper.whenPressed(
       new InstantCommand(intake::deploy,intake),false);
-    operatorController.rightTrigger.whenInactive(
+    operatorController.rightBumper.whenReleased(
       new InstantCommand(intake::stow,intake),false);
 
+    //Reverse Intake
+    operatorController.yButton.whileHeld(
+      new InstantCommand(intake::eject,intake));
+
+    //Launch with high pivot
+    operatorController.leftTrigger.whenPressed(
+      new SequentialCommandGroup(
+          new InstantCommand(byteAPult::setHigh,byteAPult),
+          new WaitCommand(0.5),
+          new InstantCommand(() -> byteAPult.launch(2,.5,80.0,true), byteAPult)),
+        false);  
+
+    //Launch with low pivot
+    operatorController.leftBumper.whenPressed(
+      new SequentialCommandGroup(
+          new InstantCommand(byteAPult::setLow,byteAPult),
+          new WaitCommand(0.5),
+          new InstantCommand(() -> byteAPult.launch(2,.5,80.0,true), byteAPult)),
+        false); 
   }
 
   /**

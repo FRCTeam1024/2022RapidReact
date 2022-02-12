@@ -29,7 +29,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   private final MotorControllerGroup hookLiftMotors = new MotorControllerGroup(hookLiftLeader,
                                                                               hookLiftFollower);        
                                                                               
-  private final DoubleSolenoid monkeyArm = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.HangerConstants.monkeyArmValveOut, Constants.HangerConstants.monkeyArmValveIn);
+  private final DoubleSolenoid monkeyArm = new DoubleSolenoid(Constants.PCMID,PneumaticsModuleType.CTREPCM, Constants.HangerConstants.monkeyArmValveOut, Constants.HangerConstants.monkeyArmValveIn);
 
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
                                                       HangerConstants.ksVolts,
@@ -83,13 +83,13 @@ public class Hanger extends ProfiledPIDSubsystem {
       if(!atTopLimit()) 
         hookLiftMotors.setVoltage(volts);
       else
-        disable();
+        hookLiftMotors.setVoltage(0);
     }
     else if( volts < 0) {
       if(!atBottomLimit())
         hookLiftMotors.setVoltage(volts);
       else
-        disable();
+        hookLiftMotors.setVoltage(0);
     }
     else {
       hookLiftMotors.setVoltage(volts);

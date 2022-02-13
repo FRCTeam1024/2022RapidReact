@@ -62,10 +62,10 @@ public final class Constants {
 
     // Shooter related constants
     public static final class ShooterConstants {
-        public static final int launchValveA = 1;
-        public static final int launchValveB = 2;
-        public static final int aimValveUp = 3;
-        public static final int aimValveDown = 4;
+        public static final int launchValveA = 7;
+        public static final int launchValveB = 3;
+        public static final int aimValveUp = 5;
+        public static final int aimValveDown = 6;
         public static final int loadMotorID = 17;
 
         public static final int kPressureAnalogID = 0;
@@ -77,7 +77,7 @@ public final class Constants {
 
     // Intake related constants
     public static final class IntakeConstants {
-        public static final int intakeValve = 5;
+        public static final int intakeValve = 4;
         public static final int intakeMotorID = 15;
         public static final int shifterMotorID = 16;
         
@@ -92,8 +92,8 @@ public final class Constants {
         public static final int hookLiftLeaderID = 21;
         public static final int hookLiftFollowerID = 22;
 
-        public static final int monkeyArmValveOut = 6;
-        public static final int monkeyArmValveIn = 7;
+        public static final int monkeyArmValveOut = 1;
+        public static final int monkeyArmValveIn = 2;
 
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
@@ -107,9 +107,9 @@ public final class Constants {
         //All these copied from drivetrain, need to characterize hanger
         public static final double ksVolts = 0.59;
         public static final double kgVolts = .5;  //yet another total guess
-        public static final double kvVoltSecondsPerMeter = 1.71;
+        public static final double kvVoltSecondsPerMeter = 1;
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
-        public static final double kP = 2.23;
+        public static final double kP = 0.1;
 
         public static final double kGearing = 16.37; 
         public static final double kMetersPerRotation = 0.15; 

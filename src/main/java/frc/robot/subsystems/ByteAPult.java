@@ -27,8 +27,8 @@ public class ByteAPult extends SubsystemBase {
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
-  private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kOnboard);
-  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
+  private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kMXP);
+  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   private final ColorMatch cargoColorMatcher = new ColorMatch();
 

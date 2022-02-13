@@ -75,25 +75,13 @@ public class Hanger extends ProfiledPIDSubsystem {
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
     double volts = output + feedforward;
 
-    //Check here of the limit switches and only apply voltage if limit switch
-    // is not detected in the direction that is being commanded.  If limit is detected 
-    // then don't apply voltage and call disable().
-        //Check limits switches and apply power if not at limit
-    if(volts > 0) {
-      if(!atTopLimit()) 
-        hookLiftMotors.setVoltage(volts);
-      else
+    //Check limits switches and apply power if not at limit
+    if(atTopLimit() && volts > 0 ) 
         hookLiftMotors.setVoltage(0);
-    }
-    else if( volts < 0) {
-      if(!atBottomLimit())
-        hookLiftMotors.setVoltage(volts);
-      else
+    else if(atBottomLimit() && volts < 0)
         hookLiftMotors.setVoltage(0);
-    }
-    else {
-      hookLiftMotors.setVoltage(volts);
-    }
+    else
+        hookLiftMotors.setVoltage(volts);
   }
 
   @Override

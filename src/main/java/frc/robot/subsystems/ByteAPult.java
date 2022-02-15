@@ -204,7 +204,7 @@ public class ByteAPult extends SubsystemBase {
    * @return The system high side pressure in PSI
    */
   public double getPressure() {
-    return 250 * (pressureSensor.getVoltage() / Constants.ShooterConstants.kInputVoltage) - 25;
+    return 285 * (pressureSensor.getVoltage() / Constants.ShooterConstants.kInputVoltage) - 25;
   }
 
   /**

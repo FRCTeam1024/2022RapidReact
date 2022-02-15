@@ -118,21 +118,23 @@ public class RobotContainer {
     //Reverse Intake
     operatorController.yButton.whileHeld(
       new InstantCommand(intake::eject,intake));
+    operatorController.yButton.whenReleased(
+      new InstantCommand(intake::stow, intake));
 
     //Launch with high pivot
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setHigh,byteAPult),
-          new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.5,80.0,true), byteAPult)),
+          new WaitCommand(0.3),
+          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false);  
 
     //Launch with low pivot
     operatorController.leftBumper.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setLow,byteAPult),
-          new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.5,80.0,true), byteAPult)),
+          new WaitCommand(0.3),
+          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false); 
   }
 
@@ -159,6 +161,10 @@ public class RobotContainer {
        .withSize(2,1)
        .withPosition(8,0);
 
+    diagnosticsTab.add("HangerCommand", hanger)
+       .withSize(2,1)
+       .withPosition(8,1);
+
     diagnosticsTab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
         .withSize(3,1)
         .withPosition(3,0);
@@ -182,6 +188,22 @@ public class RobotContainer {
     diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(80.0)) //I'm hoping this lambda thing works like this
         .withSize(1,1)
         .withPosition(6,2);
+
+    diagnosticsTab.addNumber("Pressure", byteAPult::getPressure)
+        .withSize(2,1)
+        .withPosition(6,3);
+
+    diagnosticsTab.addBoolean("BottomLimit", hanger::atBottomLimit)
+        .withSize(1,1)
+        .withPosition(0,3);
+
+    diagnosticsTab.addBoolean("TopLimit", hanger::atTopLimit)
+        .withSize(1,1)
+        .withPosition(0,2);
+
+    diagnosticsTab.addNumber("HangerPosition", hanger::getMeasurement)
+        .withSize(2,1)
+        .withPosition(1,2);
 
     /**
      * Driver's operator interface

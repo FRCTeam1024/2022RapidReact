@@ -109,7 +109,7 @@ public final class Constants {
         public static final double kgVolts = .5;  //yet another total guess
         public static final double kvVoltSecondsPerMeter = 1;
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
-        public static final double kP = 0.1;
+        public static final double kP = 2;
 
         public static final double kGearing = 16.37; 
         public static final double kMetersPerRotation = 0.15; 

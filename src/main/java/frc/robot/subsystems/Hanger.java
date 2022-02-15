@@ -66,27 +66,23 @@ public class Hanger extends ProfiledPIDSubsystem {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) { 
-    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+    double feedforward = m_feedforward.calculate(setpoint.velocity);
     double volts = output + feedforward;
-
+    System.out.println("Voltage output: " + volts + " Setpoint.velocity: " + setpoint.velocity);
     //Check limits switches and apply power if not at limit
     if(atTopLimit() && volts > 0 ) 
         hookLiftMotors.setVoltage(0);
     else if(atBottomLimit() && volts < 0)
         hookLiftMotors.setVoltage(0);
-    else
+    else{
         hookLiftMotors.setVoltage(volts);
+    }
   }
 
   @Override
   public double getMeasurement() {
-    return hookLiftLeader.getSelectedSensorPosition()*HangerConstants.kSensorUnitsPerRotation
+    return hookLiftLeader.getSelectedSensorPosition()/HangerConstants.kSensorUnitsPerRotation
                                                     *HangerConstants.kMetersPerRotation;
   }
 
@@ -140,22 +136,22 @@ public class Hanger extends ProfiledPIDSubsystem {
    * Extends Solenoid, allowing horizontal hook to reach the next bar
    */
   public void extendHook() {
-    monkeyArm.set(Value.kForward); //should set solenoid to extend the pneumatics, and reach the next bar.
+    monkeyArm.set(Value.kReverse); //should set solenoid to extend the pneumatics, and reach the next bar.
   }
 
   /**
    * Reverses Solenoid, bringing the horizontal hook backwards
    */
   public void retractHook(){
-    monkeyArm.set(Value.kReverse);
+    monkeyArm.set(Value.kForward);
   }
 
-  private boolean atTopLimit(){
-    return topLimit.get();
+  public boolean atTopLimit(){
+    return !topLimit.get();
   }
 
-  private boolean atBottomLimit(){
-    return bottomLimit.get();
+  public boolean atBottomLimit(){
+    return !bottomLimit.get();
   }
 
   /**

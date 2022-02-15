@@ -98,18 +98,19 @@ public final class Constants {
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
 
-        public static final double minTravelMeters = 0;
-        public static final double maxTravelMeters = 1; //guessing the max height of the lift.
+        public static final double minTravelMeters = -0.05;
+        public static final double maxTravelMeters = 0.8; //guessing the max height of the lift.
 
-        public static final double kMaxSpeedMetersPerSecond = 0.5; 
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
+        public static final double kMaxSpeedMetersPerSecond = 1.5; 
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.75;
 
         //All these copied from drivetrain, need to characterize hanger
         public static final double ksVolts = 0.59;
-        public static final double kgVolts = .5;  //yet another total guess
+        public static final double kgVolts = 0;  //yet another total guess
         public static final double kvVoltSecondsPerMeter = 1;
         public static final double kaVoltSecondsSquaredPerMeter = 0.137;
-        public static final double kP = 2;
+        public static final double kP = 16; //kP and kI may need to be tuned a little bit more just to get a better hang
+        public static final double kI = 0.05;
 
         public static final double kGearing = 16.37; 
         public static final double kMetersPerRotation = 0.15; 

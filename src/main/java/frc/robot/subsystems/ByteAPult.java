@@ -65,15 +65,28 @@ public class ByteAPult extends SubsystemBase {
     // This method will be called once per scheduler run
 
     //Sensor debouncers
-    if(armSensor.getProximity() > 700) { //700 is assumed raw sensor value, adjust as needed
-      armRetracted = false;
-      lastArm = 0;
-    }
-    else if(lastArm < 5) {  //cycles before we accept the arm really is down
-      lastArm++;
-    }
-    else {
-      armRetracted = true;
+    if(armSensor.isConnected()){
+      if(armSensor.getProximity() > 700) { //700 is assumed raw sensor value, adjust as needed
+        armRetracted = false;
+        lastArm = 0;
+      }
+      else if(lastArm < 5) {  //cycles before we accept the arm really is down
+        lastArm++;
+      }
+      else {
+        armRetracted = true;
+      }
+    }else{
+      if(launcherLeft.get() == true || launcherRight.get() == true) { //700 is assumed raw sensor value, adjust as needed
+        armRetracted = false;
+        lastArm = 0;
+      }
+      else if(lastArm < 5) {  //cycles before we accept the arm really is down
+        lastArm++;
+      }
+      else {
+        armRetracted = true;
+      }
     }
     
     //Sensor debouncers

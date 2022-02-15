@@ -46,7 +46,7 @@ public class Hanger extends ProfiledPIDSubsystem {
 
     super(
           new ProfiledPIDController(
-              HangerConstants.kP,0,0,
+              HangerConstants.kP,HangerConstants.kI,0,
               new TrapezoidProfile.Constraints(
                 HangerConstants.kMaxSpeedMetersPerSecond,
                 HangerConstants.kMaxAccelerationMetersPerSecondSquared)),
@@ -61,6 +61,7 @@ public class Hanger extends ProfiledPIDSubsystem {
     hookLiftFollower.follow(hookLiftLeader);
 
     hookLiftLeader.setSelectedSensorPosition(0);
+    hookLiftFollower.setSelectedSensorPosition(0);
 
     setGoal(0);
   }
@@ -70,6 +71,7 @@ public class Hanger extends ProfiledPIDSubsystem {
     double feedforward = m_feedforward.calculate(setpoint.velocity);
     double volts = output + feedforward;
     System.out.println("Voltage output: " + volts + " Setpoint.velocity: " + setpoint.velocity);
+    System.out.println("At goal?: " + getController().atGoal());
     //Check limits switches and apply power if not at limit
     if(atTopLimit() && volts > 0 ) 
         hookLiftMotors.setVoltage(0);
@@ -113,19 +115,25 @@ public class Hanger extends ProfiledPIDSubsystem {
     //Check limits switches and apply power if not at limit
     if(power > 0) {
       if(!atTopLimit() && getMeasurement() < HangerConstants.maxTravelMeters - 0.025) 
-        if(power < 0.2){
+        if(power < 0.1){
           hookLiftMotors.set(power);
-        }else{
-          hookLiftMotors.set(0.2);
+        } else {
+          hookLiftMotors.set(0.1);
         }
-      else
+      else{
         hookLiftMotors.set(0);
+      }
     }
     else if(power < 0) {
       if(!atBottomLimit() && getMeasurement() > HangerConstants.minTravelMeters + 0.025)
+      if(power > -0.1){
         hookLiftMotors.set(power);
-      else
-        hookLiftMotors.set(0);
+      } else {
+        hookLiftMotors.set(-0.1);
+      }
+    else{
+      hookLiftMotors.set(0);
+    }
     }
     else {
       hookLiftMotors.set(0);
@@ -178,5 +186,12 @@ public class Hanger extends ProfiledPIDSubsystem {
       hookLiftLeader.setSelectedSensorPosition(0);
   }
 
+  private void lowerToBottom(){
+    if(!atBottomLimit()){
+      driveCarriage(-0.05);
+    }else{
+      driveCarriage(0);
+    }
+  }
 
 }

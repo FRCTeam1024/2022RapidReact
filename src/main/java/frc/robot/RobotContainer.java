@@ -41,7 +41,6 @@ public class RobotContainer {
 
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
-  //private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
 
   //Create a chooser for auto
@@ -53,7 +52,6 @@ public class RobotContainer {
     configureDashboard();
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
-    //hanger.setDefaultCommand(liftWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
     // Configure the button bindings
     configureButtonBindings();
@@ -82,11 +80,9 @@ public class RobotContainer {
     // Limelight Pipelines
     driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight),false);
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
-    // Launch Byte-A-Pult
 
     //Turbo Mode
     driverController.rightTrigger.whileHeld(new DriveWithController(drivetrain, driverController, true));
-      
 
     //Move Hanger Carriage Manually, stop when buttons released
     driverController.dPadUp.whenPressed(

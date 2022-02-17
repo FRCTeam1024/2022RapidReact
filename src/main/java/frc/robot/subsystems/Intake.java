@@ -47,6 +47,7 @@ public class Intake extends SubsystemBase {
    * Run intake in reverse to eject/unjam Cargo at speed defined by constant
    */
   public void eject() {
+    extend();
     runIntake(IntakeConstants.kEjectSpeed);
     runShifter(-IntakeConstants.kShifterSpeed);
   }

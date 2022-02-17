@@ -40,7 +40,7 @@ public class RobotContainer {
   private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
 
   // Default Commands
-  private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController);
+  private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
   //private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult, intake);
 
@@ -84,7 +84,8 @@ public class RobotContainer {
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
     // Launch Byte-A-Pult
 
-
+    //Turbo Mode
+    driverController.rightTrigger.whileHeld(new DriveWithController(drivetrain, driverController, true));
       
 
     //Move Hanger Carriage Manually, stop when buttons released

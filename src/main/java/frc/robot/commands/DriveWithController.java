@@ -8,6 +8,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.oi.Logitech;
 import frc.robot.subsystems.Drivetrain;
+import java.lang.Math;
+
+
 
 public class DriveWithController extends CommandBase {
   private final Drivetrain drivetrain;
@@ -16,12 +19,15 @@ public class DriveWithController extends CommandBase {
   private final SlewRateLimiter leftFilter = new SlewRateLimiter(2);
   private final SlewRateLimiter rightFilter = new SlewRateLimiter(2);
 
+  private final boolean boostMode;
+
   /** Creates a new DriveWithController. */
-  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam) {
+  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam, boolean powerBoost) {
     // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = driveSubsystem;
     addRequirements(driveSubsystem);
     controller = controllerParam;
+    boostMode = powerBoost;
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +41,11 @@ public class DriveWithController extends CommandBase {
     //drivetrain.drive(leftFilter.calculate(-controller.getLeftStickY()), rightFilter.calculate(-controller.getRightStickY()));
     double x = -controller.getLeftStickY();
     double y = -controller.getRightStickY();
-    drivetrain.drive(x/2,y/2);
+    if(boostMode){
+      drivetrain.drive(3*x/4,3*y/4);
+    }else{
+      drivetrain.drive(x/2,y/2);
+    }
   }
 
   // Called once the command ends or is interrupted.

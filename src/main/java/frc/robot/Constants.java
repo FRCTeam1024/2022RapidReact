@@ -44,11 +44,11 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.25828;
         public static final double kPDriveVel = 8;
 
-        public static final double kTrackwidthMeters = 0.626; //need to measure trackwidth, or characterize drive
+        public static final double kTrackwidthMeters = 0.626; 
         public static final DifferentialDriveKinematics kDriveKinematics =
             new DifferentialDriveKinematics(kTrackwidthMeters);
 
-        public static final double kMaxSpeedMetersPerSecond = 1; //cut these in half while testing
+        public static final double kMaxSpeedMetersPerSecond = 1; 
         public static final double kMaxAccelerationMetersPerSecondSquared = 1;
 
         public static final double kRamseteB = 2;
@@ -102,12 +102,11 @@ public final class Constants {
         public static final int bottomLimitDigID = 1;
 
         public static final double minTravelMeters = -0.05;
-        public static final double maxTravelMeters = 0.8; //guessing the max height of the lift.
+        public static final double maxTravelMeters = 0.8; 
 
         public static final double kMaxSpeedMetersPerSecond = 1.5; 
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.75;
 
-        //All these copied from drivetrain, need to characterize hanger
         public static final double ksVolts = 0.60992;
         public static final double kgVolts = 0.080289;
         public static final double kvVoltSecondsPerMeter = 10.998;

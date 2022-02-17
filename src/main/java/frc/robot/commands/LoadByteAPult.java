@@ -12,13 +12,9 @@ public class LoadByteAPult extends CommandBase {
   /** Creates a new LoadByteAPult. */
   ByteAPult byteAPult;
   Intake intake;
-  public LoadByteAPult(ByteAPult byteAPultParam, Intake intakeParam) {
+  public LoadByteAPult(ByteAPult byteAPultParam) {
     // Use addRequirements() here to declare subsystem dependencies.
     byteAPult = byteAPultParam;
-    intake = intakeParam;
-    //We don't add intake as a requirement since we are only referencing
-    //it in order to get the shifter state. Be careful not to call any 
-    //actions methods on the intake from this command.
     addRequirements(byteAPult);  
   }
 
@@ -29,7 +25,7 @@ public class LoadByteAPult extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(byteAPult.readyToLoad() & intake.shifterRunning()){
+    if(byteAPult.readyToLoad()){
       byteAPult.openGate();
     } else{
       byteAPult.closeGate();

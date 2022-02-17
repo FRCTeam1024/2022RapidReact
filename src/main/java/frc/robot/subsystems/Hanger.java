@@ -70,8 +70,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   public void useOutput(double output, TrapezoidProfile.State setpoint) { 
     double feedforward = m_feedforward.calculate(setpoint.velocity);
     double volts = output + feedforward;
-    System.out.println("Voltage output: " + volts + " Setpoint.velocity: " + setpoint.velocity);
-    System.out.println("At goal?: " + getController().atGoal());
+ 
     //Check limits switches and apply power if not at limit
     if(atTopLimit() && volts > 0 ) 
         hookLiftMotors.setVoltage(0);
@@ -100,44 +99,6 @@ public class Hanger extends ProfiledPIDSubsystem {
 
   public void stopCarriage() {
     disable();
-  }
-
-  /** 
-   * Runs motors to move carriage (and hook)
-   * 
-   * @param power the percent power to apply (+ carriage up)
-   */
-  public void driveCarriage(double power) {
-    //disable the PID controller so we aren't fighting it while trying to 
-    //directly control the motors
-    disable();
-
-    //Check limits switches and apply power if not at limit
-    if(power > 0) {
-      if(!atTopLimit() && getMeasurement() < HangerConstants.maxTravelMeters - 0.025) 
-        if(power < 0.1){
-          hookLiftMotors.set(power);
-        } else {
-          hookLiftMotors.set(0.1);
-        }
-      else{
-        hookLiftMotors.set(0);
-      }
-    }
-    else if(power < 0) {
-      if(!atBottomLimit() && getMeasurement() > HangerConstants.minTravelMeters + 0.025)
-      if(power > -0.1){
-        hookLiftMotors.set(power);
-      } else {
-        hookLiftMotors.set(-0.1);
-      }
-    else{
-      hookLiftMotors.set(0);
-    }
-    }
-    else {
-      hookLiftMotors.set(0);
-    }
   }
 
   /**
@@ -172,7 +133,7 @@ public class Hanger extends ProfiledPIDSubsystem {
     //process for climbing to next bar should include reaching out with the horizontal hook, 
     //then pushing the vertical hook up to release the robot from the lower bar.
     extendHook();
-    driveCarriage(0.2);
+    moveCarriage(0.2);
   }
 
   /**
@@ -188,9 +149,9 @@ public class Hanger extends ProfiledPIDSubsystem {
 
   private void lowerToBottom(){
     if(!atBottomLimit()){
-      driveCarriage(-0.05);
+      moveCarriage(-0.05);
     }else{
-      driveCarriage(0);
+      moveCarriage(0);
     }
   }
 

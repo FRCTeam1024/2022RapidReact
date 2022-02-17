@@ -56,8 +56,7 @@ public class Drivetrain extends SubsystemBase {
 
     driveLeftFollower.setInverted(false);
     driveLeftLeader.setInverted(false);
-    driveRightFollower.setInverted(true); // these were set to true for driving. When testing with the trajectory code,
-                                          // they're having issues when set to true.
+    driveRightFollower.setInverted(true); 
     driveRightLeader.setInverted(true);
 
     driveLeftFollower.follow(driveLeftLeader);
@@ -141,8 +140,6 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    //tankDriveVolts(0, 0);
-    //setHeading(pose.getRotation().getDegrees());
     m_odometry.resetPosition(pose, getGyroRotation2d());
   }
 

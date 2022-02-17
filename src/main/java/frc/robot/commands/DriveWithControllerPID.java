@@ -6,9 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.oi.Logitech;
@@ -40,8 +38,8 @@ public class DriveWithControllerPID extends CommandBase {
     double leftSpeed = MathUtil.clamp(controller.getLeftStickY(), Constants.DriveConstants.minSpeed, Constants.DriveConstants.maxSpeed);
     double rightSpeed =  MathUtil.clamp(controller.getRightStickY(), Constants.DriveConstants.minSpeed, Constants.DriveConstants.maxSpeed);
     drivetrain.drive(
-        drivePIDController.calculate(, leftSpeed) + driveFeedforward.calculate(leftSpeed),
-        drivePIDController.calculate(, rightSpeed) + driveFeedforward.calculate(rightSpeed)
+        drivePIDController.calculate(drivetrain.getLeftWheelSpeed(), leftSpeed) + driveFeedforward.calculate(leftSpeed),
+        drivePIDController.calculate(drivetrain.getRightWheelSpeed(), rightSpeed) + driveFeedforward.calculate(rightSpeed)
     );
   }
 

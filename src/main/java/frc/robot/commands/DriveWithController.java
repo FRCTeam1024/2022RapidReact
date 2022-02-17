@@ -4,20 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.oi.Logitech;
 import frc.robot.subsystems.Drivetrain;
-import java.lang.Math;
-
-
 
 public class DriveWithController extends CommandBase {
   private final Drivetrain drivetrain;
   private final Logitech controller;
-
-  private final SlewRateLimiter leftFilter = new SlewRateLimiter(2);
-  private final SlewRateLimiter rightFilter = new SlewRateLimiter(2);
 
   private final boolean boostMode;
 
@@ -38,7 +31,6 @@ public class DriveWithController extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //drivetrain.drive(leftFilter.calculate(-controller.getLeftStickY()), rightFilter.calculate(-controller.getRightStickY()));
     double x = -controller.getLeftStickY();
     double y = -controller.getRightStickY();
     if(boostMode){

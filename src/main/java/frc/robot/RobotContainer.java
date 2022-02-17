@@ -42,7 +42,7 @@ public class RobotContainer {
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
   //private final LiftWithController liftWithController = new LiftWithController(hanger, operatorController);
-  private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult, intake);
+  private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();

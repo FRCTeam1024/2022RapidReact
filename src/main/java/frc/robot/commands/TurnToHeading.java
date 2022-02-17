@@ -9,8 +9,6 @@ import frc.robot.subsystems.Drivetrain;
 
 public class TurnToHeading extends CommandBase {
   /** Creates a new AutoCompareAngles. */
-  int cycles;
-  int maxCycles = 100;
   double goalAngle;
   double readAngle;
   Drivetrain drive;
@@ -26,15 +24,12 @@ public class TurnToHeading extends CommandBase {
   @Override
   public void initialize() {
     readAngle = drive.getHeading();
-    cycles = 0;
     finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //Increment the number of cycles spent trying to correct
-    cycles++;
     
     //Check the current heading
     readAngle = drive.getHeading();

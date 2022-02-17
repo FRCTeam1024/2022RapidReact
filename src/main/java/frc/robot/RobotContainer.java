@@ -41,6 +41,7 @@ public class RobotContainer {
 
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
+  private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
 
   //Create a chooser for auto
@@ -107,9 +108,9 @@ public class RobotContainer {
      */
 
     //Deploy Intake
-    operatorController.rightBumper.whenPressed(
+    operatorController.rightTrigger.whenPressed(
       new InstantCommand(intake::deploy,intake),false);
-    operatorController.rightBumper.whenReleased(
+    operatorController.rightTrigger.whenReleased(
       new InstantCommand(intake::stow,intake),false);
 
     //Reverse Intake
@@ -121,16 +122,16 @@ public class RobotContainer {
     //Launch with high pivot
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
-          new InstantCommand(byteAPult::setHigh,byteAPult),
-          new WaitCommand(0.3),
+          new InstantCommand(byteAPult::setNear,byteAPult),
+          new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false);  
 
     //Launch with low pivot
     operatorController.leftBumper.whenPressed(
       new SequentialCommandGroup(
-          new InstantCommand(byteAPult::setLow,byteAPult),
-          new WaitCommand(0.3),
+          new InstantCommand(byteAPult::setFar,byteAPult),
+          new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false); 
   }

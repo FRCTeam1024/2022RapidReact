@@ -50,7 +50,7 @@ public class ByteAPult extends SubsystemBase {
 
     //get in initial positions
     retract();
-    setLow();
+    setFar();
     closeGate();
 
     //Set intitial states and counters
@@ -136,13 +136,13 @@ public class ByteAPult extends SubsystemBase {
   }
 
   // Extend launch pivot to shoot higher
-  public void setHigh() {
+  public void setNear() {
     launchPivotUp.set(true); 
     launchPivotDown.set(false);
   }
 
   // Retract launch pivot to shoot lower
-  public void setLow() {
+  public void setFar() {
     launchPivotUp.set(false);  
     launchPivotDown.set(true);
   }

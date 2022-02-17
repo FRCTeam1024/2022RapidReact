@@ -58,6 +58,9 @@ public final class Constants {
         public static final double kMetersPerRotation = 0.48878;
         public static final double kSensorUnitsPerRotation = 2048*kGearing;
         
+        // minimum and maximum drivetrain speed in meters per second
+        public static final double minSpeed = -1;
+        public static final double maxSpeed = 1;
     }
 
     // Shooter related constants

@@ -118,9 +118,22 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * @return Distance of the left drivetrain motors
+   */
+  public double getLeftEncoderDistance() {
+    return driveLeftLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation;
+  }
+
+  /**
+   * @return Distance of the right drivetrain motors
+   */
+  public double getRightEncoderDistance() {
+    return driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation;
+  }
+
+  /**
    * @return Average distance of the two sides of the drivetrain
    */
-
   public double getAverageEncoderDistance() {
     return ((driveLeftLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation) 
             + (driveRightLeader.getSelectedSensorPosition() * Constants.DriveConstants.kMetersPerRotation / Constants.DriveConstants.kSensorUnitsPerRotation)) / 2.0;

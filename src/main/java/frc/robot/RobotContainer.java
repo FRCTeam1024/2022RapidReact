@@ -133,7 +133,15 @@ public class RobotContainer {
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
-        false); 
+        false);
+        
+    //Launch near shot with one cylinder
+    operatorController.aButton.whenPressed(
+      new SequentialCommandGroup(
+          new InstantCommand(byteAPult::setNear,byteAPult),
+          new WaitCommand(0.5),
+          new InstantCommand(() -> byteAPult.launch(1,.25,80.0,true), byteAPult)),
+        false);  
   }
 
   /**

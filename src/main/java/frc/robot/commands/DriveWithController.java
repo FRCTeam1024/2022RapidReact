@@ -36,7 +36,7 @@ public class DriveWithController extends CommandBase {
     if(boostMode){
       drivetrain.drive(3*x/4,3*y/4);
     }else{
-      drivetrain.drive(x/2,y/2);
+      drivetrain.drive(x/3,y/3);
     }
   }
 

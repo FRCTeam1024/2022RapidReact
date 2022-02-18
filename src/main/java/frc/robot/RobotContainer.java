@@ -83,7 +83,7 @@ public class RobotContainer {
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
 
     //Turbo Mode
-    driverController.rightTrigger.whileHeld(new DriveWithController(drivetrain, driverController, true));
+    driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, true));
 
     //Move Hanger Carriage Manually, stop when buttons released
     driverController.dPadUp.whenPressed(

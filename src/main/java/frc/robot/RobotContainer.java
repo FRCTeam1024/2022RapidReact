@@ -304,6 +304,13 @@ public class RobotContainer {
                       .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")])
                       .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points3-4.wpilib.json")]);
 
+    //Test routine to shoot the preloaded cargo and then run the autonomous path.
+    /**return new SequentialCommandGroup(
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new PathweaverCommand(pathA, drivetrain+
+      -).configure());**/
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.

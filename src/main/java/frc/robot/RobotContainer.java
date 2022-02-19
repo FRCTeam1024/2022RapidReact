@@ -223,6 +223,7 @@ public class RobotContainer {
     //Add commands to auto chooser, set default to null to avoid surprise operation
     m_AutoChooser.setDefaultOption("None", null); 
     m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
+    m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
     m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     m_AutoChooser.addOption("Test", getTestAuto());
 
@@ -263,9 +264,30 @@ public class RobotContainer {
   private Command getBlueThreeBallAuto() {
 
     //Choose paths and combine multiple as necessary
-    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueFirstCargo.wpilib.json")]
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueSecondCargo.wpilib.json")])
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("BlueReturnAndShoot.wpilib.json")]);
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-1.wpilib.json")]
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points1-2.wpilib.json")])
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")]);
+
+
+    // Reset odometry to the starting pose of the trajectory, then Run path following command, 
+    // then stop at the end.
+    return new PathweaverCommand(pathA,drivetrain).configure();
+  }
+
+  /**
+   * Create an auto command using path(s) imported from pathweaver
+   * Decorate with additional functions
+   * Make copies of this method to generate alternate auto routines
+   * 
+   * @return the auto command
+   */
+  private Command getExtendedAuto() {
+
+    //Choose paths and combine multiple as necessary
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-1.wpilib.json")]
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points1-2.wpilib.json")])
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")])
+                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points3-4.wpilib.json")]);
 
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 

@@ -75,7 +75,7 @@ public final class Constants {
 
         public static final double kInputVoltage = 5.0;
 
-        public static final double kLoadSpeed = 0.5;  //No idea if this is what we want
+        public static final double kLoadSpeed = -0.25;  //No idea if this is what we want
     }
 
     // Intake related constants
@@ -86,7 +86,7 @@ public final class Constants {
         
         public static final double kCollectSpeed = 0.5;  //No idea if this is what we want
         public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
-        public static final double kShifterSpeed = 0.5;  //No idea if this is what we want
+        public static final double kShifterSpeed = 0.25;  //No idea if this is what we want
         
     }
 

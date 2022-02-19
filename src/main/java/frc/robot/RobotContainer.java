@@ -53,7 +53,7 @@ public class RobotContainer {
     configureDashboard();
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
-    byteAPult.setDefaultCommand(loadByteAPult);
+    //byteAPult.setDefaultCommand(loadByteAPult);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -112,6 +112,12 @@ public class RobotContainer {
       new InstantCommand(intake::deploy,intake),false);
     operatorController.rightTrigger.whenReleased(
       new InstantCommand(intake::stow,intake),false);
+
+    //Opens Gate while held
+    operatorController.bButton.whenPressed(
+      new InstantCommand(byteAPult::openGate, byteAPult),false);
+    operatorController.bButton.whenReleased(
+      new InstantCommand(byteAPult::closeGate, byteAPult),false);
 
     //Deploy intake to Eject
     operatorController.yButton.whileHeld(

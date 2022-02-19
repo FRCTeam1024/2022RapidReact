@@ -41,7 +41,7 @@ public class RobotContainer {
 
   // Default Commands
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
-  private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
+  //private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
 
   //Create a chooser for auto
@@ -107,19 +107,19 @@ public class RobotContainer {
      * Operator controls
      */
 
-    //Deploy Intake
+    //Deploy Intake to Collect
     operatorController.rightTrigger.whenPressed(
       new InstantCommand(intake::deploy,intake),false);
     operatorController.rightTrigger.whenReleased(
       new InstantCommand(intake::stow,intake),false);
 
-    //Reverse Intake
+    //Deploy intake to Eject
     operatorController.yButton.whileHeld(
       new InstantCommand(intake::eject,intake));
     operatorController.yButton.whenReleased(
       new InstantCommand(intake::stow, intake));
 
-    //Launch with high pivot
+    //Near Shot in High Hub
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
@@ -127,7 +127,7 @@ public class RobotContainer {
           new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false);  
 
-    //Launch with low pivot
+    //Far Shot in High Hub
     operatorController.leftBumper.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
@@ -135,13 +135,22 @@ public class RobotContainer {
           new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
         false);
         
-    //Launch near shot with one cylinder
+    //Launch near shot in low hub
     operatorController.aButton.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(1,.25,80.0,true), byteAPult)),
         false);  
+
+    //Move launch pivot to near shot position
+    operatorController.dPadUp.whenPressed(
+      new InstantCommand(byteAPult::setNear,byteAPult));
+
+    //Move launch pivot to far shot position
+    operatorController.dPadDown.whenPressed(
+      new InstantCommand(byteAPult::setFar,byteAPult));
+  
   }
 
   /**

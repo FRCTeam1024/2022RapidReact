@@ -47,7 +47,7 @@ public class PathweaverCommand extends RamseteCommand {
                     .andThen(new ParallelRaceGroup(
                                 new TurnToHeading(m_Drivetrain, m_Path.sample(m_Path.getTotalTimeSeconds())
                                      .poseMeters.getRotation().getDegrees())),
-                                new WaitCommand(4)); 
+                                new WaitCommand(0.5)); 
     }
     
 }

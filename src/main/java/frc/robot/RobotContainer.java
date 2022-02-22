@@ -279,9 +279,31 @@ public class RobotContainer {
   private Command getBlueThreeBallAuto() {
 
     //Choose paths and combine multiple as necessary
-    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-1.wpilib.json")]
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points1-2.wpilib.json")])
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")]);
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-1.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points1-2.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")];
+
+    /**
+    return new SequentialCommandGroup(
+      //shoot first cargo
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      //run first segment of path
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      //deploy intake - may be moved to earlier because of intake interfering with catapult?
+      new InstantCommand(intake::deploy, intake),
+      //run segments 2 & 3 of path
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      //shoot cargo 2 & 3
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
+      */
 
 
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
@@ -299,22 +321,58 @@ public class RobotContainer {
   private Command getExtendedAuto() {
 
     //Choose paths and combine multiple as necessary
-    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-1.wpilib.json")]
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points1-2.wpilib.json")])
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points2-3.wpilib.json")])
-                      .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points3-4.wpilib.json")]);
+    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-5.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-6.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points6-5.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-5.wpilib.json")];
 
     //Test routine to shoot the preloaded cargo and then run the autonomous path.
-    /**return new SequentialCommandGroup(
+    return new SequentialCommandGroup(
+      //lineup for first shot
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      //shoot cargo 1
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      //pick up cargo 2 and return
+      new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      //shoot cargo 2
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      //grab cargo 3 and return
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      new PathweaverCommand(pathD, drivetrain).configure(),
+      //shoot cargo 3
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
+
+    /**
+    return new SequentialCommandGroup(
+      //shoot first cargo
       new InstantCommand(byteAPult::setNear,byteAPult),
       new WaitCommand(0.5),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
-      new PathweaverCommand(pathA, drivetrain+
-      -).configure());**/
-
+      //run first segment of path
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      //deploy intake - may be moved to earlier because of intake interfering with catapult?
+      new InstantCommand(intake::deploy, intake),
+      //run segments 2 & 3 of path
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      //shoot cargo 2 & 3
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new InstantCommand(byteAPult::setNear,byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      //run off to pick up cargo #4
+      new PathweaverCommand(pathD, drivetrain));
+      */
+      
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
-    return new PathweaverCommand(pathA,drivetrain).configure();
+    //return new PathweaverCommand(pathA,drivetrain).configure();
   }
 
    /**

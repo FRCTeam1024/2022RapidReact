@@ -50,7 +50,7 @@ public class ByteAPult extends SubsystemBase {
 
     //get in initial positions
     retract();
-    setFar();
+    setNear();
     closeGate();
 
     //Set intitial states and counters

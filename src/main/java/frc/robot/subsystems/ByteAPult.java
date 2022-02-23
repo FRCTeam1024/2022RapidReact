@@ -11,20 +11,19 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
 
   private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
-  private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
+  private final Solenoid launchPivotUp = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
+  private final Solenoid launchPivotDown = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveDown);
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
@@ -38,9 +37,6 @@ public class ByteAPult extends SubsystemBase {
   private final Color blue = new Color(0, 0, 1);
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
-
-  private final DigitalInput loaded1 = new DigitalInput();
-  private final DigitalInput loaded2 = new DigitalInput();
 
   private boolean armRetracted;
   private boolean cargoLoaded;
@@ -141,12 +137,14 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setNear() {
-    launchPivot.set(true); 
+    launchPivotUp.set(true); 
+    launchPivotDown.set(false);
   }
 
   // Retract launch pivot to shoot lower
   public void setFar() {
-    launchPivot.set(false);  
+    launchPivotUp.set(false);  
+    launchPivotDown.set(true);
   }
 
   // Close the load gate. use the loadMotor

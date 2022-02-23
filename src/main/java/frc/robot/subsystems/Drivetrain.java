@@ -8,6 +8,7 @@ import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
@@ -63,7 +64,13 @@ public class Drivetrain extends SubsystemBase {
     driveRightFollower.follow(driveRightLeader);
 
     driveLeftFollower.set(ControlMode.Follower, Constants.DriveConstants.driveLeftLeaderID);
+    driveLeftFollower.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    driveLeftFollower.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
+
     driveRightFollower.set(ControlMode.Follower, Constants.DriveConstants.driveRightLeaderID);
+    driveRightFollower.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    driveRightFollower.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
+
 
     driveLeftLeader.setSensorPhase(false);
     driveRightLeader.setSensorPhase(false);

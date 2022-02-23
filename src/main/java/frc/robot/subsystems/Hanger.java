@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -59,6 +60,9 @@ public class Hanger extends ProfiledPIDSubsystem {
     hookLiftFollower.setNeutralMode(NeutralMode.Brake);
 
     hookLiftFollower.follow(hookLiftLeader);
+    hookLiftFollower.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    hookLiftFollower.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
+
 
     hookLiftLeader.setSelectedSensorPosition(0);
     hookLiftFollower.setSelectedSensorPosition(0);

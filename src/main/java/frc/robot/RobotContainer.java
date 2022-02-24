@@ -226,6 +226,18 @@ public class RobotContainer {
         .withSize(2,1)
         .withPosition(1,2);
 
+    diagnosticsTab.addBoolean("CargoLoaded", byteAPult::cargoPresent)
+        .withSize(2,1)
+        .withPosition(4,2);
+    
+    diagnosticsTab.addBoolean("Loaded1", byteAPult::returnLoaded1)
+        .withSize(1,1)
+        .withPosition(4,3);
+
+    diagnosticsTab.addBoolean("Loaded2", byteAPult::returnLoaded2)
+        .withSize(1,1)
+        .withPosition(5,3);
+
     /**
      * Driver's operator interface
      */

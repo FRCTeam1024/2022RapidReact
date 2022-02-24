@@ -8,17 +8,13 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
@@ -30,29 +26,18 @@ public class ByteAPult extends SubsystemBase {
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
-  private final ColorSensorV3 cargoSensor = new ColorSensorV3(I2C.Port.kMXP);
-  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kOnboard);
-
-  private final ColorMatch cargoColorMatcher = new ColorMatch();
-
-  //Basic setup values for red and blue - obviously will need to be finetuned a bit
-  private final Color red = new Color(0.808, 0.215, 0.160);
-  private final Color blue = new Color(0, 0, 1);
+  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
-  private final DigitalInput loaded1 = new DigitalInput(7);
-  private final DigitalInput loaded2 = new DigitalInput(8);
+  private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
+  private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
 
   private boolean armRetracted;
-  private boolean cargoLoaded;
   private int lastArm;
-  private int lastCargo;
-
+ 
   /** Creates a new Shooter. */
   public ByteAPult() {
-    cargoColorMatcher.addColorMatch(red);
-    cargoColorMatcher.addColorMatch(blue);
 
     //get in initial positions
     retract();
@@ -61,9 +46,7 @@ public class ByteAPult extends SubsystemBase {
 
     //Set intitial states and counters
     armRetracted = true;
-    cargoLoaded = false;
     lastArm = 0;
-    lastCargo = 0; 
 
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
@@ -80,35 +63,28 @@ public class ByteAPult extends SubsystemBase {
         armRetracted = false;
         lastArm = 0;
       }
-      else if(lastArm < 5) {  //cycles before we accept the arm really is down
-        lastArm++;
+      else  {
+        if(lastArm < 5) {  //cycles before we accept the arm really is down
+          lastArm++;
+        }
+        else {
+          armRetracted = true;
+        }
       }
-      else {
-        armRetracted = true;
-      }
-    }else{
+    }
+    else{
       if(launcherLeft.get() == true || launcherRight.get() == true) { //700 is assumed raw sensor value, adjust as needed
         armRetracted = false;
         lastArm = 0;
       }
-      else if(lastArm < 5) {  //cycles before we accept the arm really is down
-        lastArm++;
-      }
       else {
-        armRetracted = true;
+        if(lastArm < 5) {  //cycles before we accept the arm really is down
+          lastArm++;
+        }
+        else {
+          armRetracted = true;
+        }
       }
-    }
-    
-    //Sensor debouncers
-    if(cargoSensor.getProximity() < 300) { //300 is assumed raw sensor value, adjust as needed
-      cargoLoaded = true;
-      lastCargo = 0;
-    }
-    else if(lastCargo < 25) { //cycles before we accept the cargo really is gone
-      lastCargo++;
-    }
-    else {
-      cargoLoaded = false;
     }
     
   }
@@ -175,15 +151,8 @@ public class ByteAPult extends SubsystemBase {
    * 
    * @return TRUE if a ball is in the ByteAPult
    */
-  // Alex: Program keeps having trouble finding the color sensor, even if it is plugged into the correct port, etc.
-  //       It also keeps mentioning that there are known issues with the onboard I2C port, and that it might be better to use the MXP board.
-  //       It's possible that the known issues with the I2C port could cause the code to simply ignore what's plugged in? Not certain.
+  
   public boolean readyToLaunch(double minPressure) {
-    /**if(cargoColorMatcher.matchColor(cargoSensor.getColor()).equals(new ColorMatchResult(red, 0.95))){
-      return true;
-    }else{
-      return false;
-    }**/
     return armRetracted() & cargoPresent() & getPressure() > minPressure;
   }
 
@@ -207,16 +176,14 @@ public class ByteAPult extends SubsystemBase {
     return armRetracted;
   }
 
-  public Color getColor() {
-    return cargoSensor.getColor();
-  }
-
   /**
    * Checks if cargo is in the launcher.
    * 
    * @return TRUE if cargo present
    */
   public boolean cargoPresent() {
+    boolean cargoLoaded;
+
     if(loaded1.get() && !loaded2.get()){
       cargoLoaded = false;
     }else if(!loaded1.get() && loaded2.get()){
@@ -236,21 +203,13 @@ public class ByteAPult extends SubsystemBase {
   }
 
   /**
-   * WIP - This method should read the analog pressureSensor value, 
+   * This method should read the analog pressureSensor value, 
    * convert it to units of PSI and return the value
    * 
    * @return The system high side pressure in PSI
    */
   public double getPressure() {
     return 285 * (pressureSensor.getVoltage() / Constants.ShooterConstants.kInputVoltage) - 25;
-  }
-
-  /**
-   * For color sensor testing only
-   * @return the proximity value from the color sensor in raw units
-   */
-  public double getDistance() {
-    return cargoSensor.getProximity();
   }
 
   /**

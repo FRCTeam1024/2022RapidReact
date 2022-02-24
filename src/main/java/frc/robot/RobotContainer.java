@@ -202,10 +202,6 @@ public class RobotContainer {
         .withSize(2,1)
         .withPosition(4,1);
 
-    diagnosticsTab.addNumber("ColorSensorDistance", byteAPult::getDistance)
-        .withSize(2,1)
-        .withPosition(6,1);
-
     diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(80.0)) //I'm hoping this lambda thing works like this
         .withSize(1,1)
         .withPosition(6,2);

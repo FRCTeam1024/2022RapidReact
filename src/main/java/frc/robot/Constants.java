@@ -73,6 +73,9 @@ public final class Constants {
 
         public static final int kPressureAnalogID = 0;
 
+        public static final int loaded1DigID = 7;
+        public static final int loaded2DigID = 8;
+
         public static final double kInputVoltage = 5.0;
 
         public static final double kLoadSpeed = -0.25;  //No idea if this is what we want
@@ -84,9 +87,9 @@ public final class Constants {
         public static final int intakeMotorID = 15;
         public static final int shifterMotorID = 16;
         
-        public static final double kCollectSpeed = 0.3;  //No idea if this is what we want
-        public static final double kEjectSpeed = -0.2;  //Also no idea if this is what we want
-        public static final double kShifterSpeed = 0.38;  //No idea if this is what we want
+        public static final double kCollectSpeed = 0.3;  
+        public static final double kEjectSpeed = -0.2;  
+        public static final double kShifterSpeed = 0.38;  
         
     }
 

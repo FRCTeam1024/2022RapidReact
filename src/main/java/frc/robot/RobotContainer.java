@@ -254,6 +254,7 @@ public class RobotContainer {
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
     m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     m_AutoChooser.addOption("Test", getTestAuto());
+    m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
 
     //Put the auto chooser on the dashboard
     driverTab.add("Auto Mode",m_AutoChooser)
@@ -364,9 +365,30 @@ public class RobotContainer {
       new PathweaverCommand(pathE, drivetrain));
 
       
+
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     //return new PathweaverCommand(pathA,drivetrain).configure();
+  }
+
+  private Command getShootMoveShoot() {
+
+    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points10-11.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points11-12.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points12-11.wpilib.json")];
+
+    return new SequentialCommandGroup(
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      //shoot cargo 1
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      //pick up cargo 2 and return
+      new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new PathweaverCommand(pathB, drivetrain).configure(),
+       //shoot cargo 2
+       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
+
   }
 
    /**

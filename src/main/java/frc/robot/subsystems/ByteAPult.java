@@ -11,14 +11,16 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+<<<<<<< HEAD
+=======
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
+>>>>>>> df1b1f6b0255d04aa4143728bbf73caf75a9be8b
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
@@ -41,9 +43,12 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
+<<<<<<< HEAD
+=======
   private final DigitalInput loaded1 = new DigitalInput(7);
   private final DigitalInput loaded2 = new DigitalInput(8);
 
+>>>>>>> df1b1f6b0255d04aa4143728bbf73caf75a9be8b
   private boolean armRetracted;
   private boolean cargoLoaded;
   private int lastArm;

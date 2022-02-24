@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -23,6 +24,8 @@ public class ByteAPult extends SubsystemBase {
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
   private final Solenoid launchPivotUp = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
   private final Solenoid launchPivotDown = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveDown);
+
+  private final Compressor compressor = new Compressor(Constants.PCMID, PneumaticsModuleType.CTREPCM);
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
@@ -209,7 +212,16 @@ public class ByteAPult extends SubsystemBase {
    * @return The system high side pressure in PSI
    */
   public double getPressure() {
-    return 285 * (pressureSensor.getVoltage() / Constants.ShooterConstants.kInputVoltage) - 25;
+
+    double pressure = 285 * (pressureSensor.getVoltage() / Constants.ShooterConstants.kInputVoltage) - 25;
+
+    //Error check the sensor by looking for a descrepency between the reading and 
+    //the state of the pressure switch.  If there is, assume the pressure switch is
+    //correct and return a high value, otherwise return the measured pressure.
+    if(pressure < 60 && !compressor.getPressureSwitchValue()) {
+      pressure = 120;
+    }
+    return pressure;
   }
 
   /**

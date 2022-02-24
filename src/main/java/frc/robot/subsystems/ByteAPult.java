@@ -80,13 +80,15 @@ public class ByteAPult extends SubsystemBase {
         armRetracted = false;
         lastArm = 0;
       }
-      else {
+      else if(launcherLeft.get() == false && launcherRight.get()== false){
         if(lastArm < 5) {  //cycles before we accept the arm really is down
           lastArm++;
         }
         else {
           armRetracted = true;
         }
+      }else{
+        armRetracted = false;
       }
     }
     
@@ -146,6 +148,10 @@ public class ByteAPult extends SubsystemBase {
   //Open the load gate. use the loadValve
   public void openGate() {
     loadGate.set(Constants.ShooterConstants.kLoadSpeed);    //Runs motor forwards to open gate, may need to be reversed depending on how the motor is setup
+  }
+
+  public boolean returnArmSensorConnected(){
+    return armSensor.isConnected();
   }
 
   /**

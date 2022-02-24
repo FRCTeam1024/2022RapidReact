@@ -53,7 +53,7 @@ public class RobotContainer {
     configureDashboard();
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
-    //byteAPult.setDefaultCommand(loadByteAPult);
+    byteAPult.setDefaultCommand(loadByteAPult);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -130,7 +130,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
         false);  
 
     //Far Shot in High Hub
@@ -138,7 +138,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
         false);
         
     //Launch near shot in low hub
@@ -146,7 +146,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(1,.25,80.0,true), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(1,.25,80.0,false), byteAPult)),
         false);  
 
     //Move launch pivot to near shot position
@@ -233,6 +233,10 @@ public class RobotContainer {
     diagnosticsTab.addBoolean("Loaded2", byteAPult::returnLoaded2)
         .withSize(1,1)
         .withPosition(5,3);
+
+    diagnosticsTab.addBoolean("ArmSensor", byteAPult::returnArmSensorConnected)
+        .withSize(1,1)
+        .withPosition(3,3);
 
     /**
      * Driver's operator interface
@@ -378,12 +382,12 @@ public class RobotContainer {
       //shoot cargo 1
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
       //pick up cargo 2 and return
-      new InstantCommand(intake::deploy, intake),
+      //new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathA, drivetrain).configure(),
       new PathweaverCommand(pathB, drivetrain).configure(),
-       //shoot cargo 2
-       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
+      //shoot cargo 2
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
 
   }
 

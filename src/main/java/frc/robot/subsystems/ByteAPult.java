@@ -16,6 +16,11 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+<<<<<<< HEAD
+=======
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+>>>>>>> df1b1f6b0255d04aa4143728bbf73caf75a9be8b
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
@@ -38,6 +43,12 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
+<<<<<<< HEAD
+=======
+  private final DigitalInput loaded1 = new DigitalInput(7);
+  private final DigitalInput loaded2 = new DigitalInput(8);
+
+>>>>>>> df1b1f6b0255d04aa4143728bbf73caf75a9be8b
   private boolean armRetracted;
   private boolean cargoLoaded;
   private int lastArm;
@@ -58,6 +69,10 @@ public class ByteAPult extends SubsystemBase {
     cargoLoaded = false;
     lastArm = 0;
     lastCargo = 0; 
+
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
   }
 
   @Override
@@ -207,7 +222,22 @@ public class ByteAPult extends SubsystemBase {
    * @return TRUE if cargo present
    */
   public boolean cargoPresent() {
+    if(loaded1.get() && !loaded2.get()){
+      cargoLoaded = false;
+    }else if(!loaded1.get() && loaded2.get()){
+      cargoLoaded = true;
+    }else{
+      return true;
+    }
     return cargoLoaded;
+  }
+
+  public boolean returnLoaded1(){
+    return loaded1.get();
+  }
+
+  public boolean returnLoaded2(){
+    return loaded2.get();
   }
 
   /**

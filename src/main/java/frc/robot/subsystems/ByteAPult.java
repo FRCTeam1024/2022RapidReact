@@ -17,6 +17,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.revrobotics.CANSparkMax;
 
@@ -24,7 +25,8 @@ public class ByteAPult extends SubsystemBase {
 
   private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
-  private final Solenoid launchPivot = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
+  private final Solenoid launchPivotUp = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
+  private final Solenoid launchPivotDown = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveDown);
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
@@ -39,8 +41,8 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
-  private final DigitalInput loaded1 = new DigitalInput();
-  private final DigitalInput loaded2 = new DigitalInput();
+  private final DigitalInput loaded1 = new DigitalInput(7);
+  private final DigitalInput loaded2 = new DigitalInput(8);
 
   private boolean armRetracted;
   private boolean cargoLoaded;
@@ -62,6 +64,10 @@ public class ByteAPult extends SubsystemBase {
     cargoLoaded = false;
     lastArm = 0;
     lastCargo = 0; 
+
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
+    loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
   }
 
   @Override
@@ -141,12 +147,14 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setNear() {
-    launchPivot.set(true); 
+    launchPivotUp.set(true); 
+    launchPivotDown.set(false);
   }
 
   // Retract launch pivot to shoot lower
   public void setFar() {
-    launchPivot.set(false);  
+    launchPivotUp.set(false);  
+    launchPivotDown.set(true);
   }
 
   // Close the load gate. use the loadMotor
@@ -209,7 +217,22 @@ public class ByteAPult extends SubsystemBase {
    * @return TRUE if cargo present
    */
   public boolean cargoPresent() {
+    if(loaded1.get() && !loaded2.get()){
+      cargoLoaded = false;
+    }else if(!loaded1.get() && loaded2.get()){
+      cargoLoaded = true;
+    }else{
+      return true;
+    }
     return cargoLoaded;
+  }
+
+  public boolean returnLoaded1(){
+    return loaded1.get();
+  }
+
+  public boolean returnLoaded2(){
+    return loaded2.get();
   }
 
   /**

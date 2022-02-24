@@ -7,9 +7,11 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -28,6 +30,13 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     intakeCamera = CameraServer.startAutomaticCapture();
+
+    shifterMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
+    shifterMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
+    shifterMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+
+    intakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
   }
 
   @Override

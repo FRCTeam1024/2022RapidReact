@@ -33,6 +33,8 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
+  
+
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
 
@@ -128,14 +130,22 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setNear() {
-    launchPivotUp.set(true); 
-    launchPivotDown.set(false);
+    if(Constants.CompBot){
+
+    }else{
+      launchPivotUp.set(true); 
+      launchPivotDown.set(false);
+    }
   }
 
   // Retract launch pivot to shoot lower
   public void setFar() {
-    launchPivotUp.set(false);  
-    launchPivotDown.set(true);
+    if(Constants.CompBot){
+
+    }else{
+      launchPivotUp.set(false);  
+      launchPivotDown.set(true);
+    }
   }
 
   // Close the load gate. use the loadMotor

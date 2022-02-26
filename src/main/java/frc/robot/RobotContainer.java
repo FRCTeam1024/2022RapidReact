@@ -40,7 +40,7 @@ public class RobotContainer {
   private final Logitech operatorController = new Logitech(Constants.Inputs.operatorControllerID);
 
   // Default Commands
-  private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, false);
+  private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, 1);
   //private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
 
@@ -83,7 +83,12 @@ public class RobotContainer {
     driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
 
     //Turbo Mode
-    driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, true));
+    driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, 2));
+    //Slow mode
+    driverController.rightTrigger.whileHeld(new DriveWithController(drivetrain, driverController, 0));
+
+    //Reset carriage encoders
+    driverController.bButton.whenPressed(new InstantCommand(hanger::resetCarriage));
 
     //Move Hanger Carriage Manually, stop when buttons released
     driverController.dPadUp.whenPressed(
@@ -248,13 +253,13 @@ public class RobotContainer {
         .withPosition(0,0);
 
     //Add commands to auto chooser, set default to null to avoid surprise operation
-    m_AutoChooser.setDefaultOption("None", null); 
-    m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
+    m_AutoChooser.setDefaultOption("None", null);   
     m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
-    m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
-    m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
-    m_AutoChooser.addOption("Test", getTestAuto());
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
+    m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
+    //m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
+    //m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
+    //m_AutoChooser.addOption("Test", getTestAuto());
 
     //Put the auto chooser on the dashboard
     driverTab.add("Auto Mode",m_AutoChooser)

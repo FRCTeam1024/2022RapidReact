@@ -146,7 +146,7 @@ public class Hanger extends ProfiledPIDSubsystem {
    * DP: Not sure if we want to use this or not.
    * 
    */
-  private void resetCarriage() {
+  public void resetCarriage() {
     if(atBottomLimit())
       hookLiftLeader.setSelectedSensorPosition(0);
   }

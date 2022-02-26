@@ -12,15 +12,15 @@ public class DriveWithController extends CommandBase {
   private final Drivetrain drivetrain;
   private final Logitech controller;
 
-  private final boolean boostMode;
+  private final int powerLevel;
 
   /** Creates a new DriveWithController. */
-  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam, boolean powerBoost) {
+  public DriveWithController(Drivetrain driveSubsystem, Logitech controllerParam, int powerMode) {
     // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = driveSubsystem;
     addRequirements(driveSubsystem);
     controller = controllerParam;
-    boostMode = powerBoost;
+    powerLevel = powerMode;
   }
 
   // Called when the command is initially scheduled.
@@ -33,10 +33,12 @@ public class DriveWithController extends CommandBase {
   public void execute() {
     double x = -controller.getLeftStickY();
     double y = -controller.getRightStickY();
-    if(boostMode){
+    if(powerLevel == 2){
       drivetrain.drive(3*x/4,3*y/4);
-    }else{
+    }else if(powerLevel == 1){
       drivetrain.drive(x/3,y/3);
+    }else if(powerLevel == 0){
+      drivetrain.drive(x/4, y/4);
     }
   }
 

@@ -43,6 +43,7 @@ public class RobotContainer {
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, 1);
   //private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
+  private final Command stowIntake = new InstantCommand(intake::stow, intake);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -54,6 +55,7 @@ public class RobotContainer {
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
+    intake.setDefaultCommand(stowIntake);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -101,13 +103,21 @@ public class RobotContainer {
       new InstantCommand(() -> hanger.disable(),hanger),false);
 
     //Move the monkey arm
-    driverController.aButton.whenPressed(
+    driverController.aButton.whileHeld(
       new InstantCommand(hanger::retractHook, hanger)
     );
-    driverController.yButton.whenPressed(
+
+    driverController.aButton.whenReleased(
+      new InstantCommand(hanger::setNeutral, hanger)
+    );
+
+    driverController.yButton.whileHeld(
       new InstantCommand(hanger::extendHook, hanger)
     );
     
+    driverController.yButton.whenReleased(
+      new InstantCommand(hanger::setNeutral, hanger)
+    );
     /**
      * Operator controls
      */
@@ -387,7 +397,7 @@ public class RobotContainer {
       //shoot cargo 1
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
       //pick up cargo 2 and return
-      //new InstantCommand(intake::deploy, intake),
+      new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathA, drivetrain).configure(),
       new PathweaverCommand(pathB, drivetrain).configure(),
@@ -396,6 +406,26 @@ public class RobotContainer {
 
   }
 
+  private Command getFarBall(){
+  
+    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points13-14.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points14-15.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points15-14.wpilib.json")];
+
+    return new SequentialCommandGroup(
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+
+      new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)
+      
+    );
+  
+  }
    /**
    * Create an auto command using path(s) imported from pathweaver
    * Decorate with additional functions

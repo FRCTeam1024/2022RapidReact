@@ -108,7 +108,7 @@ public final class Constants {
         public static final double maxTravelMeters = 0.8; 
 
         public static final double kMaxSpeedMetersPerSecond = 1.5; 
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.75;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
 
         public static final double ksVolts = 0.60992;
         public static final double kgVolts = 0.080289;

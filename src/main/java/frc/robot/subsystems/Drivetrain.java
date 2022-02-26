@@ -190,6 +190,10 @@ public class Drivetrain extends SubsystemBase {
     return driveRightLeader.getSelectedSensorVelocity();
   }
 
+  public DifferentialDrive getDiffDrive(){
+    return m_drive;
+  }
+
     /**
    * Returns a current Rotation2d object
    * 

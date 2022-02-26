@@ -234,7 +234,7 @@ public class ByteAPult extends SubsystemBase {
     //Error check the sensor by looking for a descrepency between the reading and 
     //the state of the pressure switch.  If there is, assume the pressure switch is
     //correct and return a high value, otherwise return the measured pressure.
-    if(pressure < 60 && !compressor.getPressureSwitchValue()) {
+    if(pressure < 60 && compressor.getPressureSwitchValue()) {
       pressure = 120;
     }
     return pressure;

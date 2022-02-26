@@ -9,6 +9,7 @@ import java.util.Arrays;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -43,7 +44,6 @@ public class RobotContainer {
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, 1);
   //private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
-  private final Command stowIntake = new InstantCommand(intake::stow, intake);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -55,7 +55,6 @@ public class RobotContainer {
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
-    intake.setDefaultCommand(stowIntake);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -161,7 +160,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(1,.25,80.0,false), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(1,.25,40.0,false), byteAPult)),
         false);  
 
     //Move launch pivot to near shot position
@@ -186,12 +185,6 @@ public class RobotContainer {
     /**
      * Diagnostics for programmers
      */
-    
-     //Display the name and version number of the code.
-    diagnosticsTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
-       .withSize(3,1)
-       .withPosition(0,0);
-
     //Add command status to dashboard
     diagnosticsTab.add("DrivetrainCommand",drivetrain)
        .withSize(2,1)
@@ -200,30 +193,42 @@ public class RobotContainer {
     diagnosticsTab.add("HangerCommand", hanger)
        .withSize(2,1)
        .withPosition(8,1);
+    
+    diagnosticsTab.add("IntakeCommand", intake)
+      .withSize(2,1)
+      .withPosition(8,2);
+    
+    diagnosticsTab.add("Byte-A-PultCommand", byteAPult)
+      .withSize(2,1)
+      .withPosition(8,3);
+    
+    diagnosticsTab.add("LimelightCommand", limelight)
+      .withSize(2,1)
+      .withPosition(8,4);
 
     diagnosticsTab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
         .withSize(3,1)
-        .withPosition(3,0);
+        .withPosition(0,4);
 
     diagnosticsTab.addNumber("RobotHeading", drivetrain::getHeading)
         .withSize(2,1)
-        .withPosition(0,1);
+        .withPosition(0,0);
 
     diagnosticsTab.addNumber("LeftMotors", drivetrain::getLeftWheelSpeed)
         .withSize(2,1)
-        .withPosition(2,1);
+        .withPosition(2,0);
 
     diagnosticsTab.addNumber("RightMotors", drivetrain::getRightWheelSpeed)
         .withSize(2,1)
-        .withPosition(4,1);
+        .withPosition(4,0);
 
     diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(80.0)) //I'm hoping this lambda thing works like this
         .withSize(1,1)
-        .withPosition(6,2);
+        .withPosition(4,1);
 
     diagnosticsTab.addNumber("Pressure", byteAPult::getPressure)
         .withSize(2,1)
-        .withPosition(6,3);
+        .withPosition(2,3);
 
     diagnosticsTab.addBoolean("BottomLimit", hanger::atBottomLimit)
         .withSize(1,1)
@@ -235,23 +240,23 @@ public class RobotContainer {
 
     diagnosticsTab.addNumber("HangerPosition", hanger::getMeasurement)
         .withSize(2,1)
-        .withPosition(1,2);
+        .withPosition(0,1);
 
     diagnosticsTab.addBoolean("CargoLoaded", byteAPult::cargoPresent)
         .withSize(2,1)
-        .withPosition(4,2);
+        .withPosition(2,1);
     
     diagnosticsTab.addBoolean("Loaded1", byteAPult::returnLoaded1)
         .withSize(1,1)
-        .withPosition(4,3);
+        .withPosition(2,2);
 
     diagnosticsTab.addBoolean("Loaded2", byteAPult::returnLoaded2)
         .withSize(1,1)
-        .withPosition(5,3);
+        .withPosition(3,2);
 
-    diagnosticsTab.addBoolean("ArmSensor", byteAPult::returnArmSensorConnected)
+    diagnosticsTab.addBoolean("ArmSensor", byteAPult::armRetracted)
         .withSize(1,1)
-        .withPosition(3,3);
+        .withPosition(4,2);
 
     /**
      * Driver's operator interface

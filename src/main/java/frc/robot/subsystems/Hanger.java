@@ -140,6 +140,10 @@ public class Hanger extends ProfiledPIDSubsystem {
     moveCarriage(0.2);
   }
 
+  public void setNeutral() {
+    monkeyArm.set(Value.kOff);
+  }
+
   /**
    * Resets encoders to 0 at bottom carriage position
    * 

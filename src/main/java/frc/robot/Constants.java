@@ -38,6 +38,9 @@ public final class Constants {
         public static final int driverRightFollowerID = 13;
         public static final int driveRightLeaderID = 14;   
 
+        // Gyro ID
+        public static final int gyroID = 4;
+
         //need to characterize to find appropriate values
         public static final double ksVolts = 0.64048;
         public static final double kvVoltSecondsPerMeter = 2.3491;

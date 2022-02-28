@@ -75,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
     driveLeftLeader.setSensorPhase(false);
     driveRightLeader.setSensorPhase(false);
 
-    pigeon = new WPI_PigeonIMU(4);
+    pigeon = new WPI_PigeonIMU(Constants.DriveConstants.gyroID);
     resetEncoders();
     zeroHeading();
 
@@ -190,11 +190,7 @@ public class Drivetrain extends SubsystemBase {
     return driveRightLeader.getSelectedSensorVelocity();
   }
 
-  public DifferentialDrive getDiffDrive(){
-    return m_drive;
-  }
-
-    /**
+  /**
    * Returns a current Rotation2d object
    * 
    * @return the current Rotation2d based on gyro yaw 

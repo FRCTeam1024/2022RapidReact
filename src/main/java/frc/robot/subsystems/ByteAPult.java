@@ -131,7 +131,7 @@ public class ByteAPult extends SubsystemBase {
   // Extend launch pivot to shoot higher
   public void setNear() {
     if(Constants.CompBot){
-
+      launchPivotUp.set(true);
     }else{
       launchPivotUp.set(true); 
       launchPivotDown.set(false);
@@ -141,7 +141,7 @@ public class ByteAPult extends SubsystemBase {
   // Retract launch pivot to shoot lower
   public void setFar() {
     if(Constants.CompBot){
-
+      launchPivotUp.set(false);
     }else{
       launchPivotUp.set(false);  
       launchPivotDown.set(true);

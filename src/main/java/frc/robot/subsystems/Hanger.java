@@ -127,19 +127,6 @@ public class Hanger extends ProfiledPIDSubsystem {
     return !bottomLimit.get();
   }
 
-  /**
-   * Runs the horizontal hook motors to pull the robot to the next bar
-   * 
-   * DP: Not sure we actually want this level of automation.  Lets see if we can do in 
-   * under manual control first.
-   */
-  private void climbNextBar() {
-    //process for climbing to next bar should include reaching out with the horizontal hook, 
-    //then pushing the vertical hook up to release the robot from the lower bar.
-    extendHook();
-    moveCarriage(0.2);
-  }
-
   public void setNeutral() {
     monkeyArm.set(Value.kOff);
   }

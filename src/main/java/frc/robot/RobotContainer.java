@@ -79,8 +79,13 @@ public class RobotContainer {
      */
 
     // Limelight Pipelines
-    driverController.leftTrigger.whileActiveOnce(new InstantCommand(limelight::setTargetPipe, limelight),false);
-    driverController.leftTrigger.whenInactive(new InstantCommand(limelight::setDriverPipe, limelight),false);
+    driverController.leftTrigger.whenHeld(
+      new SequentialCommandGroup(
+        new InstantCommand(limelight::setTargetPipe),
+        new LimelightAutoAim(limelight, drivetrain)
+      )
+    );
+
 
     //Turbo Mode
     driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, 2));
@@ -138,6 +143,13 @@ public class RobotContainer {
     operatorController.yButton.whenReleased(
       new InstantCommand(intake::stow, intake));
 
+    //Reverse ballFeed
+    operatorController.xButton.whileHeld(
+      new InstantCommand(byteAPult::reverseGate, byteAPult));
+    operatorController.xButton.whenReleased(
+      new InstantCommand(byteAPult::closeGate, byteAPult));
+
+
     //Near Shot in High Hub
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
@@ -151,7 +163,8 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+          new InstantCommand(byteAPult::setNear,byteAPult)),
         false);
         
     //Launch near shot in low hub

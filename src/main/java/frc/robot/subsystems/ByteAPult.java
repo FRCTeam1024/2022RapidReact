@@ -69,7 +69,7 @@ public class ByteAPult extends SubsystemBase {
         lastArm = 0;
       }
       else  {
-        if(lastArm < 5) {  //cycles before we accept the arm really is down
+        if(lastArm < 50) {  //cycles before we accept the arm really is down
           lastArm++;
         }
         else {
@@ -83,7 +83,7 @@ public class ByteAPult extends SubsystemBase {
         lastArm = 0;
       }
       else if(launcherLeft.get() == false && launcherRight.get()== false){
-        if(lastArm < 5) {  //cycles before we accept the arm really is down
+        if(lastArm < 50) {  //cycles before we accept the arm really is down
           lastArm++;
         }
         else {
@@ -131,7 +131,7 @@ public class ByteAPult extends SubsystemBase {
   // Extend launch pivot to shoot higher
   public void setNear() {
     if(Constants.CompBot){
-      launchPivotUp.set(true);
+      launchPivotUp.set(false);
     }else{
       launchPivotUp.set(true); 
       launchPivotDown.set(false);
@@ -141,7 +141,7 @@ public class ByteAPult extends SubsystemBase {
   // Retract launch pivot to shoot lower
   public void setFar() {
     if(Constants.CompBot){
-      launchPivotUp.set(false);
+      launchPivotUp.set(true);
     }else{
       launchPivotUp.set(false);  
       launchPivotDown.set(true);
@@ -158,6 +158,10 @@ public class ByteAPult extends SubsystemBase {
   //Open the load gate. use the loadValve
   public void openGate() {
     loadGate.set(Constants.ShooterConstants.kLoadSpeed);    //Runs motor forwards to open gate, may need to be reversed depending on how the motor is setup
+  }
+
+  public void reverseGate(){
+    loadGate.set(-Constants.ShooterConstants.kLoadSpeed);
   }
 
   public boolean returnArmSensorConnected(){

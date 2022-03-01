@@ -30,7 +30,6 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
-    disableLeds();
     setDriverPipe();
   }
 

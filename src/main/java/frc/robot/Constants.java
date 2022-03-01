@@ -92,7 +92,7 @@ public final class Constants {
         
         public static final double kCollectSpeed = 0.5;  
         public static final double kEjectSpeed = -0.2;  
-        public static final double kShifterSpeed = 0.30;  
+        public static final double kShifterSpeed = .80;  
         
     }
 

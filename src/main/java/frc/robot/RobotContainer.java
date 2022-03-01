@@ -284,6 +284,7 @@ public class RobotContainer {
     m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
+    m_AutoChooser.addOption("Far Ball Run - might not be enough space in shop", getFarBall());
     //m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
     //m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     //m_AutoChooser.addOption("Test", getTestAuto());
@@ -380,20 +381,23 @@ public class RobotContainer {
       //lineup for first shot
       new PathweaverCommand(pathSetup, drivetrain).configure(),
       //shoot cargo 1
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //pick up cargo 2 and return
       new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathA, drivetrain).configure(),
       new PathweaverCommand(pathB, drivetrain).configure(),
       //shoot cargo 2
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //grab cargo 3 and return
       new PathweaverCommand(pathC, drivetrain).configure(),
       new PathweaverCommand(pathD, drivetrain).configure(),
       //shoot cargo 3
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
-      new PathweaverCommand(pathC, drivetrain),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //stow intake before teleop
+      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult),
+      //run back towards terminal
       new PathweaverCommand(pathE, drivetrain));
 
       
@@ -412,33 +416,39 @@ public class RobotContainer {
     return new SequentialCommandGroup(
       new PathweaverCommand(pathSetup, drivetrain).configure(),
       //shoot cargo 1
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //pick up cargo 2 and return
       new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathA, drivetrain).configure(),
       new PathweaverCommand(pathB, drivetrain).configure(),
       //shoot cargo 2
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult));
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult));
 
   }
 
   private Command getFarBall(){
   
-    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points13-14.wpilib.json")];
-    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points14-15.wpilib.json")];
-    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points15-14.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("MoveFromTarmac.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points13-14.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points14-15.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points15-16.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points16-13.wpilib.json")];
 
     return new SequentialCommandGroup(
-      new PathweaverCommand(pathSetup, drivetrain).configure(),
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
-
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      new PathweaverCommand(pathC, drivetrain).configure(),
       new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
-      new PathweaverCommand(pathA, drivetrain).configure(),
-
-      new PathweaverCommand(pathB, drivetrain).configure(),
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult)
+      new PathweaverCommand(pathD, drivetrain).configure(),
+      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult),
+      new PathweaverCommand(pathE, drivetrain).configure(),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
       
     );
   
@@ -475,13 +485,15 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain).configure();
-  }
+  } 
 
   private Command getShootAndTaxi(){
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("MoveFromTarmac.wpilib.json")];
 
     return new SequentialCommandGroup(
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,true), byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
       new PathweaverCommand(pathA, drivetrain).configure()
     );
   }

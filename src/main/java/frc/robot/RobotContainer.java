@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 
 
 /**
@@ -101,26 +104,36 @@ public class RobotContainer {
     driverController.dPadUp.whenReleased(
       new InstantCommand(() -> hanger.disable(),hanger),false);
     driverController.dPadDown.whenPressed(
-      new InstantCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger),false);
+      new InstantCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters), hanger),false);
     driverController.dPadDown.whenReleased(
       new InstantCommand(() -> hanger.disable(),hanger),false);
 
     //Move the monkey arm
-    driverController.aButton.whileHeld(
+    driverController.aButton.whenPressed(
       new InstantCommand(hanger::retractHook, hanger)
     );
 
-    driverController.aButton.whenReleased(
-      new InstantCommand(hanger::setNeutral, hanger)
-    );
-
-    driverController.yButton.whileHeld(
+    driverController.yButton.whenPressed(
       new InstantCommand(hanger::extendHook, hanger)
     );
-    
-    driverController.yButton.whenReleased(
-      new InstantCommand(hanger::setNeutral, hanger)
+
+    driverController.xButton.whileHeld(
+      new InstantCommand(hanger::openPowerHook, hanger)
     );
+    driverController.xButton.whenReleased(
+      new InstantCommand(hanger::closePowerHook, hanger)
+    );
+
+    driverController.backButton.whenPressed(
+      new InstantCommand(() -> hanger.setHangMode(true),hanger)
+    );
+
+    driverController.startButton.whenPressed(
+      new InstantCommand(() -> hanger.setHangMode(false), hanger)
+    );
+    
+ 
+    
     /**
      * Operator controls
      */
@@ -270,6 +283,10 @@ public class RobotContainer {
         .withSize(1,1)
         .withPosition(4,2);
 
+    diagnosticsTab.addBoolean("hangMode", hanger::getHangMode)
+        .withSize(1,1)
+        .withPosition(1,2);
+
     /**
      * Driver's operator interface
      */
@@ -282,6 +299,7 @@ public class RobotContainer {
     //Add commands to auto chooser, set default to null to avoid surprise operation
     m_AutoChooser.setDefaultOption("None", null);   
     m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
+    m_AutoChooser.addOption("Extended Auto - Testing Mode", getTestingExtendedAuto());
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
     m_AutoChooser.addOption("Far Ball Run - might not be enough space in shop", getFarBall());
@@ -356,6 +374,48 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     return new PathweaverCommand(pathA,drivetrain).configure();
+  }
+
+  private Command getTestingExtendedAuto() {
+
+    //Choose paths and combine multiple as necessary
+    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-5.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-6.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points6-5.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-5.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")]
+                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-8.wpilib.json")]);
+
+    //Test routine to shoot the preloaded cargo and then run the autonomous path.
+    return new SequentialCommandGroup(
+      //lineup for first shot
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      //shoot cargo 1
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //pick up cargo 2 and return
+      new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new PathweaverCommand(pathB, drivetrain).configure());
+      //shoot cargo 2
+      /**new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //grab cargo 3 and return
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      new PathweaverCommand(pathD, drivetrain).configure(),
+      //shoot cargo 3
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //stow intake before teleop
+      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult),
+      //run back towards terminal
+      new PathweaverCommand(pathE, drivetrain));**/
+
+      
+
+    // Reset odometry to the starting pose of the trajectory, then Run path following command, 
+    // then stop at the end.
+    //return new PathweaverCommand(pathA,drivetrain).configure();
   }
 
   /**

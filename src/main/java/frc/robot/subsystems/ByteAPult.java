@@ -23,7 +23,6 @@ public class ByteAPult extends SubsystemBase {
   private final Solenoid launcherLeft = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveA);
   private final Solenoid launcherRight = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.launchValveB);
   private final Solenoid launchPivotUp = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveUp);
-  private final Solenoid launchPivotDown = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.ShooterConstants.aimValveDown);
 
   private final Compressor compressor = new Compressor(Constants.PCMID, PneumaticsModuleType.CTREPCM);
 
@@ -130,22 +129,12 @@ public class ByteAPult extends SubsystemBase {
 
   // Extend launch pivot to shoot higher
   public void setNear() {
-    if(Constants.CompBot){
       launchPivotUp.set(false);
-    }else{
-      launchPivotUp.set(true); 
-      launchPivotDown.set(false);
-    }
   }
 
   // Retract launch pivot to shoot lower
   public void setFar() {
-    if(Constants.CompBot){
-      launchPivotUp.set(true);
-    }else{
-      launchPivotUp.set(false);  
-      launchPivotDown.set(true);
-    }
+    launchPivotUp.set(true);
   }
 
   // Close the load gate. use the loadMotor

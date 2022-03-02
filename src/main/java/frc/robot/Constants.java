@@ -104,6 +104,8 @@ public final class Constants {
         public static final int monkeyArmValveOut = 1;
         public static final int monkeyArmValveIn = 2;
 
+        public static final int powerHook = 6;
+
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
 

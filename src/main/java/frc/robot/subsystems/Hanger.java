@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -32,6 +33,8 @@ public class Hanger extends ProfiledPIDSubsystem {
                                                                               
   private final DoubleSolenoid monkeyArm = new DoubleSolenoid(Constants.PCMID,PneumaticsModuleType.CTREPCM, Constants.HangerConstants.monkeyArmValveOut, Constants.HangerConstants.monkeyArmValveIn);
 
+  private final Solenoid powerHook = new Solenoid(Constants.PCMID, PneumaticsModuleType.CTREPCM, Constants.HangerConstants.powerHook);
+
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
                                                       HangerConstants.ksVolts,
                                                       HangerConstants.kgVolts,
@@ -42,6 +45,8 @@ public class Hanger extends ProfiledPIDSubsystem {
   /** Motors */
   private final DigitalInput topLimit = new DigitalInput(HangerConstants.topLimitDigID);
   private final DigitalInput bottomLimit = new DigitalInput(HangerConstants.bottomLimitDigID);
+
+  private boolean hangMode = false;
 
   public Hanger() {
 
@@ -119,6 +124,18 @@ public class Hanger extends ProfiledPIDSubsystem {
     monkeyArm.set(Value.kForward);
   }
 
+  public Value getMonkeyHook(){
+    return monkeyArm.get();
+  }
+
+  public void openPowerHook(){
+    powerHook.set(true);
+  }
+
+  public void closePowerHook(){
+    powerHook.set(false);
+  }
+
   public boolean atTopLimit(){
     return !topLimit.get();
   }
@@ -129,6 +146,14 @@ public class Hanger extends ProfiledPIDSubsystem {
 
   public void setNeutral() {
     monkeyArm.set(Value.kOff);
+  }
+
+  public void setHangMode(boolean hang){
+    hangMode = hang;
+  }
+
+  public boolean getHangMode(){
+    return hangMode;
   }
 
   /**

@@ -283,6 +283,10 @@ public class RobotContainer {
     diagnosticsTab.addBoolean("ArmSensor", byteAPult::armRetracted)
         .withSize(1,1)
         .withPosition(4,2);
+      
+    diagnosticsTab.addNumber("LL Pipeline", limelight::getPipeline)
+        .withSize(2, 1)
+        .withPosition(4,3);
 
     diagnosticsTab.addBoolean("hangMode", hanger::getHangMode)
         .withSize(1,1)

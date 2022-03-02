@@ -168,7 +168,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,60.0,false), byteAPult)),
         false);  
 
     //Far Shot in High Hub
@@ -176,7 +176,8 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+          new InstantCommand(() -> byteAPult.launch(2,.25,60.0,false), byteAPult),
+          new WaitCommand(0.2),
           new InstantCommand(byteAPult::setNear,byteAPult)),
         false);
         
@@ -247,7 +248,7 @@ public class RobotContainer {
         .withSize(2,1)
         .withPosition(4,0);
 
-    diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(80.0)) //I'm hoping this lambda thing works like this
+    diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(60.0)) //I'm hoping this lambda thing works like this
         .withSize(1,1)
         .withPosition(4,1);
 

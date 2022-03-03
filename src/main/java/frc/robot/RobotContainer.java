@@ -166,7 +166,6 @@ public class RobotContainer {
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult)),
         false);  
 
@@ -184,7 +183,6 @@ public class RobotContainer {
     operatorController.aButton.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(1,.25,40.0,false), byteAPult)),
         false);  
 

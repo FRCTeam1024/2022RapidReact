@@ -46,7 +46,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   private final DigitalInput topLimit = new DigitalInput(HangerConstants.topLimitDigID);
   private final DigitalInput bottomLimit = new DigitalInput(HangerConstants.bottomLimitDigID);
 
-  private boolean hangMode = false;
+  private boolean hangMode = true;
 
   public Hanger() {
 
@@ -104,6 +104,44 @@ public class Hanger extends ProfiledPIDSubsystem {
   public void moveCarriage(double pos) {
     setGoal(MathUtil.clamp(pos,HangerConstants.minTravelMeters,HangerConstants.maxTravelMeters));
     enable();
+  }
+
+   /** 
+   * Runs motors to move carriage (and hook)
+   * 
+   * @param power the percent power to apply (+ carriage up)
+   */
+  public void driveCarriage(double power) {
+    //disable the PID controller so we aren't fighting it while trying to 
+    //directly control the motors
+    disable();
+
+    //Check limits switches and apply power if not at limit
+    if(power > 0) {
+      if(!atTopLimit() && getMeasurement() < HangerConstants.maxTravelMeters - 0.025) 
+        if(power < 0.1){
+          hookLiftMotors.set(power);
+        } else {
+          hookLiftMotors.set(0.1);
+        }
+      else{
+        hookLiftMotors.set(0);
+      }
+    }
+    else if(power < 0) {
+      if(!atBottomLimit())
+      if(power > -0.1){
+        hookLiftMotors.set(power);
+      } else {
+        hookLiftMotors.set(-0.1);
+      }
+    else{
+      hookLiftMotors.set(0);
+    }
+    }
+    else {
+      hookLiftMotors.set(0);
+    }
   }
 
   public void stopCarriage() {
@@ -167,11 +205,11 @@ public class Hanger extends ProfiledPIDSubsystem {
       hookLiftLeader.setSelectedSensorPosition(0);
   }
 
-  private void lowerToBottom(){
+  public void lowerToBottom(){
     if(!atBottomLimit()){
-      moveCarriage(-0.05);
+      driveCarriage(-0.05);
     }else{
-      moveCarriage(0);
+      driveCarriage(0);
     }
   }
 

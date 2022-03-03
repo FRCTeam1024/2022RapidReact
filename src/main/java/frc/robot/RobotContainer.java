@@ -96,7 +96,8 @@ public class RobotContainer {
     driverController.rightTrigger.whileHeld(new DriveWithController(drivetrain, driverController, 0));
 
     //Reset carriage encoders
-    driverController.bButton.whenPressed(new InstantCommand(hanger::resetCarriage));
+    driverController.bButton.whileHeld(new InstantCommand(hanger::lowerToBottom, hanger));
+    driverController.bButton.whenReleased(new InstantCommand(hanger::resetCarriage, hanger));
 
     //Move Hanger Carriage Manually, stop when buttons released
     driverController.dPadUp.whenPressed(
@@ -106,6 +107,11 @@ public class RobotContainer {
     driverController.dPadDown.whenPressed(
       new InstantCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters), hanger),false);
     driverController.dPadDown.whenReleased(
+      new InstantCommand(() -> hanger.disable(),hanger),false);
+
+    driverController.leftBumper.whenPressed(
+      new InstantCommand(() -> hanger.moveCarriage(HangerConstants.maxTravelMeters),hanger),false);
+    driverController.leftBumper.whenReleased(
       new InstantCommand(() -> hanger.disable(),hanger),false);
 
     //Move the monkey arm
@@ -122,14 +128,6 @@ public class RobotContainer {
     );
     driverController.xButton.whenReleased(
       new InstantCommand(hanger::closePowerHook, hanger)
-    );
-
-    driverController.backButton.whenPressed(
-      new InstantCommand(() -> hanger.setHangMode(true),hanger)
-    );
-
-    driverController.startButton.whenPressed(
-      new InstantCommand(() -> hanger.setHangMode(false), hanger)
     );
     
  
@@ -161,6 +159,7 @@ public class RobotContainer {
       new InstantCommand(byteAPult::reverseGate, byteAPult));
     operatorController.xButton.whenReleased(
       new InstantCommand(byteAPult::closeGate, byteAPult));
+      //Test this button, if it doesn't work, comment it out.
 
 
     //Near Shot in High Hub
@@ -168,7 +167,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,60.0,false), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult)),
         false);  
 
     //Far Shot in High Hub
@@ -176,7 +175,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
-          new InstantCommand(() -> byteAPult.launch(2,.25,60.0,false), byteAPult),
+          new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
           new WaitCommand(0.2),
           new InstantCommand(byteAPult::setNear,byteAPult)),
         false);
@@ -391,16 +390,16 @@ public class RobotContainer {
     //Test routine to shoot the preloaded cargo and then run the autonomous path.
     return new SequentialCommandGroup(
       //lineup for first shot
-      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      new PathweaverCommand(pathSetup, drivetrain).configure());
       //shoot cargo 1
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //pick up cargo 2 and return
-      new InstantCommand(intake::deploy, intake),
+      /**new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathA, drivetrain).configure(),
       new PathweaverCommand(pathB, drivetrain).configure());
       //shoot cargo 2
-      /**new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //grab cargo 3 and return
       new PathweaverCommand(pathC, drivetrain).configure(),
       new PathweaverCommand(pathD, drivetrain).configure(),

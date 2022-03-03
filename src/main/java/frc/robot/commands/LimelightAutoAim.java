@@ -25,7 +25,7 @@ public class LimelightAutoAim extends PIDCommand {
         // This should return the measurement
         () -> limelightParam.getXOffset(),
         // This should return the setpoint (can also be a constant)
-        () -> 0,
+        () -> 0.0,
         // This uses the output
         output -> {
           // Use the output here

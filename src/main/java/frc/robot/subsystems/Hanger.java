@@ -72,6 +72,8 @@ public class Hanger extends ProfiledPIDSubsystem {
     hookLiftLeader.setSelectedSensorPosition(0);
     hookLiftFollower.setSelectedSensorPosition(0);
 
+    monkeyArm.set(Value.kForward);
+
     setGoal(0);
   }
 
@@ -201,13 +203,12 @@ public class Hanger extends ProfiledPIDSubsystem {
    * 
    */
   public void resetCarriage() {
-    if(atBottomLimit())
       hookLiftLeader.setSelectedSensorPosition(0);
   }
 
   public void lowerToBottom(){
     if(!atBottomLimit()){
-      driveCarriage(-0.05);
+      driveCarriage(-0.1);
     }else{
       driveCarriage(0);
     }

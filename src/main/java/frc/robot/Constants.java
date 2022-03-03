@@ -110,7 +110,7 @@ public final class Constants {
         public static final int bottomLimitDigID = 1;
 
         public static final double minTravelMeters = -0.05;
-        public static final double maxTravelMeters = 0.8; 
+        public static final double maxTravelMeters = 0.825; 
 
         public static final double kMaxSpeedMetersPerSecond = 1.5; 
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;

@@ -321,6 +321,7 @@ public class RobotContainer {
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
     m_AutoChooser.addOption("Far Ball Run - might not be enough space in shop", getFarBall());
+    m_AutoChooser.addOption("4 Ball God Mode Auto", getGodMode());
     //m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
     //m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     //m_AutoChooser.addOption("Test", getTestAuto());
@@ -582,6 +583,51 @@ public class RobotContainer {
   
   }
   
+  private Command getGodMode(){
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-21.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-25.wpilib.json")];
+
+    return new SequentialCommandGroup(
+      //moving to first floor cargo
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      //intake floor cargo
+      new InstantCommand(intake::deploy, intake),
+      //move back to shoot
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      //shooting 2 cargos
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //moving to get floor cargo
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      //intake cargo
+      new InstantCommand(intake::deploy, intake),
+      //moving to get far crago
+      new PathweaverCommand(pathD, drivetrain).configure(),
+      //intake cargo
+      new InstantCommand(intake::deploy, intake),
+      //moving back to shoot
+      new PathweaverCommand(pathE, drivetrain).configure(),
+      //shooting both cargos
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
+
+
+
+
+    );
+  }
    /**
    * Create an auto command using path(s) imported from pathweaver
    * Decorate with additional functions

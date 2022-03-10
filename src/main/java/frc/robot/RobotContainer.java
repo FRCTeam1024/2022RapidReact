@@ -331,6 +331,10 @@ public class RobotContainer {
        .withSize(3,1)
        .withPosition(4,0);
 
+    driverTab.addNumber("Pressure", byteAPult::getPressure)
+      .withSize(2,1)
+      .withPosition(7,0);
+
     // Display the limelight's stream feed for the driver.
     driverTab.add("Limelight", limelight.getFeed())
         .withSize(7,6)
@@ -586,12 +590,13 @@ public class RobotContainer {
   private Command getGodMode(){
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
     Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
-    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-21.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
     Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-25.wpilib.json")];
 
     return new SequentialCommandGroup(
-      //moving to first floor cargo
+      
+      new InstantCommand(byteAPult::closeGate, byteAPult),
       new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::closePowerHook, hanger),
@@ -599,28 +604,36 @@ public class RobotContainer {
       new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::closePowerHook, hanger),
-      new PathweaverCommand(pathA, drivetrain).configure(),
       //intake floor cargo
       new InstantCommand(intake::deploy, intake),
+      //moving to first floor cargo
+      new PathweaverCommand(pathA, drivetrain).configure(),
       //move back to shoot
       new PathweaverCommand(pathB, drivetrain).configure(),
       //shooting 2 cargos
+      new InstantCommand(intake::stow, intake),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
+      new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //moving to get floor cargo
+      new InstantCommand(intake::deploy, intake),
       new PathweaverCommand(pathC, drivetrain).configure(),
       //intake cargo
       new InstantCommand(intake::deploy, intake),
       //moving to get far crago
+      new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathD, drivetrain).configure(),
       //intake cargo
-      new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
       //moving back to shoot
       new PathweaverCommand(pathE, drivetrain).configure(),
       //shooting both cargos
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
+      new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
 
 

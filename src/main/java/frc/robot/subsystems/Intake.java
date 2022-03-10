@@ -132,7 +132,7 @@ public class Intake extends SubsystemBase {
    * 
    * @param pwr %power for the shifter motor (+ towards launcher)
    */
-  private void runShifter(double pwr) {
+  public void runShifter(double pwr) {
     shifterMotor.set(pwr);
   }
 }

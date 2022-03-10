@@ -127,12 +127,14 @@ public class RobotContainer {
       new InstantCommand(hanger::extendHook, hanger)
     );
 
-    driverController.xButton.whileHeld(
+    driverController.xButton.whenPressed(hanger::togglePowerHook, hanger);
+
+    /**driverController.xButton.whileHeld(
       new InstantCommand(hanger::openPowerHook, hanger)
     );
     driverController.xButton.whenReleased(
       new InstantCommand(hanger::closePowerHook, hanger)
-    );
+    );**/
     
  
     
@@ -144,13 +146,23 @@ public class RobotContainer {
     operatorController.rightTrigger.whenPressed(
       new InstantCommand(intake::deploy,intake),false);
     operatorController.rightTrigger.whenReleased(
-      new InstantCommand(intake::stow,intake),false);
+      new SequentialCommandGroup(
+        new InstantCommand(intake::stow, intake),
+        new ParallelRaceGroup(
+          new InstantCommand(byteAPult::reverseGate),
+          new WaitCommand(0.2)
+        ),
+        new InstantCommand(byteAPult::closeGate)
+      )
+    );
 
     //Opens Gate while held
     operatorController.bButton.whenPressed(
-      new InstantCommand(byteAPult::openGate, byteAPult),false);
+      new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))));
     operatorController.bButton.whenReleased(
-      new InstantCommand(byteAPult::closeGate, byteAPult),false);
+      new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(0))));
 
     //Deploy intake to Eject
     operatorController.yButton.whileHeld(
@@ -163,7 +175,6 @@ public class RobotContainer {
       new InstantCommand(byteAPult::reverseGate, byteAPult));
     operatorController.xButton.whenReleased(
       new InstantCommand(byteAPult::closeGate, byteAPult));
-      //Test this button, if it doesn't work, comment it out.
 
 
     //Near Shot in High Hub
@@ -305,6 +316,7 @@ public class RobotContainer {
     //Add commands to auto chooser, set default to null to avoid surprise operation
     m_AutoChooser.setDefaultOption("None", null);   
     m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
+    m_AutoChooser.addOption("Extended 3.5 Ball Auto - Low Shot", getExtendedAutoLowShot());
     m_AutoChooser.addOption("Extended Auto - Testing Mode", getTestingExtendedAuto());
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
@@ -395,10 +407,17 @@ public class RobotContainer {
 
     //Test routine to shoot the preloaded cargo and then run the autonomous path.
     return new SequentialCommandGroup(
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),//comment out these 4 lines to remove power hook firing if need be.
       //lineup for first shot
-      new PathweaverCommand(pathSetup, drivetrain).configure());
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
       //shoot cargo 1
-      //new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult));
       //pick up cargo 2 and return
       /**new InstantCommand(intake::deploy, intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
@@ -445,6 +464,13 @@ public class RobotContainer {
     //Test routine to shoot the preloaded cargo and then run the autonomous path.
     return new SequentialCommandGroup(
       //lineup for first shot
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
       new PathweaverCommand(pathSetup, drivetrain).configure(),
       //shoot cargo 1
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
@@ -471,6 +497,42 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory, then Run path following command, 
     // then stop at the end.
     //return new PathweaverCommand(pathA,drivetrain).configure();
+  }
+
+  private Command getExtendedAutoLowShot() {
+
+    //Choose paths and combine multiple as necessary
+    Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-5.wpilib.json")];
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-6.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points6-5.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-5.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")]
+                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-8.wpilib.json")]);
+
+    //Test routine to shoot the preloaded cargo and then run the autonomous path.
+    return new SequentialCommandGroup(
+      //lineup for first shot
+      new PathweaverCommand(pathSetup, drivetrain).configure(),
+      //shoot cargo 1
+      new InstantCommand(() -> byteAPult.launch(1,.25,80.0,false), byteAPult));
+      //pick up cargo 2 and return
+      /**new InstantCommand(intake::deploy, intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new PathweaverCommand(pathA, drivetrain).configure(),
+      new PathweaverCommand(pathB, drivetrain).configure(),
+      //shoot cargo 2
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //grab cargo 3 and return
+      new PathweaverCommand(pathC, drivetrain).configure(),
+      new PathweaverCommand(pathD, drivetrain).configure(),
+      //shoot cargo 3
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //stow intake before teleop
+      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult),
+      //run back towards terminal
+      new PathweaverCommand(pathE, drivetrain));**/
   }
 
   private Command getShootMoveShoot() {

@@ -612,16 +612,21 @@ public class RobotContainer {
       new PathweaverCommand(pathB, drivetrain).configure(),
       //shooting 2 cargos
       new InstantCommand(intake::stow, intake),
+      new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
+      //new InstantCommand(intake::deploy, intake),
       new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(0), intake),
+      new WaitCommand(0.3),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
       //moving to get floor cargo
       new InstantCommand(intake::deploy, intake),
       new PathweaverCommand(pathC, drivetrain).configure(),
-      //intake cargo
-      new InstantCommand(intake::deploy, intake),
       //moving to get far crago
       new InstantCommand(byteAPult::openGate, byteAPult),
       new PathweaverCommand(pathD, drivetrain).configure(),
@@ -630,12 +635,18 @@ public class RobotContainer {
       //moving back to shoot
       new PathweaverCommand(pathE, drivetrain).configure(),
       //shooting both cargos
+      new InstantCommand(intake::stow, intake),
+      new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(0), intake),
+      new WaitCommand(0.3),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
-
+      
 
 
 

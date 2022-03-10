@@ -176,6 +176,14 @@ public class Hanger extends ProfiledPIDSubsystem {
     powerHook.set(false);
   }
 
+  public void togglePowerHook(){
+    if(powerHook.get()==true){
+      powerHook.set(false);
+    }else if(powerHook.get()==false){
+      powerHook.set(true);
+    }
+  }
+
   public boolean atTopLimit(){
     return !topLimit.get();
   }

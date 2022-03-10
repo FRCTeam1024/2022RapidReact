@@ -36,7 +36,7 @@ public class DriveWithController extends CommandBase {
     if(powerLevel == 2){
       drivetrain.drive(3*x/4,3*y/4);
     }else if(powerLevel == 1){
-      drivetrain.drive(x/3,y/3);
+      drivetrain.drive(2*x/5,2*y/5);
     }else if(powerLevel == 0){
       drivetrain.drive(x/4, y/4);
     }

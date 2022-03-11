@@ -148,11 +148,18 @@ public class RobotContainer {
     operatorController.rightTrigger.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(intake::stow, intake),
+        new InstantCommand(byteAPult::reverseGate,byteAPult),//Need to require the byteAPult so that the commandgroup will override the default command
+        new WaitCommand(0.2),
+        /* 
+        * DLP:  I dont think this actually waits 0.2 seconds since the InstantCommand
+        *  will always finish first.
+        *
         new ParallelRaceGroup(
           new InstantCommand(byteAPult::reverseGate),
           new WaitCommand(0.2)
         ),
-        new InstantCommand(byteAPult::closeGate)
+        */
+        new InstantCommand(byteAPult::closeGate,byteAPult)
       )
     );
 
@@ -614,7 +621,7 @@ public class RobotContainer {
       new InstantCommand(intake::stow, intake),
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
-      new WaitCommand(0.2),
+      new WaitCommand(0.2), 
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       //new InstantCommand(intake::deploy, intake),
       new WaitCommand(0.4),

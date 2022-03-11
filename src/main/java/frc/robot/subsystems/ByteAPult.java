@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -37,8 +38,7 @@ public class ByteAPult extends SubsystemBase {
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
 
-  private boolean armRetracted;
-  private int lastArm;
+  private Timer lastLaunch;
  
   /** Creates a new Shooter. */
   public ByteAPult() {
@@ -48,9 +48,11 @@ public class ByteAPult extends SubsystemBase {
     setNear();
     closeGate();
 
-    //Set intitial states and counters
-    armRetracted = true;
-    lastArm = 0;
+    //Set intitial states and timers
+    lastLaunch = new Timer();
+
+    lastLaunch.reset();
+    lastLaunch.start();
 
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
@@ -60,38 +62,6 @@ public class ByteAPult extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    //Sensor debouncers
-    if(armSensor.isConnected()){
-      if(armSensor.getProximity() > 700) { //700 is assumed raw sensor value, adjust as needed
-        armRetracted = false;
-        lastArm = 0;
-      }
-      else  {
-        if(lastArm < 50) {  //cycles before we accept the arm really is down
-          lastArm++;
-        }
-        else {
-          armRetracted = true;
-        }
-      }
-    }
-    else{
-      if(launcherLeft.get() == true || launcherRight.get() == true) { //700 is assumed raw sensor value, adjust as needed
-        armRetracted = false;
-        lastArm = 0;
-      }
-      else if(launcherLeft.get() == false && launcherRight.get()== false){
-        if(lastArm < 50) {  //cycles before we accept the arm really is down
-          lastArm++;
-        }
-        else {
-          armRetracted = true;
-        }
-      }else{
-        armRetracted = false;
-      }
-    }
     
   }
 
@@ -119,6 +89,7 @@ public class ByteAPult extends SubsystemBase {
         launcherLeft.startPulse();
         launcherRight.startPulse();
       }
+      lastLaunch.reset();
     }
   }
 
@@ -185,7 +156,9 @@ public class ByteAPult extends SubsystemBase {
    * @return TRUE if arm retracted
    */
   public boolean armRetracted() {
-    return armRetracted;
+    //If neither launch valve is active and it has been at least 0.8 seconds 
+    //since the last launch, then assume the arm is retracted.
+    return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
   }
 
   /**

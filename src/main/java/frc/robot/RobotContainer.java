@@ -614,14 +614,11 @@ public class RobotContainer {
       new InstantCommand(intake::stow, intake),
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
-      new WaitCommand(0.2),
+      new WaitCommand(0.5),
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
-      //new InstantCommand(intake::deploy, intake),
-      new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
-      new WaitCommand(0.2),
+      new WaitCommand(0.5),
       new InstantCommand(() -> intake.runShifter(0), intake),
-      new WaitCommand(0.3),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
       //moving to get floor cargo
@@ -640,16 +637,10 @@ public class RobotContainer {
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
-      new WaitCommand(0.4),
       new InstantCommand(byteAPult::openGate, byteAPult),
-      new WaitCommand(0.2),
+      new WaitCommand(0.5),
       new InstantCommand(() -> intake.runShifter(0), intake),
-      new WaitCommand(0.3),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
-      
-
-
-
     );
   }
    /**

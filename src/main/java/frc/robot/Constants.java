@@ -140,6 +140,6 @@ public final class Constants {
         public static final double minOutput = -0.5;
         public static final double maxOutput = 0.5;
         // 1 degree angle of error which is considered tolerable for the PID
-        public static final double threshold = 0.3;
+        public static final double threshold = 0.1;
     }
 }

@@ -132,13 +132,13 @@ public final class Constants {
         public static final double driverPipe = 0.0;
         public static final double targetPipe = 1.0;
         
-        public static final double kP = 0.03;
+        public static final double kP = 0.015;
         public static final double kI = 0;
         public static final double kD = 0;
 
         //Reduced these for safety until we are comfortable withe autoaim command
-        public static final double minOutput = -0.3;
-        public static final double maxOutput = 0.3;
+        public static final double minOutput = -0.5;
+        public static final double maxOutput = 0.5;
         // 1 degree angle of error which is considered tolerable for the PID
         public static final double threshold = 0.3;
     }

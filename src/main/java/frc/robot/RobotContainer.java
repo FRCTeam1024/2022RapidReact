@@ -603,7 +603,7 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
       
-      new InstantCommand(byteAPult::closeGate, byteAPult),
+     /* new InstantCommand(byteAPult::closeGate, byteAPult),
       new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::closePowerHook, hanger),
@@ -611,23 +611,28 @@ public class RobotContainer {
       new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::closePowerHook, hanger),
+      */
       //intake floor cargo
       new InstantCommand(intake::deploy, intake),
       //moving to first floor cargo
       new PathweaverCommand(pathA, drivetrain).configure(),
       //move back to shoot
+      new InstantCommand(intake::stow, intake),
       new PathweaverCommand(pathB, drivetrain).configure(),
       //shooting 2 cargos
-      new InstantCommand(intake::stow, intake),
+      new InstantCommand(byteAPult::reverseGate, byteAPult),
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
-      new WaitCommand(0.2), 
+      new WaitCommand(1.0), 
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
-      new WaitCommand(0.5),
-      new InstantCommand(() -> intake.runShifter(0), intake),
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(0), intake),
+      new InstantCommand(byteAPult::closeGate, byteAPult),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2)
+      /*
       //moving to get floor cargo
       new InstantCommand(intake::deploy, intake),
       new PathweaverCommand(pathC, drivetrain).configure(),
@@ -648,8 +653,10 @@ public class RobotContainer {
       new WaitCommand(0.5),
       new InstantCommand(() -> intake.runShifter(0), intake),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
-    );
+     */
+      );
   }
+ 
    /**
    * Create an auto command using path(s) imported from pathweaver
    * Decorate with additional functions

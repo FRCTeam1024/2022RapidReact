@@ -90,6 +90,12 @@ public class Hanger extends ProfiledPIDSubsystem {
     else{
         hookLiftMotors.setVoltage(volts);
     }
+
+    //Check output current and stop movement in upward direction if current is too high
+    //This helps prevent damage to the front bar.
+    if(volts > 0 && hookLiftLeader.getStatorCurrent() > 15) {  //15amps is a guess, may be too high/low
+      hookLiftMotors.setVoltage(0);
+    }
   }
 
   @Override

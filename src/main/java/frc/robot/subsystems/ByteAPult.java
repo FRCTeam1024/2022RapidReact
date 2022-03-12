@@ -207,6 +207,16 @@ public class ByteAPult extends SubsystemBase {
   }
 
   /**
+   * This method returns the output current of the feeder motor
+   * 
+   * @return The output current in amps
+   * 
+   */
+  public double getGateCurrent() {
+    return loadGate.getOutputCurrent();
+  }
+
+  /**
    * Sets the time in between opening and closing the solenoid (a pulse)
    * @param delay the time between opening and closing, in seconds
    */

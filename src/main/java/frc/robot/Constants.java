@@ -137,8 +137,8 @@ public final class Constants {
         public static final double kD = 0;
 
         //Reduced these for safety until we are comfortable withe autoaim command
-        public static final double minOutput = -0.5;
-        public static final double maxOutput = 0.5;
+        public static final double minOutput = -0.75;
+        public static final double maxOutput = 0.75;
         // 1 degree angle of error which is considered tolerable for the PID
         public static final double threshold = 0.1;
     }

@@ -328,7 +328,7 @@ public class RobotContainer {
     m_AutoChooser.addOption("Shoot Move Shoot", getShootMoveShoot());
     m_AutoChooser.addOption("Shoot and Taxi", getShootAndTaxi());
     m_AutoChooser.addOption("Far Ball Run - might not be enough space in shop", getFarBall());
-    m_AutoChooser.addOption("4 Ball God Mode Auto", getGodMode());
+    m_AutoChooser.addOption("4 Ball God Mode Auto", getParallelGodMode());
     //m_AutoChooser.addOption("Blue 3 Ball Auto", getBlueThreeBallAuto());
     //m_AutoChooser.addOption("Basic Forward", getBasicForwardAuto());
     //m_AutoChooser.addOption("Test", getTestAuto());
@@ -643,6 +643,78 @@ public class RobotContainer {
       //intake cargo
       //moving back to shoot
       new PathweaverCommand(pathE, drivetrain).configure(),
+      //shooting both cargos
+      new WaitCommand(0.2),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
+      new InstantCommand(byteAPult::openGate, byteAPult),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> intake.runShifter(0), intake),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
+      );
+  }
+
+  private Command getParallelGodMode(){
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-25.wpilib.json")];
+
+    return new SequentialCommandGroup(
+      
+     /* new InstantCommand(byteAPult::closeGate, byteAPult),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      */
+      //intake floor cargo
+      new ParallelCommandGroup(
+        new InstantCommand(intake::deploy, intake),
+        new PathweaverCommand(pathA, drivetrain).configure()
+      ),
+      //move back to shoot
+      new ParallelCommandGroup(
+        new InstantCommand(intake::stow, intake),
+        new PathweaverCommand(pathB, drivetrain).configure()
+      ),
+      //shooting 2 cargos
+      new InstantCommand(byteAPult::reverseGate, byteAPult),
+      new WaitCommand(0.15),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.85), 
+      new ParallelCommandGroup(
+        new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
+        new InstantCommand(byteAPult::openGate, byteAPult)
+      ),
+      new WaitCommand(0.2),
+      new ParallelCommandGroup(
+        new InstantCommand(() -> intake.runShifter(0), intake),
+        new InstantCommand(byteAPult::closeGate, byteAPult)
+      ),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
+      //moving to get floor cargo
+      new ParallelCommandGroup(
+        new InstantCommand(intake::deploy, intake),
+        new InstantCommand(byteAPult::openGate, byteAPult),
+        new PathweaverCommand(pathC, drivetrain).configure()
+      ),
+      //moving to get far crago
+      new ParallelCommandGroup(
+        new InstantCommand(byteAPult::closeGate, byteAPult),
+        new PathweaverCommand(pathD, drivetrain).configure()
+      ),
+      new ParallelCommandGroup(
+        new InstantCommand(intake::stow, intake),
+        new PathweaverCommand(pathE, drivetrain).configure()
+      ),
       //shooting both cargos
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),

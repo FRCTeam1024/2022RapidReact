@@ -660,7 +660,7 @@ public class RobotContainer {
     Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
     Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
-    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-25.wpilib.json")];
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-24.wpilib.json")]; //change to Points23-25 if need to run near shot
 
     return new SequentialCommandGroup(
       
@@ -709,8 +709,10 @@ public class RobotContainer {
       //moving to get far crago
       new ParallelCommandGroup(
         new InstantCommand(byteAPult::closeGate, byteAPult),
+        new InstantCommand(byteAPult::setFar),
         new PathweaverCommand(pathD, drivetrain).configure()
       ),
+      //Remove setting near and far to make only near shots
       new ParallelCommandGroup(
         new InstantCommand(intake::stow, intake),
         new PathweaverCommand(pathE, drivetrain).configure()
@@ -719,10 +721,15 @@ public class RobotContainer {
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
+      new InstantCommand(byteAPult::setNear),
+      new WaitCommand(0.3),
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new WaitCommand(0.5),
-      new InstantCommand(() -> intake.runShifter(0), intake),
+      new ParallelCommandGroup(
+        new InstantCommand(byteAPult::setFar),
+        new InstantCommand(() -> intake.runShifter(0), intake)
+      ),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
       );
   }

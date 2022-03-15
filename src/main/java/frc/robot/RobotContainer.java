@@ -311,6 +311,10 @@ public class RobotContainer {
         .withSize(1,1)
         .withPosition(1,2);
 
+    diagnosticsTab.addNumber("DistanceSensorRange", byteAPult::getDistance)
+        .withSize(2,1)
+        .withPosition(5,1);
+
     /**
      * Driver's operator interface
      */
@@ -687,7 +691,7 @@ public class RobotContainer {
       new InstantCommand(byteAPult::reverseGate, byteAPult),
       new WaitCommand(0.15),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
-      new WaitCommand(0.85), 
+      new WaitUntilCommand(byteAPult::armRetracted),
       new ParallelCommandGroup(
         new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
         new InstantCommand(byteAPult::openGate, byteAPult)
@@ -722,7 +726,7 @@ public class RobotContainer {
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
       new InstantCommand(byteAPult::setNear),
-      new WaitCommand(0.3),
+      new WaitUntilCommand(byteAPult::armRetracted),
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new WaitCommand(0.5),

@@ -15,8 +15,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
@@ -33,7 +36,7 @@ public class ByteAPult extends SubsystemBase {
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
 
-  
+  private final Rev2mDistanceSensor distance = new Rev2mDistanceSensor(Port.kOnboard);
 
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
@@ -47,6 +50,8 @@ public class ByteAPult extends SubsystemBase {
     retract();
     setNear();
     closeGate();
+    distance.setDistanceUnits(Unit.kInches);
+    distance.setAutomaticMode(true);
 
     //Set intitial states and timers
     lastLaunch = new Timer();
@@ -62,7 +67,7 @@ public class ByteAPult extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+    distance.setAutomaticMode(true);
   }
 
   /**
@@ -158,7 +163,23 @@ public class ByteAPult extends SubsystemBase {
   public boolean armRetracted() {
     //If neither launch valve is active and it has been at least 0.8 seconds 
     //since the last launch, then assume the arm is retracted.
-    return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
+    if(getDistance() != -1){
+      System.out.println("Distance Sensor is Enabled!!!");
+      if(distance.getRange() <= 6 && distance.getRange() >= 3){
+        return true;
+      }else if(lastLaunch.get() > 5){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      System.out.println("Distance Sensor is Disabled!!!");
+      return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
+    }
+  }
+
+  public double getDistance(){
+    return distance.getRange();
   }
 
   /**

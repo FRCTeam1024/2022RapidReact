@@ -322,11 +322,12 @@ public class RobotContainer {
 
     //Display the name and version number of the code.
     driverTab.add("Running Code Version:", BuildConfig.APP_NAME + " " + BuildConfig.APP_VERSION)
-        .withSize(4,1)
+        .withSize(3,1)
         .withPosition(0,0);
 
     //Add commands to auto chooser, set default to null to avoid surprise operation
     m_AutoChooser.setDefaultOption("None", null);   
+    m_AutoChooser.addOption("Demigod Mode", getPartGodMode());
     m_AutoChooser.addOption("Extended 3.5 Ball Auto", getExtendedAuto());
     m_AutoChooser.addOption("Extended 3.5 Ball Auto - Low Shot", getExtendedAutoLowShot());
     m_AutoChooser.addOption("Extended Auto - Testing Mode", getTestingExtendedAuto());
@@ -342,11 +343,19 @@ public class RobotContainer {
     //Put the auto chooser on the dashboard
     driverTab.add("Auto Mode",m_AutoChooser)
        .withSize(3,1)
-       .withPosition(4,0);
+       .withPosition(3,0);
 
     driverTab.addNumber("Pressure", byteAPult::getPressure)
       .withSize(2,1)
-      .withPosition(7,0);
+      .withPosition(6,0);
+
+    driverTab.addBoolean("At Top", hanger::atTopLimit)
+      .withSize(1,1)
+      .withPosition(9,0);
+
+    driverTab.addBoolean("At Bottom", hanger::atBottomLimit)
+      .withSize(1,1)
+      .withPosition(8,0);
 
     // Display the limelight's stream feed for the driver.
     driverTab.add("Limelight", limelight.getFeed())
@@ -469,6 +478,8 @@ public class RobotContainer {
    * @return the auto command
    */
   private Command getExtendedAuto() {
+    //Max Velocity: 2.0 m/s
+    //Max Acceleration: 2.0 m/s^2
 
     //Choose paths and combine multiple as necessary
     Trajectory pathSetup = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points0-5.wpilib.json")];
@@ -476,19 +487,18 @@ public class RobotContainer {
     Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points6-5.wpilib.json")];
     Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-5.wpilib.json")];
-    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-7.wpilib.json")]
-                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points7-8.wpilib.json")]);
+    Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points5-8.wpilib.json")];
 
     //Test routine to shoot the preloaded cargo and then run the autonomous path.
     return new SequentialCommandGroup(
       //lineup for first shot
-      new InstantCommand(hanger::openPowerHook, hanger),
+      /**new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::closePowerHook, hanger),
       new WaitCommand(0.1),
       new InstantCommand(hanger::openPowerHook, hanger),
       new WaitCommand(0.1),
-      new InstantCommand(hanger::closePowerHook, hanger),
+      new InstantCommand(hanger::closePowerHook, hanger),**/
       new PathweaverCommand(pathSetup, drivetrain).configure(),
       //shoot cargo 1
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
@@ -662,9 +672,14 @@ public class RobotContainer {
   }
 
   private Command getParallelGodMode(){
+    //Max Velocity: 3.0 m/s
+    //Max Acceleration: 2.5m/s^2
+
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
     Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
-    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
+    //Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")]
+                        //.concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")]);
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-23.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
     Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-24.wpilib.json")]; //change to Points23-25 if need to run near shot
 
@@ -704,11 +719,11 @@ public class RobotContainer {
         new InstantCommand(() -> intake.runShifter(0), intake),
         new InstantCommand(byteAPult::closeGate, byteAPult)
       ),
-      new WaitCommand(0.5),
+      new WaitCommand(0.6),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
       //moving to get floor cargo
-      new ParallelCommandGroup(
+      /**new ParallelCommandGroup(
         new InstantCommand(intake::deploy, intake),
         new InstantCommand(byteAPult::openGate, byteAPult),
         new PathweaverCommand(pathC, drivetrain).configure()
@@ -718,27 +733,38 @@ public class RobotContainer {
         new InstantCommand(byteAPult::closeGate, byteAPult),
         new InstantCommand(byteAPult::setFar),
         new PathweaverCommand(pathD, drivetrain).configure()
-      ),
-      /**
+      ),*/
       new ParallelCommandGroup(
-        new PathweaverCommand(pathC, drivetrain).configure(),  //will need pathD to be concatenated to run the full path correctly
+        new PathweaverCommand(pathC, drivetrain).configure(),
         new SequentialCommandGroup(
           new ParallelCommandGroup(
             new InstantCommand(intake::deploy, intake),
             new InstantCommand(byteAPult::openGate, byteAPult)
           ),
-          new WaitCommand(0.7),
+          new WaitCommand(2),
           new ParallelCommandGroup(
-            new InstantCommand(byteAPult::closeGate, byteAPult),
-            new InstantCommand(byteAPult::setFar)
+            new InstantCommand(byteAPult::setFar, byteAPult),
+            new InstantCommand(byteAPult::closeGate),
+            new InstantCommand(() -> intake.runShifter(0))
           )
         )
       ),
-       */
       //Remove setting near and far to make only near shots
       new ParallelCommandGroup(
         new InstantCommand(intake::stow, intake),
         new PathweaverCommand(pathE, drivetrain).configure()
+        //Below lines should only be here if we start having issues with cargo running into each other
+        /**new SequentialCommandGroup(
+          new ParallelDeadlineGroup(
+            new WaitCommand(0.2),
+            new InstantCommand(byteAPult::reverseGate),
+            new InstantCommand(() -> intake.runShifter(-IntakeConstants.kShifterSpeed))
+          ),
+          new ParallelCommandGroup(
+            new InstantCommand(byteAPult::closeGate),
+            new InstantCommand(() -> intake.runShifter(0))
+          )
+        )*/
       ),
       //shooting both cargos
       new WaitCommand(0.2),
@@ -746,7 +772,7 @@ public class RobotContainer {
       new WaitCommand(0.2),
       new InstantCommand(byteAPult::setNear),
       //new WaitUntilCommand(byteAPult::armRetracted),
-      new WaitCommand(0.5),
+      new WaitCommand(0.3),
       new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
       new InstantCommand(byteAPult::openGate, byteAPult),
       new WaitCommand(0.5),
@@ -754,8 +780,75 @@ public class RobotContainer {
         new InstantCommand(byteAPult::setFar),
         new InstantCommand(() -> intake.runShifter(0), intake)
       ),
+      new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
       );  
+  }
+
+  private Command getPartGodMode(){
+    //Max Velocity: 3.0 m/s
+    //Max Acceleration: 2.5m/s^2
+    Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")]
+                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-19.5.wpilib.json")]);
+    Trajectory pathShoot2 = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19.5-19.wpilib.json")];
+    Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
+    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-26.wpilib.json")];
+
+    return new SequentialCommandGroup(
+      
+     /* new InstantCommand(byteAPult::closeGate, byteAPult),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::openPowerHook, hanger),
+      new WaitCommand(0.1),
+      new InstantCommand(hanger::closePowerHook, hanger),
+      */
+      //intake floor cargo
+      new ParallelCommandGroup(
+        new InstantCommand(intake::deploy, intake),
+        new PathweaverCommand(pathA, drivetrain).configure()
+      ),
+      //move back to shoot
+      new ParallelCommandGroup(
+        new InstantCommand(intake::stow, intake),
+        new PathweaverCommand(pathB, drivetrain).configure()
+      ),
+      //shooting 2 cargos
+      new InstantCommand(byteAPult::reverseGate, byteAPult),
+      new WaitCommand(0.15),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      //new WaitUntilCommand(byteAPult::armRetracted),
+      new WaitCommand(0.85),
+      new ParallelCommandGroup(
+        new PathweaverCommand(pathShoot2, drivetrain).configure(),
+        new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
+        new InstantCommand(byteAPult::openGate, byteAPult)
+      ),
+      new WaitCommand(0.2),
+      new ParallelCommandGroup(
+        new InstantCommand(() -> intake.runShifter(0), intake),
+        new InstantCommand(byteAPult::closeGate, byteAPult)
+      ),
+      new WaitCommand(0.75),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.2),
+      new ParallelCommandGroup(
+        new PathweaverCommand(pathC, drivetrain).configure(),
+        new InstantCommand(intake::deploy, intake),
+        new InstantCommand(byteAPult::openGate, byteAPult)
+      ),
+      //shooting both cargos
+      new ParallelCommandGroup(
+        new PathweaverCommand(pathD, drivetrain).configure(),
+        new InstantCommand(byteAPult::closeGate),
+        new InstantCommand(() -> intake.runShifter(0))
+      ),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
+    );
   }
 
   private Command getRestructuredGodMode(){

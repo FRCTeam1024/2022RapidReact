@@ -163,7 +163,7 @@ public class ByteAPult extends SubsystemBase {
   public boolean armRetracted() {
     //If neither launch valve is active and it has been at least 0.8 seconds 
     //since the last launch, then assume the arm is retracted.
-    if(getDistance() != -1){
+    /**if(getDistance() != -1){
       System.out.println("Distance Sensor is Enabled!!!");
       if(distance.getRange() <= 6 && distance.getRange() >= 3){
         return true;
@@ -172,10 +172,10 @@ public class ByteAPult extends SubsystemBase {
       }else{
         return false;
       }
-    }else{
-      System.out.println("Distance Sensor is Disabled!!!");
+    }else{*/
+      //System.out.println("Distance Sensor is Disabled!!!");
       return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
-    }
+    //}
   }
 
   public double getDistance(){

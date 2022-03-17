@@ -719,6 +719,22 @@ public class RobotContainer {
         new InstantCommand(byteAPult::setFar),
         new PathweaverCommand(pathD, drivetrain).configure()
       ),
+      /**
+      new ParallelCommandGroup(
+        new PathweaverCommand(pathC, drivetrain).configure(),  //will need pathD to be concatenated to run the full path correctly
+        new SequentialCommandGroup(
+          new ParallelCommandGroup(
+            new InstantCommand(intake::deploy, intake),
+            new InstantCommand(byteAPult::openGate, byteAPult)
+          ),
+          new WaitCommand(0.7),
+          new ParallelCommandGroup(
+            new InstantCommand(byteAPult::closeGate, byteAPult),
+            new InstantCommand(byteAPult::setFar)
+          )
+        )
+      ),
+       */
       //Remove setting near and far to make only near shots
       new ParallelCommandGroup(
         new InstantCommand(intake::stow, intake),

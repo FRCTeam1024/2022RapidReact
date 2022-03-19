@@ -790,8 +790,8 @@ public class RobotContainer {
     //Max Acceleration: 2.5m/s^2
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
     Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")]
-                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-19.5.wpilib.json")]);
-    Trajectory pathShoot2 = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19.5-19.wpilib.json")];
+                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-19.5.wpilib.json")]);  //remove for edited path
+    Trajectory pathShoot2 = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19.5-19.wpilib.json")]; //remove for edited path
     Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-26.wpilib.json")];
 
@@ -823,7 +823,7 @@ public class RobotContainer {
       //new WaitUntilCommand(byteAPult::armRetracted),
       new WaitCommand(0.85),
       new ParallelCommandGroup(
-        new PathweaverCommand(pathShoot2, drivetrain).configure(),
+        new PathweaverCommand(pathShoot2, drivetrain).configure(), //remove for edited path
         new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
         new InstantCommand(byteAPult::openGate, byteAPult)
       ),

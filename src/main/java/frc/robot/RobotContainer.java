@@ -16,6 +16,7 @@ import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 import frc.robot.oi.Logitech;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 
 /**
@@ -136,8 +138,36 @@ public class RobotContainer {
     driverController.xButton.whenReleased(
       new InstantCommand(hanger::closePowerHook, hanger)
     );**/
+
+    //Code that ideally should automate our climbing process. - TEST ONE LINE AT A TIME TO SEE WHAT HAPPENS
+    /*
+    driverController.bButton.whenPressed(
+      new SequentialCommandGroup(
+        new ConditionalCommand(new RunCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger).withInterrupt(hanger::atBottomLimit), null, hanger::getHangMode),
+        new ConditionalCommand(new InstantCommand(hanger::extendHook, hanger), null, hanger::getHangMode),
+        new ConditionalCommand(new WaitCommand(1), null, hanger::getHangMode),
+        new ConditionalCommand(new InstantCommand(hanger::togglePowerHook, hanger), null, hanger::getHangMode),
+        new ConditionalCommand(new WaitCommand(2), null, hanger::getHangMode),
+        new ConditionalCommand(new RunCommand(() -> hanger.moveCarriage(HangerConstants.maxTravelMeters),hanger).withInterrupt(hanger::atTopLimit), null, hanger::getHangMode),
+        new ConditionalCommand(new InstantCommand(hanger::togglePowerHook, hanger), null, hanger::getHangMode),
+        new ConditionalCommand(new WaitCommand(1), null, hanger::getHangMode),
+        new ConditionalCommand(new RunCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger).withInterrupt(hanger::atBottomLimit), null, hanger::getHangMode),
+        new ConditionalCommand(new WaitCommand(2), null, hanger::getHangMode),
+        new ConditionalCommand(new InstantCommand(hanger::retractHook, hanger), null, hanger::getHangMode),
+        new ConditionalCommand(new WaitCommand(1), null, hanger::getHangMode),
+        new ConditionalCommand(new InstantCommand(hanger::togglePowerHook, hanger), null, hanger::getHangMode),
+      )
+    );
+
+    driverController.leftBumper.whenPressed(
+      new InstantCommand(hanger::toggleHangMode, hanger)
+    );
+
+
+    */
+     
     
- 
+    
     
     /**
      * Operator controls
@@ -680,7 +710,7 @@ public class RobotContainer {
     //Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")]
                         //.concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")]);
     Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-23.wpilib.json")];
-    Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
+    //Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-23.wpilib.json")];
     Trajectory pathE = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points23-24.wpilib.json")]; //change to Points23-25 if need to run near shot
 
     return new SequentialCommandGroup(

@@ -46,7 +46,7 @@ public class Hanger extends ProfiledPIDSubsystem {
   private final DigitalInput topLimit = new DigitalInput(HangerConstants.topLimitDigID);
   private final DigitalInput bottomLimit = new DigitalInput(HangerConstants.bottomLimitDigID);
 
-  private boolean hangMode = true;
+  private boolean hangMode = false;
 
   public Hanger() {
 
@@ -204,6 +204,14 @@ public class Hanger extends ProfiledPIDSubsystem {
 
   public void setHangMode(boolean hang){
     hangMode = hang;
+  }
+
+  public void toggleHangMode(){
+    if(getHangMode()){
+      setHangMode(false);
+    }else{
+      setHangMode(true);
+    }
   }
 
   public boolean getHangMode(){

@@ -41,6 +41,8 @@ public class ByteAPult extends SubsystemBase {
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
 
+  private final DigitalInput armDown = new DigitalInput(Constants.ShooterConstants.armDigID);
+
   private Timer lastLaunch;
  
   /** Creates a new Shooter. */
@@ -176,6 +178,7 @@ public class ByteAPult extends SubsystemBase {
       //System.out.println("Distance Sensor is Disabled!!!");
       return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
     //}
+    //return armDown.get();
   }
 
   public double getDistance(){

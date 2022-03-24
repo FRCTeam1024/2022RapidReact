@@ -162,8 +162,6 @@ public class RobotContainer {
     driverController.leftBumper.whenPressed(
       new InstantCommand(hanger::toggleHangMode, hanger)
     );
-
-
     */
      
     

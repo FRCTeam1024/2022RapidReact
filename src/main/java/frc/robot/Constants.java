@@ -79,6 +79,8 @@ public final class Constants {
         public static final int loaded1DigID = 7;
         public static final int loaded2DigID = 8;
 
+        public static final int armDigID = 5;
+
         public static final double kInputVoltage = 5.0;
 
         public static final double kLoadSpeed = -0.25;  //No idea if this is what we want

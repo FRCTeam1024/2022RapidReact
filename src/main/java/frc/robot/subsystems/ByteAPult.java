@@ -9,17 +9,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-import com.revrobotics.ColorSensorV3;
-//import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-//import com.revrobotics.Rev2mDistanceSensor.Port;
-//import com.revrobotics.Rev2mDistanceSensor.Unit;
 import com.revrobotics.CANSparkMax;
 
 public class ByteAPult extends SubsystemBase {
@@ -32,16 +27,13 @@ public class ByteAPult extends SubsystemBase {
 
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
-  private final ColorSensorV3 armSensor = new ColorSensorV3(I2C.Port.kMXP);
-
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
-
-  //private final Rev2mDistanceSensor distance = new Rev2mDistanceSensor(Port.kOnboard);
 
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
 
-  private final DigitalInput armDown = new DigitalInput(Constants.ShooterConstants.armDigID);
+  private final DigitalInput armDown1 = new DigitalInput(Constants.ShooterConstants.arm1DigID);
+  private final DigitalInput armDown2 = new DigitalInput(Constants.ShooterConstants.arm2DigID);
 
   private Timer lastLaunch;
  
@@ -52,8 +44,6 @@ public class ByteAPult extends SubsystemBase {
     retract();
     setNear();
     closeGate();
-    //distance.setDistanceUnits(Unit.kInches);
-    //distance.setAutomaticMode(true);
 
     //Set intitial states and timers
     lastLaunch = new Timer();
@@ -69,7 +59,6 @@ public class ByteAPult extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //distance.setAutomaticMode(true);
   }
 
   /**
@@ -131,8 +120,8 @@ public class ByteAPult extends SubsystemBase {
     loadGate.set(-Constants.ShooterConstants.kLoadSpeed);
   }
 
-  public boolean returnArmSensorConnected(){
-    return armSensor.isConnected();
+  public boolean armSensorConnected(){
+    return armDown1.get() != armDown2.get();
   }
 
   /**
@@ -143,7 +132,7 @@ public class ByteAPult extends SubsystemBase {
    */
   
   public boolean readyToLaunch(double minPressure) {
-    return armRetracted() & cargoPresent() & getPressure() > minPressure;
+    return cargoPresent() && getPressure() > minPressure;
   }
 
   /**
@@ -154,7 +143,7 @@ public class ByteAPult extends SubsystemBase {
    * @return TRUE if arms is retracted and no cargo is present
    */
   public boolean readyToLoad() {
-    return armRetracted() & !cargoPresent();
+    return armRetracted() && !cargoPresent();
   }
 
   /**
@@ -165,26 +154,19 @@ public class ByteAPult extends SubsystemBase {
   public boolean armRetracted() {
     //If neither launch valve is active and it has been at least 0.8 seconds 
     //since the last launch, then assume the arm is retracted.
-    /**if(getDistance() != -1){
-      System.out.println("Distance Sensor is Enabled!!!");
-      if(distance.getRange() <= 6 && distance.getRange() >= 3){
+    if(armSensorConnected()){
+      if(!armDown1.get() && armDown2.get()){
         return true;
-      }else if(lastLaunch.get() > 5){
-        return true;
-      }else{
+      }else if(armDown1.get() && !armDown2.get()){
         return false;
+      }else{
+        return true;
       }
-    }else{*/
-      //System.out.println("Distance Sensor is Disabled!!!");
-      return  !launcherLeft.get() && !launcherRight.get() && lastLaunch.get() > 0.8;
-    //}
-    //return armDown.get();
+    }else{
+      return  !launcherLeft.get() && !launcherRight.get() && launchPivotUp.get() && lastLaunch.get() > 0.8;
+    }
   }
 
-  public double getDistance(){
-    //return distance.getRange();
-    return -1;
-  }
 
   /**
    * Checks if cargo is in the launcher.
@@ -210,6 +192,14 @@ public class ByteAPult extends SubsystemBase {
 
   public boolean returnLoaded2(){
     return loaded2.get();
+  }
+
+  public boolean returnArm1(){
+    return armDown1.get();
+  }
+
+  public boolean returnArm2(){
+    return armDown2.get();
   }
 
   /**

@@ -179,15 +179,6 @@ public class RobotContainer {
         new InstantCommand(intake::stow, intake),
         new InstantCommand(byteAPult::reverseGate,byteAPult),//Need to require the byteAPult so that the commandgroup will override the default command
         new WaitCommand(0.2),
-        /* 
-        * DLP:  I dont think this actually waits 0.2 seconds since the InstantCommand
-        *  will always finish first.
-        *
-        new ParallelRaceGroup(
-          new InstantCommand(byteAPult::reverseGate),
-          new WaitCommand(0.2)
-        ),
-        */
         new InstantCommand(byteAPult::closeGate,byteAPult)
       )
     );
@@ -281,7 +272,7 @@ public class RobotContainer {
       .withPosition(8,4);
 
     diagnosticsTab.add("TurnToHeading", new TurnToHeading(drivetrain, 90))
-        .withSize(3,1)
+        .withSize(2,1)
         .withPosition(0,4);
 
     diagnosticsTab.addNumber("RobotHeading", drivetrain::getHeading)
@@ -296,13 +287,17 @@ public class RobotContainer {
         .withSize(2,1)
         .withPosition(4,0);
 
-    diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(60.0)) //I'm hoping this lambda thing works like this
-        .withSize(1,1)
+    diagnosticsTab.addBoolean("ReadytoLaunch", () -> byteAPult.readyToLaunch(60.0)) 
+        .withSize(2,1)
+        .withPosition(2,1);
+
+    diagnosticsTab.addBoolean("ReadytoLoad", byteAPult::readyToLoad)
+        .withSize(2,1)
         .withPosition(4,1);
 
     diagnosticsTab.addNumber("Pressure", byteAPult::getPressure)
         .withSize(2,1)
-        .withPosition(2,3);
+        .withPosition(2,4);
 
     diagnosticsTab.addBoolean("BottomLimit", hanger::atBottomLimit)
         .withSize(1,1)
@@ -318,31 +313,35 @@ public class RobotContainer {
 
     diagnosticsTab.addBoolean("CargoLoaded", byteAPult::cargoPresent)
         .withSize(2,1)
-        .withPosition(2,1);
+        .withPosition(2,2);
     
     diagnosticsTab.addBoolean("Loaded1", byteAPult::returnLoaded1)
         .withSize(1,1)
-        .withPosition(2,2);
+        .withPosition(2,3);
 
     diagnosticsTab.addBoolean("Loaded2", byteAPult::returnLoaded2)
         .withSize(1,1)
-        .withPosition(3,2);
+        .withPosition(3,3);
 
     diagnosticsTab.addBoolean("ArmSensor", byteAPult::armRetracted)
-        .withSize(1,1)
+        .withSize(2,1)
         .withPosition(4,2);
-      
+    
+    diagnosticsTab.addBoolean("Arm1", byteAPult::returnArm1)
+        .withSize(1,1)
+        .withPosition(4,3);
+    
+    diagnosticsTab.addBoolean("Arm2", byteAPult::returnArm2)
+        .withSize(1,1)
+        .withPosition(5,3);
+
     diagnosticsTab.addNumber("LL Pipeline", limelight::getPipeline)
         .withSize(2, 1)
-        .withPosition(4,3);
+        .withPosition(4,4);
 
     diagnosticsTab.addBoolean("hangMode", hanger::getHangMode)
         .withSize(1,1)
         .withPosition(1,2);
-
-    diagnosticsTab.addNumber("DistanceSensorRange", byteAPult::getDistance)
-        .withSize(2,1)
-        .withPosition(5,1);
 
     /**
      * Driver's operator interface

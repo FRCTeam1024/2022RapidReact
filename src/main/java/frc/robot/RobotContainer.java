@@ -94,9 +94,6 @@ public class RobotContainer {
       )
     );
 
-    /*driverController.leftTrigger.whenPressed(new InstantCommand(limelight::setTargetPipe, limelight));
-    driverController.leftTrigger.whenReleased(new InstantCommand(limelight::setDriverPipe, limelight));*/
-
     //Turbo Mode
     driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, 2));
     //Slow mode
@@ -132,15 +129,29 @@ public class RobotContainer {
 
     driverController.xButton.whenPressed(hanger::togglePowerHook, hanger);
 
-    /**driverController.xButton.whileHeld(
-      new InstantCommand(hanger::openPowerHook, hanger)
-    );
-    driverController.xButton.whenReleased(
-      new InstantCommand(hanger::closePowerHook, hanger)
-    );**/
 
     //Code that ideally should automate our climbing process. - TEST ONE LINE AT A TIME TO SEE WHAT HAPPENS
     /*
+
+    DP:  Why not make the whole SequentialCommandGroup part of a ConditionalCommand, then
+    ConditionalCommand doesn't need to be repeated every line?  
+
+    I think it is going to be hard to achieve a fully automated climb as we don't
+    have enough feedback devices to check ourselves.  The driver will probably have to take over
+    at some point most of the time anyway.  
+    
+    I would write this in a way that requires the driver to hit a button after each command 
+    to indicate that the sequence should procede.  This way the driver has as much time as 
+    needed to confirm the previous action was successful. You can then remove any WaitCommands.
+
+    Short of a fully automated sequence, there are also sub-automations that could be helpful 
+    to reduce the complexity of the manual climb
+    sequence such as:
+    -auto moving the power hook to a preset height
+    -auto deploying the monkey hook when reaching the bottom limit
+    -auto switch drivetrain to creep speed to aid with aligment after power hook is lifted.
+
+
     driverController.bButton.whenPressed(
       new SequentialCommandGroup(
         new ConditionalCommand(new RunCommand(() -> hanger.moveCarriage(HangerConstants.minTravelMeters),hanger).withInterrupt(hanger::atBottomLimit), null, hanger::getHangMode),

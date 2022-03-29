@@ -194,10 +194,14 @@ public class RobotContainer {
       )
     );
 
-    //Opens Gate while held
-    operatorController.bButton.whenPressed(
-      new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
-                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))));
+    //Opens Gate while held but onlyif ReadyToLoad is true
+    operatorController.bButton.whileHeld(
+      new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
+                            new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(0))),
+                            byteAPult::readyToLoad));
+
     operatorController.bButton.whenReleased(
       new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
                                new InstantCommand(() -> intake.runShifter(0))));
@@ -219,7 +223,16 @@ public class RobotContainer {
     operatorController.leftTrigger.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult)),
+          new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
+          new WaitUntilCommand(byteAPult::readyToLoad).withTimeout(1),
+          new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
+                                     new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
+                                 new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
+                                     new InstantCommand(() -> intake.runShifter(0))),
+                                 byteAPult::readyToLoad),
+          new WaitUntilCommand(byteAPult::cargoPresent).withTimeout(0.5),
+          new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(0)))),
         false);  
 
     //Far Shot in High Hub
@@ -228,7 +241,7 @@ public class RobotContainer {
           new InstantCommand(byteAPult::setFar,byteAPult),
           new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
-          new WaitCommand(0.2),
+          new WaitCommand(0.3),
           new InstantCommand(byteAPult::setNear,byteAPult)),
         false);
         

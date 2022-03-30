@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.filter.LinearFilter;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
@@ -28,6 +29,7 @@ public class ByteAPult extends SubsystemBase {
   private final CANSparkMax loadGate = new CANSparkMax(Constants.ShooterConstants.loadMotorID, MotorType.kBrushless);
 
   private final AnalogInput pressureSensor = new AnalogInput(Constants.ShooterConstants.kPressureAnalogID);
+  
 
   private final DigitalInput loaded1 = new DigitalInput(Constants.ShooterConstants.loaded1DigID);
   private final DigitalInput loaded2 = new DigitalInput(Constants.ShooterConstants.loaded2DigID);
@@ -36,6 +38,7 @@ public class ByteAPult extends SubsystemBase {
   private final DigitalInput armDown2 = new DigitalInput(Constants.ShooterConstants.arm2DigID);
 
   private Timer lastLaunch;
+  private LinearFilter pressureFilter = LinearFilter.singlePoleIIR(1,0.02);
  
   /** Creates a new Shooter. */
   public ByteAPult() {
@@ -54,6 +57,8 @@ public class ByteAPult extends SubsystemBase {
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
     loadGate.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+
+    pressureFilter.reset();
   }
 
   @Override
@@ -218,7 +223,7 @@ public class ByteAPult extends SubsystemBase {
     if(pressure < 60 && compressor.getPressureSwitchValue()) {
       pressure = 120;
     }
-    return pressure;
+    return Math.floor(pressureFilter.calculate(pressure));
   }
 
   /**

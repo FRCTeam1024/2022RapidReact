@@ -151,6 +151,10 @@ public class ByteAPult extends SubsystemBase {
     return armRetracted() && !cargoPresent();
   }
 
+  public boolean notReadyToLoad() {
+    return !readyToLoad();
+  }
+
   /**
    * Checks if the arm is retracted
    * 

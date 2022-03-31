@@ -224,16 +224,10 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
-          new WaitUntilCommand(byteAPult::readyToLoad).withTimeout(1),
-          new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
-                                     new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
-                                 new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
-                                     new InstantCommand(() -> intake.runShifter(0))),
-                                 byteAPult::readyToLoad),
-          new WaitUntilCommand(byteAPult::cargoPresent).withTimeout(0.5),
-          new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
-                               new InstantCommand(() -> intake.runShifter(0)))),
-        false);  
+          new WaitUntilCommand(byteAPult::notReadyToLoad).withTimeout(1),
+          ReloadCommand()
+      ),
+    false);  
 
     //Far Shot in High Hub
     operatorController.leftBumper.whenPressed(
@@ -242,15 +236,20 @@ public class RobotContainer {
           new WaitCommand(0.5),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
           new WaitCommand(0.3),
-          new InstantCommand(byteAPult::setNear,byteAPult)),
-        false);
+          new InstantCommand(byteAPult::setNear,byteAPult),
+          ReloadCommand()
+      ),
+    false);
         
     //Launch near shot in low hub
     operatorController.aButton.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new InstantCommand(() -> byteAPult.launch(1,.25,40.0,false), byteAPult)),
-        false);  
+          new InstantCommand(() -> byteAPult.launch(1,.25,40,false), byteAPult),
+          new WaitUntilCommand(byteAPult::notReadyToLoad).withTimeout(1),
+          ReloadCommand()
+      ),
+    false);  
 
     //Move launch pivot to near shot position
     operatorController.dPadUp.whenPressed(
@@ -260,6 +259,24 @@ public class RobotContainer {
     operatorController.dPadDown.whenPressed(
       new InstantCommand(byteAPult::setFar,byteAPult));
   
+  }
+
+  // A Utility command to reload the ByteAPult after any launch sequence
+  private Command ReloadCommand() {
+    return(new SequentialCommandGroup(
+              new WaitUntilCommand(byteAPult::readyToLoad).withTimeout(1),
+              new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
+                                                              new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
+                                    new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
+                                                              new InstantCommand(() -> intake.runShifter(0))),
+                                     byteAPult::readyToLoad),
+              new WaitUntilCommand(byteAPult::cargoPresent).withTimeout(0.5),
+              new ParallelCommandGroup(new InstantCommand(byteAPult::reverseGate, byteAPult),
+                                      new InstantCommand(() -> intake.runShifter(0))),
+              new WaitCommand(0.2),
+              new InstantCommand(byteAPult::closeGate, byteAPult)
+          )
+    );
   }
 
   /**

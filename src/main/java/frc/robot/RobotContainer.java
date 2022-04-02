@@ -224,7 +224,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
-          new WaitUntilCommand(byteAPult::notReadyToLoad).withTimeout(1),
+          new WaitUntilCommand(byteAPult::armNotRetracted).withTimeout(1),
           ReloadCommand()
       ),
     false);  
@@ -246,7 +246,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
           new InstantCommand(() -> byteAPult.launch(1,.25,40,false), byteAPult),
-          new WaitUntilCommand(byteAPult::notReadyToLoad).withTimeout(1),
+          new WaitUntilCommand(byteAPult::armNotRetracted).withTimeout(1),
           ReloadCommand()
       ),
     false);  

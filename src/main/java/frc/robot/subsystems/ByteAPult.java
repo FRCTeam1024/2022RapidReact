@@ -175,7 +175,10 @@ public class ByteAPult extends SubsystemBase {
       return  !launcherLeft.get() && !launcherRight.get() && launchPivotUp.get() && lastLaunch.get() > 0.8;
     }
   }
-
+   
+  public boolean armNotRetracted() {
+    return !armRetracted();
+  }
 
   /**
    * Checks if cargo is in the launcher.

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 
@@ -208,6 +209,7 @@ public class RobotContainer {
                                new InstantCommand(() -> intake.runShifter(0))));
 
     //Deploy intake to Eject
+
     operatorController.yButton.whileHeld(
       new InstantCommand(intake::eject,intake));
     operatorController.yButton.whenReleased(
@@ -274,7 +276,8 @@ public class RobotContainer {
                                      byteAPult::readyToLoad),
               new WaitUntilCommand(byteAPult::cargoPresent).withTimeout(0.5),
               new ParallelCommandGroup(new InstantCommand(byteAPult::reverseGate, byteAPult),
-                                      new InstantCommand(() -> intake.runShifter(0),intake)),
+                                      new InstantCommand(() -> intake.runShifter(0),intake)
+                                      ),
               new WaitCommand(0.2),
               new InstantCommand(byteAPult::closeGate, byteAPult)
           )

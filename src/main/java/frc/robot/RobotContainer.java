@@ -854,7 +854,9 @@ public class RobotContainer {
         new InstantCommand(() -> intake.runShifter(0), intake)
       ),
       new WaitCommand(0.2),
-      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
+      new WaitCommand(0.1),
+      new InstantCommand(byteAPult::setNear)
       );  
   }
 
@@ -916,8 +918,11 @@ public class RobotContainer {
       //shooting both cargos
       new ParallelCommandGroup(
         new PathweaverCommand(pathD, drivetrain).configure(),
-        new InstantCommand(byteAPult::closeGate),
-        new InstantCommand(() -> intake.runShifter(0))
+        new SequentialCommandGroup(
+          new WaitCommand(0.1),
+          new InstantCommand(byteAPult::closeGate),
+          new InstantCommand(() -> intake.runShifter(0))
+        )
       ),
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)

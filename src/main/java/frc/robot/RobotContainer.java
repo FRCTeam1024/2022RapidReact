@@ -264,6 +264,7 @@ public class RobotContainer {
   // A Utility command to reload the ByteAPult after any launch sequence
   private Command ReloadCommand() {
     return(new SequentialCommandGroup(
+              new WaitCommand(0.2),
               new WaitUntilCommand(byteAPult::readyToLoad).withTimeout(1),
               new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
                                                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
@@ -414,8 +415,12 @@ public class RobotContainer {
        .withPosition(3,0);
 
     driverTab.addNumber("Pressure", byteAPult::getPressure)
-      .withSize(2,1)
+      .withSize(1,1)
       .withPosition(6,0);
+
+    driverTab.addBoolean("Cargo Loaded",byteAPult::cargoPresent)
+      .withSize(1,1)
+      .withPosition(7,0);
 
     driverTab.addBoolean("At Top", hanger::atTopLimit)
       .withSize(1,1)
@@ -857,9 +862,9 @@ public class RobotContainer {
     //Max Velocity: 3.0 m/s
     //Max Acceleration: 2.5m/s^2
     Trajectory pathA = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points17-18.wpilib.json")];
-    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")]
-                        .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-19.5.wpilib.json")]);  //remove for edited path
-    Trajectory pathShoot2 = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19.5-19.wpilib.json")]; //remove for edited path
+    Trajectory pathB = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points18-19.wpilib.json")];
+    //                    .concatenate(Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19-19.5.wpilib.json")]);  //remove for edited path
+    //Trajectory pathShoot2 = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points19.5-19.wpilib.json")]; //remove for edited path
     Trajectory pathC = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points 19-21.wpilib.json")];
     Trajectory pathD = Robot.pathList[Arrays.asList(Robot.fileList).indexOf("Points21-26.wpilib.json")];
 
@@ -891,7 +896,7 @@ public class RobotContainer {
       //new WaitUntilCommand(byteAPult::armRetracted),
       new WaitCommand(0.85),
       new ParallelCommandGroup(
-        new PathweaverCommand(pathShoot2, drivetrain).configure(), //remove for edited path
+        //new PathweaverCommand(pathShoot2, drivetrain).configure(), //remove for edited path
         new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed), intake),
         new InstantCommand(byteAPult::openGate, byteAPult)
       ),

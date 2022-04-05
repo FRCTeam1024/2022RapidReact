@@ -61,6 +61,7 @@ public class RobotContainer {
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -183,15 +184,15 @@ public class RobotContainer {
      */
 
     //Deploy Intake to Collect
-    operatorController.rightTrigger.whenPressed(
-      new InstantCommand(intake::deploy,intake),false);
+    operatorController.rightTrigger.whileHeld(
+      new InstantCommand(intake::deploy,intake),true);
     operatorController.rightTrigger.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(intake::stow, intake),
         new InstantCommand(byteAPult::reverseGate,byteAPult),//Need to require the byteAPult so that the commandgroup will override the default command
         new WaitCommand(0.2),
         new InstantCommand(byteAPult::closeGate,byteAPult)
-      )
+      ),false
     );
 
     //Opens Gate while held but onlyif ReadyToLoad is true
@@ -267,13 +268,13 @@ public class RobotContainer {
               new WaitCommand(0.2),
               new WaitUntilCommand(byteAPult::readyToLoad).withTimeout(1),
               new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
-                                                              new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
+                                                              new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed),intake)),
                                     new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
-                                                              new InstantCommand(() -> intake.runShifter(0))),
+                                                              new InstantCommand(() -> intake.runShifter(0),intake)),
                                      byteAPult::readyToLoad),
               new WaitUntilCommand(byteAPult::cargoPresent).withTimeout(0.5),
               new ParallelCommandGroup(new InstantCommand(byteAPult::reverseGate, byteAPult),
-                                      new InstantCommand(() -> intake.runShifter(0))),
+                                      new InstantCommand(() -> intake.runShifter(0),intake)),
               new WaitCommand(0.2),
               new InstantCommand(byteAPult::closeGate, byteAPult)
           )

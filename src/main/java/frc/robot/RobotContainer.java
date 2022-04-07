@@ -51,6 +51,7 @@ public class RobotContainer {
   private final DriveWithController driveWithController = new DriveWithController(drivetrain, driverController, 1);
   //private final DriveWithControllerPID driveWithPID = new DriveWithControllerPID(drivetrain, driverController);
   private final LoadByteAPult loadByteAPult = new LoadByteAPult(byteAPult);
+  private final StowIntake stowIntake = new StowIntake(intake);
 
   //Create a chooser for auto
   SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -62,6 +63,7 @@ public class RobotContainer {
     // Assign default Commands
     drivetrain.setDefaultCommand(driveWithController);
     byteAPult.setDefaultCommand(loadByteAPult);
+    intake.setDefaultCommand(stowIntake);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -196,17 +198,15 @@ public class RobotContainer {
       ),false
     );
 
-    //Opens Gate while held but onlyif ReadyToLoad is true
+    //Opens Gate while held and runs the shifter. but only if ReadyToLoad is true
     operatorController.bButton.whileHeld(
-      new ConditionalCommand(new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
-                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed))),
-                            new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
-                               new InstantCommand(() -> intake.runShifter(0))),
-                            byteAPult::readyToLoad));
+      new ParallelCommandGroup(new InstantCommand(byteAPult::openGate, byteAPult),
+                               new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed),intake)
+                              ));
 
     operatorController.bButton.whenReleased(
       new ParallelCommandGroup(new InstantCommand(byteAPult::closeGate, byteAPult),
-                               new InstantCommand(() -> intake.runShifter(0))));
+                               new InstantCommand(() -> intake.runShifter(0),intake)));
 
     //Deploy intake to Eject
 
@@ -248,7 +248,7 @@ public class RobotContainer {
     operatorController.aButton.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new InstantCommand(() -> byteAPult.launch(1,.25,40,false), byteAPult),
+          new InstantCommand(() -> byteAPult.launch(1,.05,40,false), byteAPult),
           new WaitUntilCommand(byteAPult::armNotRetracted).withTimeout(1),
           ReloadCommand()
       ),
@@ -818,11 +818,11 @@ public class RobotContainer {
             new InstantCommand(intake::deploy, intake),
             new InstantCommand(byteAPult::openGate, byteAPult)
           ),
-          new WaitCommand(2),
+          new WaitCommand(4),
           new ParallelCommandGroup(
             new InstantCommand(byteAPult::setFar, byteAPult),
             new InstantCommand(byteAPult::closeGate),
-            new InstantCommand(() -> intake.runShifter(0))
+            new InstantCommand(() -> intake.runShifter(IntakeConstants.kShifterSpeed/2))
           )
         )
       ),

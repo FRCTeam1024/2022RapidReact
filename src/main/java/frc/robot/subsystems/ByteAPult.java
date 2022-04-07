@@ -228,7 +228,7 @@ public class ByteAPult extends SubsystemBase {
     //the state of the pressure switch.  If there is, assume the pressure switch is
     //correct and return a high value, otherwise return the measured pressure.
     if(pressure < 60 && compressor.getPressureSwitchValue()) {
-      pressure = 120;
+      pressure = 120.1111;
     }
     return Math.floor(pressureFilter.calculate(pressure));
   }

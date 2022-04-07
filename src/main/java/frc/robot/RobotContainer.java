@@ -254,6 +254,15 @@ public class RobotContainer {
       ),
     false);  
 
+    operatorController.rightBumper.whenPressed(
+      new SequentialCommandGroup(
+          new InstantCommand(byteAPult::setNear,byteAPult),
+          new InstantCommand(() -> byteAPult.launch(1,.12,40,false), byteAPult),
+          new WaitUntilCommand(byteAPult::armNotRetracted).withTimeout(1),
+          ReloadCommand()
+      ),
+    false);
+
     //Move launch pivot to near shot position
     operatorController.dPadUp.whenPressed(
       new InstantCommand(byteAPult::setNear,byteAPult));

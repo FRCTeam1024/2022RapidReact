@@ -236,7 +236,7 @@ public class RobotContainer {
     operatorController.leftBumper.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setFar,byteAPult),
-          new WaitCommand(0.5),
+          new WaitCommand(0.3),
           new InstantCommand(() -> byteAPult.launch(2,.25,65.0,false), byteAPult),
           new WaitCommand(0.3),
           new InstantCommand(byteAPult::setNear,byteAPult),
@@ -657,6 +657,7 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
       new PathweaverCommand(pathSetup, drivetrain).configure(),
+      new WaitCommand(1),
       //shoot cargo 1
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       //pick up cargo 2 and return
@@ -937,6 +938,8 @@ public class RobotContainer {
           new InstantCommand(() -> intake.runShifter(0))
         )
       ),
+      new WaitCommand(0.2),
+      new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult),
       new WaitCommand(0.2),
       new InstantCommand(() -> byteAPult.launch(2,.25,80.0,false), byteAPult)
     );

@@ -70,8 +70,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int launchValveA = 7;
         public static final int launchValveB = 3;
-        public static final int aimValveUp = 5;
-        public static final int aimValveDown = 6;
+        public static final int aimValveUp = 6; //may need to be swapped back to 5 if we swap the wires backas well
+        public static final int aimValveDown = 6; //currently not in use
         public static final int loadMotorID = 17;
 
         public static final int kPressureAnalogID = 0;
@@ -107,7 +107,7 @@ public final class Constants {
         public static final int monkeyArmValveOut = 1;
         public static final int monkeyArmValveIn = 2;
 
-        public static final int powerHook = 6;
+        public static final int powerHook = 5; //may need to be swapped back to 6 if we swap the wires back
 
         public static final int topLimitDigID = 0;
         public static final int bottomLimitDigID = 1;
@@ -132,8 +132,9 @@ public final class Constants {
 
     // Limelight related constants
     public static final class LimelightConstants {
-        public static final double driverPipe = 0.0;
+        public static final double driverPipe = 2.0;
         public static final double targetPipe = 1.0;
+        public static final double offPipe = 0.0;
         
         public static final double kP = 0.015;
         public static final double kI = 0;

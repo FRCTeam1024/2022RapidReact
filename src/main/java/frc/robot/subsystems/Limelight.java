@@ -18,6 +18,8 @@ public class Limelight extends SubsystemBase {
   
   private final NetworkTableEntry pipeline = limelightTable.getEntry("pipeline");
   private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
+  private final NetworkTableEntry camMode = limelightTable.getEntry("camMode");
+  private final NetworkTableEntry streamMode = limelightTable.getEntry("stream");
 
   private final HttpCamera camera = new HttpCamera(
       "limelight", "http://10.10.24.11:5800", HttpCamera.HttpCameraKind.kMJPGStreamer
@@ -27,7 +29,9 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
-    setDriverPipe();
+    //setDriverPipe();
+    setOffPipe();
+    setStream(1);
   }
 
   @Override
@@ -92,6 +96,10 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public void setStream(int streamID) {
+    streamMode.setDouble(streamID);
+  }
+
   /**
    * Sets the Limelight pipeline to that of the specified id
    * @param id the id of the desired pipeline
@@ -105,11 +113,28 @@ public class Limelight extends SubsystemBase {
     return pipeline.getDouble(-1);
   }
 
+  public void setDriverMode() {
+    camMode.setDouble(1.0);
+  }
+
+  public void setOffMode() {
+    camMode.setDouble(1.0);
+  }
+
+  public void toggleDriverMode() {
+    if (getPipeline() == 0.0) {
+      setDriverPipe();
+    } else {
+      setOffPipe();
+    }
+  }
+
   /**
    * Switches Limelight pipe to the driver pipe, which is thresholded to the equivalent to a webcam
    */
   public void setDriverPipe() {
     pipeline.setDouble(Constants.LimelightConstants.driverPipe);
+    //setDriverMode();
   }
 
   /**
@@ -117,6 +142,11 @@ public class Limelight extends SubsystemBase {
    */
   public void setTargetPipe() {
     pipeline.setDouble(Constants.LimelightConstants.targetPipe);
+  }
+
+  public void setOffPipe() {
+    pipeline.setDouble(Constants.LimelightConstants.offPipe);
+    setOffMode();
   }
 
   /**

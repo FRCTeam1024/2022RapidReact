@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,6 +31,8 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     intakeCamera = CameraServer.startAutomaticCapture();
+    //intakeCamera.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 90, 5);
+    //intakeCamera.setExposureManual(5);
 
     shifterMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
     shifterMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
@@ -114,6 +117,8 @@ public class Intake extends SubsystemBase {
    */
   private void retract() {
     intakeValve.set(false); //May need to reverse boolean
+    System.out.println("Stowing");
+    
   }
 
   /**

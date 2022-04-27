@@ -90,13 +90,15 @@ public class RobotContainer {
      */
 
     // Limelight Pipelines
-    driverController.leftTrigger.whenHeld(
+    /*driverController.leftTrigger.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(limelight::setTargetPipe, limelight),
         new WaitUntilCommand(limelight::hasTarget),
         new LimelightAutoAim(limelight, drivetrain)
       )
-    );
+    );*/
+
+    driverController.leftTrigger.whenPressed(new InstantCommand(limelight::toggleDriverMode, limelight));
 
     //Turbo Mode
     driverController.rightBumper.whileHeld(new DriveWithController(drivetrain, driverController, 2));
@@ -248,7 +250,7 @@ public class RobotContainer {
     operatorController.aButton.whenPressed(
       new SequentialCommandGroup(
           new InstantCommand(byteAPult::setNear,byteAPult),
-          new InstantCommand(() -> byteAPult.launch(1,.05,40,false), byteAPult),
+          new InstantCommand(() -> byteAPult.launch(1,.055,40,false), byteAPult),
           new WaitUntilCommand(byteAPult::armNotRetracted).withTimeout(1),
           ReloadCommand()
       ),
